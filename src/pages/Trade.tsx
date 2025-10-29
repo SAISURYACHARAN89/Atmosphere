@@ -335,9 +335,9 @@ const Trade = () => {
                 </div>
 
                 {/* Active Trades Section */}
-                {activeTrades.length > 0 && (
-                  <div className="mb-8">
-                    <h2 className="text-lg font-semibold text-foreground mb-4">Active Trades</h2>
+                <div className="mb-8">
+                  <h2 className="text-lg font-semibold text-foreground mb-4">Active Trades</h2>
+                  {activeTrades.length > 0 ? (
                     <div className="space-y-4">
                       {activeTrades.map((trade) => (
                         <div key={trade.id} className="border border-border rounded-lg p-6 bg-card">
@@ -404,8 +404,12 @@ const Trade = () => {
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
+                  ) : (
+                    <div className="text-center py-8 text-muted-foreground">
+                      No active trades yet
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               /* Buying Page - Original Flow */

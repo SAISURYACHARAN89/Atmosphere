@@ -412,9 +412,9 @@ const Trade = () => {
               <>
                 {/* Search Bar and Saved Toggle */}
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="relative flex-1">
+                  <div className="relative flex-1 max-w-full">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground z-10" />
-                    <div className="flex items-center h-12 pl-10 pr-12 bg-muted rounded-full overflow-x-auto scrollbar-hide">
+                    <div className="flex items-center h-12 pl-10 pr-12 bg-muted rounded-full overflow-x-auto overflow-y-hidden scrollbar-hide">
                       <div className="flex items-center gap-2 min-w-fit">
                         {selectedCategories.map((category) => (
                           <Badge
@@ -433,6 +433,8 @@ const Trade = () => {
                         />
                       </div>
                     </div>
+                    {/* Fade overlay on the right */}
+                    <div className="absolute right-12 top-0 bottom-0 w-12 bg-gradient-to-l from-muted to-transparent pointer-events-none rounded-r-full" />
                     {(searchValue || selectedCategories.length > 0) && (
                       <button
                         onClick={() => {

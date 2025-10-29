@@ -119,7 +119,7 @@ const Launch = () => {
 
             {/* Launch Meeting Expanded Form */}
             {launchExpanded && (
-              <div className="border border-border rounded-lg p-4 space-y-4 bg-card animate-accordion-down">
+              <div className="border border-border rounded-lg p-4 space-y-4 bg-card animate-in slide-in-from-top-2 duration-300">
 
                 <div className="space-y-2">
                   <Label htmlFor="meeting-title">Meeting Title</Label>
@@ -234,7 +234,7 @@ const Launch = () => {
 
             {/* Join Meeting Expanded Form */}
             {joinExpanded && (
-                <div className="border border-border rounded-lg p-4 space-y-4 bg-card animate-accordion-down">
+                <div className="border border-border rounded-lg p-4 space-y-4 bg-card animate-in slide-in-from-top-2 duration-300">
                   <div className="space-y-3">
                     <h3 className="font-semibold text-sm">Search Public Meetings</h3>
                     <ScrollArea className="h-64">
@@ -275,6 +275,9 @@ const Launch = () => {
               </div>
             )}
           </div>
+
+          {/* Separator Line */}
+          <div className="border-t border-border/40 my-6"></div>
 
           {/* Startup Launches Section */}
           <div className="space-y-4">

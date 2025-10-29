@@ -17,7 +17,10 @@ const TopBar = () => {
         {/* Right Icons */}
         <div className="flex items-center gap-4">
           {/* Search */}
-          <button className="hover:opacity-70">
+          <button 
+            onClick={() => navigate('/search')}
+            className="hover:opacity-70"
+          >
             <Search className="w-6 h-6 text-foreground" strokeWidth={1.5} />
           </button>
 

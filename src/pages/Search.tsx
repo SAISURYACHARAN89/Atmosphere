@@ -4,6 +4,7 @@ import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const categories = [
   "AI", "Manufacturing", "ML", "B2B", "SaaS", "Fintech", "HealthTech", 
@@ -139,47 +140,42 @@ const Search = () => {
       
       <main className="pt-14 px-4 max-w-2xl mx-auto">
         {/* Search Bar */}
-        <div className="mt-6 mb-6">
+        <div className="mt-6 mb-4">
           <div className="relative">
-            <div className="flex items-center gap-3 bg-white rounded-full px-4 py-3 shadow-sm border border-border">
-              <SearchIcon className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-              <input
-                type="text"
-                placeholder="Search investors, startups, founders…"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
-              />
-              {(searchQuery || selectedCategories.length > 0) && (
-                <button 
-                  onClick={clearSearch}
-                  className="flex-shrink-0 w-6 h-6 rounded-full bg-muted flex items-center justify-center hover:bg-muted/80"
-                >
-                  <X className="w-4 h-4 text-foreground" />
-                </button>
-              )}
-            </div>
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search investors, startups, founders…"
+              className="pl-10 pr-10 h-12 rounded-full bg-muted border-0"
+            />
+            {(searchQuery || selectedCategories.length > 0) && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* Category Tags Box */}
-        <div className="mb-8">
-          <div className="bg-white rounded-2xl border border-border p-4 shadow-sm max-h-48 overflow-auto">
-            <div className="flex flex-wrap gap-2">
-              {categories.map((category) => (
-                <button
+        {/* Category Tags */}
+        <div className="bg-muted rounded-xl p-4 mb-6 max-h-48 overflow-y-auto">
+          <div className="flex flex-wrap gap-2">
+            {categories.map((category) => {
+              const isSelected = selectedCategories.includes(category);
+              return (
+                <Badge
                   key={category}
+                  variant={isSelected ? "default" : "outline"}
                   onClick={() => toggleCategory(category)}
-                  className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
-                    selectedCategories.includes(category)
-                      ? 'bg-foreground text-background border-foreground'
-                      : 'bg-background text-foreground border-foreground hover:bg-muted'
-                  }`}
+                  className="cursor-pointer transition-all"
                 >
                   {category}
-                </button>
-              ))}
-            </div>
+                </Badge>
+              );
+            })}
           </div>
         </div>
 
@@ -193,10 +189,10 @@ const Search = () => {
                 {investorData.map((investor) => (
                   <div 
                     key={investor.id}
-                    className="bg-white rounded-2xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow"
+                    className="border border-border rounded-lg p-6 bg-card hover:bg-muted/50 transition-all"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-full bg-muted flex-shrink-0 overflow-hidden">
+                      <div className="w-12 h-12 rounded-full bg-muted flex-shrink-0 overflow-hidden">
                         <img 
                           src={investor.image} 
                           alt={investor.name}
@@ -206,7 +202,7 @@ const Search = () => {
                       
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground mb-1">{investor.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">{investor.subtitle}</p>
+                        <p className="text-sm text-muted-foreground mb-2.5">{investor.subtitle}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {investor.tags.map((tag) => (
                             <Badge 
@@ -236,10 +232,10 @@ const Search = () => {
                 {startupData.map((startup) => (
                   <div 
                     key={startup.id}
-                    className="bg-white rounded-2xl border border-border p-4 shadow-sm hover:shadow-md transition-shadow"
+                    className="border border-border rounded-lg p-6 bg-card hover:bg-muted/50 transition-all"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
+                      <div className="w-12 h-12 rounded-lg bg-muted flex-shrink-0 overflow-hidden">
                         <img 
                           src={startup.logo} 
                           alt={startup.name}
@@ -249,7 +245,7 @@ const Search = () => {
                       
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-foreground mb-1">{startup.name}</h3>
-                        <p className="text-sm text-muted-foreground mb-2">{startup.tagline}</p>
+                        <p className="text-sm text-muted-foreground mb-2.5">{startup.tagline}</p>
                         <div className="flex flex-wrap gap-1.5">
                           {startup.tags.map((tag) => (
                             <Badge 

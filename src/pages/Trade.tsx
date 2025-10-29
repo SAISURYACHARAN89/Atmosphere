@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, X, SlidersHorizontal } from "lucide-react";
+import { Search, X, SlidersHorizontal, ArrowLeft } from "lucide-react";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import { Input } from "@/components/ui/input";
@@ -70,8 +70,19 @@ const Trade = () => {
         ) : (
           /* Content after mode selection */
           <>
-            {/* Hero Heading */}
+            {/* Back Button and Hero Heading */}
             <div className="mt-6 mb-6">
+              <button
+                onClick={() => {
+                  setTradeMode(null);
+                  setSearchValue("");
+                  setSelectedCategories([]);
+                }}
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-4"
+              >
+                <ArrowLeft className="w-5 h-5" />
+                <span className="text-sm font-medium">Back</span>
+              </button>
               <h1 className="text-4xl font-bold text-foreground">
                 {tradeMode === "buy" ? "BUYING" : "SELLING"}
               </h1>

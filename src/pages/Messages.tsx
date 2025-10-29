@@ -59,29 +59,42 @@ const Messages = () => {
         <div className="max-w-2xl mx-auto flex items-center px-4">
           <button
             onClick={() => setActiveTab("all")}
-            className={`flex-1 py-3 text-center font-semibold transition-colors ${
-              activeTab === "all" ? "text-foreground" : "text-muted-foreground"
-            }`}
+            className="flex-1 py-3 text-center relative"
           >
-            All mail
+            <span className={`font-semibold transition-colors ${
+              activeTab === "all" ? "text-foreground" : "text-muted-foreground"
+            }`}>
+              All mail
+            </span>
+            {activeTab === "all" && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-foreground" />
+            )}
           </button>
           <button
             onClick={() => setActiveTab("investors")}
-            className={`flex-1 py-3 text-center font-semibold transition-colors ${
-              activeTab === "investors" ? "text-foreground" : "text-muted-foreground"
-            }`}
+            className="flex-1 py-3 text-center relative"
           >
-            Investors
+            <span className={`font-semibold transition-colors ${
+              activeTab === "investors" ? "text-foreground" : "text-muted-foreground"
+            }`}>
+              Investors
+            </span>
+            {activeTab === "investors" && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-foreground" />
+            )}
           </button>
           <button
             onClick={() => setActiveTab("startups")}
-            className={`flex-1 py-3 text-center font-semibold rounded-full transition-colors ${
-              activeTab === "startups"
-                ? "text-foreground bg-muted"
-                : "text-muted-foreground"
-            }`}
+            className="flex-1 py-3 text-center relative"
           >
-            Startups
+            <span className={`font-semibold transition-colors ${
+              activeTab === "startups" ? "text-foreground" : "text-muted-foreground"
+            }`}>
+              Startups
+            </span>
+            {activeTab === "startups" && (
+              <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-16 h-0.5 bg-foreground" />
+            )}
           </button>
         </div>
       </div>

@@ -1,8 +1,10 @@
 import { User, Search, MessageCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const TopBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isMessagesPage = location.pathname === '/messages';
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-background border-b border-border z-50">
@@ -24,8 +26,13 @@ const TopBar = () => {
             onClick={() => navigate('/messages')}
             className="relative hover:opacity-70"
           >
-            <MessageCircle className="w-6 h-6 text-foreground" strokeWidth={1.5} />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent rounded-full" />
+            <MessageCircle 
+              className={`w-6 h-6 ${isMessagesPage ? 'fill-foreground text-foreground' : 'text-foreground'}`}
+              strokeWidth={1.5} 
+            />
+            <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-accent rounded-full flex items-center justify-center text-[10px] font-semibold text-white">
+              3
+            </span>
           </button>
         </div>
       </div>

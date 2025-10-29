@@ -117,9 +117,12 @@ const startupData = [
   }
 ];
 
+type FilterType = "all" | "investors" | "startups" | "reels";
+
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   const toggleCategory = (category: string) => {
     setSelectedCategories(prev => 
@@ -161,7 +164,7 @@ const Search = () => {
         </div>
 
         {/* Category Tags */}
-        <div className="bg-muted rounded-xl p-4 mb-6 max-h-48 overflow-y-auto">
+        <div className="bg-muted rounded-xl p-4 mb-4 max-h-48 overflow-y-auto">
           <div className="flex flex-wrap gap-2">
             {categories.map((category) => {
               const isSelected = selectedCategories.includes(category);
@@ -179,10 +182,57 @@ const Search = () => {
           </div>
         </div>
 
+        {/* Filter Tabs */}
+        {(searchQuery || selectedCategories.length > 0) && (
+          <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
+            <button
+              onClick={() => setActiveFilter("all")}
+              className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                activeFilter === "all"
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-foreground hover:bg-muted/80"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setActiveFilter("investors")}
+              className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                activeFilter === "investors"
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-foreground hover:bg-muted/80"
+              }`}
+            >
+              Investors
+            </button>
+            <button
+              onClick={() => setActiveFilter("startups")}
+              className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                activeFilter === "startups"
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-foreground hover:bg-muted/80"
+              }`}
+            >
+              Startups
+            </button>
+            <button
+              onClick={() => setActiveFilter("reels")}
+              className={`px-6 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                activeFilter === "reels"
+                  ? "bg-foreground text-background"
+                  : "bg-muted text-foreground hover:bg-muted/80"
+              }`}
+            >
+              Reels
+            </button>
+          </div>
+        )}
+
         {/* Search Results */}
         {(searchQuery || selectedCategories.length > 0) && (
           <div className="space-y-6">
             {/* Investors Section */}
+            {(activeFilter === "all" || activeFilter === "investors") && (
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-4">Investors</h2>
               <div className="space-y-3">
@@ -224,8 +274,10 @@ const Search = () => {
                 ))}
               </div>
             </div>
+            )}
 
             {/* Startups Section */}
+            {(activeFilter === "all" || activeFilter === "startups") && (
             <div>
               <h2 className="text-lg font-semibold text-foreground mb-4">Startups</h2>
               <div className="space-y-3">
@@ -271,6 +323,16 @@ const Search = () => {
                 ))}
               </div>
             </div>
+            )}
+
+            {/* Reels Section */}
+            {activeFilter === "reels" && (
+              <div className="text-center py-16">
+                <p className="text-muted-foreground">
+                  Reels feature coming soon
+                </p>
+              </div>
+            )}
           </div>
         )}
 

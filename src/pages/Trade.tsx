@@ -459,22 +459,17 @@ const Trade = () => {
                   </div>
                 </div>
 
-                {showSellers && (
-                  <>
-                    {/* Section Title and Filter */}
+                {/* Saved Sellers Section */}
+                {showSavedOnly && (
+                  <div className="mb-8">
                     <div className="flex items-center justify-between mb-4">
                       <h2 className="text-sm font-medium text-foreground">
-                        Sellers in – "{selectedCategories.length > 0 ? selectedCategories.join(", ") : "All"}"
+                        Saved Sellers
                       </h2>
-                      <button className="w-8 h-8 flex items-center justify-center hover:bg-muted rounded-full transition-colors">
-                        <SlidersHorizontal className="w-5 h-5 text-foreground" />
-                      </button>
                     </div>
-
-                    {/* Seller Cards */}
-                    <div className="space-y-4 pb-4">
+                    <div className="space-y-4">
                       {sellers
-                        .filter(seller => !showSavedOnly || savedSellers.includes(seller.id))
+                        .filter(seller => savedSellers.includes(seller.id))
                         .map((seller) => (
                         <div
                           key={seller.id}
@@ -541,7 +536,88 @@ const Trade = () => {
                         </div>
                       ))}
                     </div>
-                  </>
+                  </div>
+                )}
+
+                {/* Regular Sellers Section */}
+                {showSellers && (
+                  <div className="pb-4">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-sm font-medium text-foreground">
+                        Sellers in – "{selectedCategories.length > 0 ? selectedCategories.join(", ") : "All"}"
+                      </h2>
+                      <button className="w-8 h-8 flex items-center justify-center hover:bg-muted rounded-full transition-colors">
+                        <SlidersHorizontal className="w-5 h-5 text-foreground" />
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      {sellers.map((seller) => (
+                        <div
+                          key={seller.id}
+                          className="border border-border rounded-lg p-6 bg-card hover:bg-muted/50 transition-all"
+                        >
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-12 h-12">
+                                <AvatarImage src={seller.avatar} />
+                                <AvatarFallback className="bg-muted text-foreground">
+                                  {seller.name.split(" ").map((n) => n[0]).join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <h3 className="font-semibold text-foreground">{seller.name}</h3>
+                                <p className="text-sm text-muted-foreground mt-0.5">{seller.companyName}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleToggleSaveSeller(seller.id)}
+                              className="p-2 hover:bg-background rounded-lg transition-colors"
+                              title={savedSellers.includes(seller.id) ? "Unsave" : "Save"}
+                            >
+                              <Bookmark 
+                                className={`w-5 h-5 ${savedSellers.includes(seller.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
+                              />
+                            </button>
+                          </div>
+
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="text-muted-foreground">Pre Money:</span>
+                                <p className="font-medium text-foreground mt-1">{seller.preMoneyValuation}</p>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">Post Money:</span>
+                                <p className="font-medium text-foreground mt-1">{seller.postMoneyValuation}</p>
+                              </div>
+                            </div>
+
+                            <div className="pt-2">
+                              <div className="flex items-center justify-between text-sm mb-2">
+                                <span className="text-muted-foreground">Buying Range:</span>
+                                <span className="font-medium text-foreground">{seller.minRange}% - {seller.maxRange}%</span>
+                              </div>
+                              
+                              <div className="relative h-2 bg-background rounded-full overflow-hidden">
+                                <div
+                                  className="absolute h-full bg-primary"
+                                  style={{
+                                    left: `${seller.minRange}%`,
+                                    width: `${seller.maxRange - seller.minRange}%`,
+                                  }}
+                                />
+                              </div>
+                              
+                              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                                <span>0%</span>
+                                <span>100%</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 )}
               </>
             )}

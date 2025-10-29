@@ -34,11 +34,56 @@ const categories = [
 ];
 
 const sellers = [
-  { id: 1, name: "Rajesh Mukarji", avatar: "" },
-  { id: 2, name: "Joshua Paul", avatar: "" },
-  { id: 3, name: "Priya Sharma", avatar: "" },
-  { id: 4, name: "Alex Chen", avatar: "" },
-  { id: 5, name: "Sarah Williams", avatar: "" },
+  { 
+    id: 1, 
+    name: "Rajesh Mukarji", 
+    avatar: "",
+    companyName: "Airbound Pvt Ltd",
+    preMoneyValuation: "₹35,00,000",
+    postMoneyValuation: "₹50,00,000",
+    minRange: 15,
+    maxRange: 40
+  },
+  { 
+    id: 2, 
+    name: "Joshua Paul", 
+    avatar: "",
+    companyName: "Zlyft Autonomy Pvt Ltd",
+    preMoneyValuation: "₹80,00,000",
+    postMoneyValuation: "₹1,20,00,000",
+    minRange: 10,
+    maxRange: 35
+  },
+  { 
+    id: 3, 
+    name: "Priya Sharma", 
+    avatar: "",
+    companyName: "TechFlow Solutions",
+    preMoneyValuation: "₹60,00,000",
+    postMoneyValuation: "₹90,00,000",
+    minRange: 20,
+    maxRange: 50
+  },
+  { 
+    id: 4, 
+    name: "Alex Chen", 
+    avatar: "",
+    companyName: "CloudSync Systems",
+    preMoneyValuation: "₹45,00,000",
+    postMoneyValuation: "₹70,00,000",
+    minRange: 12,
+    maxRange: 30
+  },
+  { 
+    id: 5, 
+    name: "Sarah Williams", 
+    avatar: "",
+    companyName: "GreenTech Innovations",
+    preMoneyValuation: "₹55,00,000",
+    postMoneyValuation: "₹85,00,000",
+    minRange: 18,
+    maxRange: 45
+  },
 ];
 
 const portfolio = [
@@ -413,30 +458,70 @@ const Trade = () => {
                     </div>
 
                     {/* Seller Cards */}
-                    <div className="space-y-3 pb-4">
+                    <div className="space-y-4 pb-4">
                       {sellers.map((seller) => (
                         <div
                           key={seller.id}
-                          className="flex items-center gap-3 p-4 bg-card border border-border rounded-lg hover:bg-muted transition-all"
+                          className="border border-border rounded-lg p-6 bg-card hover:bg-muted/50 transition-all"
                         >
-                          <Avatar className="w-12 h-12">
-                            <AvatarImage src={seller.avatar} />
-                            <AvatarFallback className="bg-muted text-foreground">
-                              {seller.name.split(" ").map((n) => n[0]).join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <p className="font-medium text-foreground">{seller.name}</p>
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="flex items-center gap-3">
+                              <Avatar className="w-12 h-12">
+                                <AvatarImage src={seller.avatar} />
+                                <AvatarFallback className="bg-muted text-foreground">
+                                  {seller.name.split(" ").map((n) => n[0]).join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <h3 className="font-semibold text-foreground">{seller.name}</h3>
+                                <p className="text-sm text-muted-foreground mt-0.5">{seller.companyName}</p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleToggleSaveSeller(seller.id)}
+                              className="p-2 hover:bg-background rounded-lg transition-colors"
+                              title={savedSellers.includes(seller.id) ? "Unsave" : "Save"}
+                            >
+                              <Bookmark 
+                                className={`w-5 h-5 ${savedSellers.includes(seller.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
+                              />
+                            </button>
                           </div>
-                          <button
-                            onClick={() => handleToggleSaveSeller(seller.id)}
-                            className="p-2 hover:bg-background rounded-lg transition-colors"
-                            title={savedSellers.includes(seller.id) ? "Unsave" : "Save"}
-                          >
-                            <Bookmark 
-                              className={`w-5 h-5 ${savedSellers.includes(seller.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
-                            />
-                          </button>
+
+                          <div className="space-y-3">
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="text-muted-foreground">Pre Money:</span>
+                                <p className="font-medium text-foreground mt-1">{seller.preMoneyValuation}</p>
+                              </div>
+                              <div>
+                                <span className="text-muted-foreground">Post Money:</span>
+                                <p className="font-medium text-foreground mt-1">{seller.postMoneyValuation}</p>
+                              </div>
+                            </div>
+
+                            <div className="pt-2">
+                              <div className="flex items-center justify-between text-sm mb-2">
+                                <span className="text-muted-foreground">Buying Range:</span>
+                                <span className="font-medium text-foreground">{seller.minRange}% - {seller.maxRange}%</span>
+                              </div>
+                              
+                              <div className="relative h-2 bg-background rounded-full overflow-hidden">
+                                <div
+                                  className="absolute h-full bg-primary"
+                                  style={{
+                                    left: `${seller.minRange}%`,
+                                    width: `${seller.maxRange - seller.minRange}%`,
+                                  }}
+                                />
+                              </div>
+                              
+                              <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                                <span>0%</span>
+                                <span>100%</span>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>

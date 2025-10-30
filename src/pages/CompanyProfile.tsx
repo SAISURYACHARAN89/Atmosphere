@@ -1,0 +1,434 @@
+import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import TopBar from "@/components/TopBar";
+import BottomNav from "@/components/BottomNav";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Lock, Send, FileText, Users, Building2, TrendingUp, Calendar, MapPin, Globe } from "lucide-react";
+
+// Mock data - in real app this would come from API/database
+const companyData: Record<string, any> = {
+  "airbound-co": {
+    name: "Airbound.co",
+    logo: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=100&h=100&fit=crop",
+    tagline: "Revolutionary drone delivery for urban logistics",
+    isPublic: true,
+    followers: 2847,
+    following: 124,
+    description: "Airbound.co is pioneering the future of urban logistics with our autonomous drone delivery network. We're building infrastructure to enable same-day delivery across major metropolitan areas.",
+    founded: "2022",
+    location: "San Francisco, CA",
+    website: "airbound.co",
+    teamSize: "15-20",
+    industry: "Logistics & Transportation",
+    preValuation: "$5M",
+    postValuation: "$12M",
+    fundsRaised: "$2M",
+    currentInvestors: ["Y Combinator", "Sequoia", "a16z"],
+    fundingGoal: "$3M Series A",
+    pitchDeckPublic: true,
+    photos: [
+      "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1508614999368-9260051292e5?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  },
+  "skyt-air": {
+    name: "Skyt Air",
+    logo: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=100&h=100&fit=crop",
+    tagline: "AI-powered air traffic management system",
+    isPublic: false,
+    description: "Skyt Air develops next-generation air traffic management solutions using artificial intelligence and machine learning to optimize flight paths and reduce delays.",
+    founded: "2021",
+    location: "Austin, TX",
+    website: "skytair.com",
+    teamSize: "10-15",
+    industry: "Aviation & AI",
+    preValuation: "$8M",
+    postValuation: "$18M",
+    fundsRaised: "$4M",
+    currentInvestors: ["Techstars", "500 Startups"],
+    fundingGoal: "$5M Series A",
+    pitchDeckPublic: false,
+    photos: [
+      "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  },
+  "neuralhealth": {
+    name: "NeuralHealth",
+    logo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=100&h=100&fit=crop",
+    tagline: "AI diagnostics for early disease detection",
+    isPublic: true,
+    followers: 5431,
+    following: 89,
+    description: "NeuralHealth leverages advanced AI algorithms to detect diseases earlier than traditional methods, improving patient outcomes and reducing healthcare costs.",
+    founded: "2020",
+    location: "Boston, MA",
+    website: "neuralhealth.ai",
+    teamSize: "25-30",
+    industry: "Healthcare & AI",
+    preValuation: "$15M",
+    postValuation: "$35M",
+    fundsRaised: "$8M",
+    currentInvestors: ["Founders Fund", "Khosla Ventures"],
+    fundingGoal: "$6M Series B",
+    pitchDeckPublic: true,
+    photos: [
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1579154204601-01588f351e67?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  },
+  "greencharge": {
+    name: "GreenCharge",
+    logo: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=100&h=100&fit=crop",
+    tagline: "Solar-powered EV charging network for highways",
+    isPublic: false,
+    description: "GreenCharge is building a nationwide network of solar-powered EV charging stations along major highways, making long-distance electric travel more accessible and sustainable.",
+    founded: "2021",
+    location: "Denver, CO",
+    website: "greencharge.io",
+    teamSize: "20-25",
+    industry: "Clean Energy & Infrastructure",
+    preValuation: "$10M",
+    postValuation: "$25M",
+    fundsRaised: "$5M",
+    currentInvestors: ["Tesla Ventures", "Climate Fund"],
+    pitchDeckPublic: false,
+    photos: [
+      "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1617704548623-340376564e68?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  },
+  "foodflow": {
+    name: "FoodFlow",
+    logo: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=100&h=100&fit=crop",
+    tagline: "B2B food supply chain automation platform",
+    isPublic: true,
+    followers: 1923,
+    following: 156,
+    description: "FoodFlow revolutionizes the B2B food supply chain with our automation platform, connecting restaurants, suppliers, and distributors in one seamless ecosystem.",
+    founded: "2022",
+    location: "New York, NY",
+    website: "foodflow.com",
+    teamSize: "12-18",
+    industry: "Food Tech & Supply Chain",
+    preValuation: "$7M",
+    postValuation: "$16M",
+    fundsRaised: "$3.5M",
+    currentInvestors: ["Greylock Partners", "First Round"],
+    fundingGoal: "$4M Series A",
+    pitchDeckPublic: false,
+    photos: [
+      "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  },
+  "codementor-ai": {
+    name: "CodeMentor AI",
+    logo: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=100&h=100&fit=crop",
+    tagline: "AI-powered coding education and mentorship",
+    isPublic: false,
+    description: "CodeMentor AI provides personalized coding education through AI-powered mentorship, helping developers learn faster and build better software.",
+    founded: "2023",
+    location: "Seattle, WA",
+    website: "codementor.ai",
+    teamSize: "8-12",
+    industry: "EdTech & AI",
+    preValuation: "$12M",
+    postValuation: "$28M",
+    fundsRaised: "$6M",
+    currentInvestors: ["Accel", "Index Ventures"],
+    fundingGoal: "$5M Series A",
+    pitchDeckPublic: true,
+    photos: [
+      "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  },
+  "urbanfarm": {
+    name: "UrbanFarm",
+    logo: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=100&h=100&fit=crop",
+    tagline: "Vertical farming solutions for city buildings",
+    isPublic: true,
+    followers: 3254,
+    following: 201,
+    description: "UrbanFarm transforms unused urban spaces into productive vertical farms, bringing fresh produce closer to consumers while reducing environmental impact.",
+    founded: "2021",
+    location: "Chicago, IL",
+    website: "urbanfarm.tech",
+    teamSize: "15-20",
+    industry: "AgTech & Sustainability",
+    preValuation: "$9M",
+    postValuation: "$22M",
+    fundsRaised: "$4.5M",
+    currentInvestors: ["Y Combinator", "Climate Capital"],
+    fundingGoal: "$4M Seed Round",
+    pitchDeckPublic: false,
+    photos: [
+      "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=800&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop"
+    ],
+    videos: [],
+    reels: []
+  }
+};
+
+const CompanyProfile = () => {
+  const { companyId } = useParams();
+  const navigate = useNavigate();
+  const [invitationSent, setInvitationSent] = useState(false);
+  
+  const company = companyId ? companyData[companyId] : null;
+
+  if (!company) {
+    return (
+      <div className="min-h-screen bg-background">
+        <TopBar />
+        <main className="pt-14 pb-16 flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">Company not found</h2>
+            <Button onClick={() => navigate("/")}>Back to Home</Button>
+          </div>
+        </main>
+        <BottomNav />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <TopBar />
+      
+      <main className="pt-14 pb-16">
+        <div className="max-w-2xl mx-auto">
+          {/* Profile Header */}
+          <div className="p-6 space-y-6">
+            {/* Avatar and Stats */}
+            <div className="flex items-start gap-6">
+              <Avatar className="h-24 w-24">
+                <AvatarImage src={company.logo} alt={company.name} />
+                <AvatarFallback>{company.name[0]}</AvatarFallback>
+              </Avatar>
+              
+              <div className="flex-1 space-y-3">
+                <div>
+                  <h1 className="text-2xl font-bold flex items-center gap-2">
+                    {company.name}
+                    {!company.isPublic && (
+                      <Lock className="h-5 w-5 text-muted-foreground" />
+                    )}
+                  </h1>
+                  <p className="text-sm text-muted-foreground">{company.tagline}</p>
+                </div>
+                
+                {company.isPublic && (
+                  <div className="flex gap-6 text-sm">
+                    <div>
+                      <span className="font-bold">{company.followers.toLocaleString()}</span>
+                      <span className="text-muted-foreground ml-1">followers</span>
+                    </div>
+                    <div>
+                      <span className="font-bold">{company.following}</span>
+                      <span className="text-muted-foreground ml-1">following</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-2">
+              <Button className="flex-1" variant="default">
+                Follow
+              </Button>
+              <Button variant="outline" className="flex-1">
+                Message
+              </Button>
+            </div>
+
+            {/* Company Info */}
+            <div className="space-y-2 text-sm">
+              <p className="text-foreground">{company.description}</p>
+              
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <Building2 className="h-4 w-4" />
+                  <span>{company.industry}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  <span>{company.location}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Calendar className="h-4 w-4" />
+                  <span>Founded {company.founded}</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Users className="h-4 w-4" />
+                  <span>{company.teamSize} employees</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <Globe className="h-4 w-4" />
+                  <span>{company.website}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="h-px bg-border" />
+
+          {/* Financial Details */}
+          <Card className="m-4 p-4 space-y-4">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Financial Overview
+            </h2>
+            
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <p className="text-muted-foreground">Pre-Valuation</p>
+                <p className="text-lg font-bold">{company.preValuation}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Post-Valuation</p>
+                <p className="text-lg font-bold">{company.postValuation}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">Funds Raised</p>
+                <p className="text-lg font-bold">{company.fundsRaised}</p>
+              </div>
+              {company.fundingGoal && (
+                <div>
+                  <p className="text-muted-foreground">Funding Goal</p>
+                  <p className="text-lg font-bold">{company.fundingGoal}</p>
+                </div>
+              )}
+            </div>
+
+            <div>
+              <p className="text-sm text-muted-foreground mb-2">Current Investors</p>
+              <div className="flex flex-wrap gap-2">
+                {company.currentInvestors.map((investor: string) => (
+                  <Badge key={investor} variant="secondary">
+                    {investor}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </Card>
+
+          {/* Pitch Deck Access */}
+          <Card className="m-4 p-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="font-semibold">Pitch Deck</p>
+                  <p className="text-xs text-muted-foreground">
+                    {company.pitchDeckPublic ? "Public" : "Private - Invitation required"}
+                  </p>
+                </div>
+              </div>
+              {company.pitchDeckPublic ? (
+                <Button variant="outline" size="sm">
+                  View Deck
+                </Button>
+              ) : (
+                <Button
+                  variant={invitationSent ? "secondary" : "outline"}
+                  size="sm"
+                  onClick={() => setInvitationSent(true)}
+                  disabled={invitationSent}
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  {invitationSent ? "Sent" : "Request Access"}
+                </Button>
+              )}
+            </div>
+          </Card>
+
+          {/* Divider */}
+          <div className="h-px bg-border mx-4" />
+
+          {/* Content Tabs */}
+          <Tabs defaultValue="photos" className="w-full">
+            <TabsList className="w-full grid grid-cols-3 mx-4" style={{ width: "calc(100% - 2rem)" }}>
+              <TabsTrigger value="photos">Photos</TabsTrigger>
+              <TabsTrigger value="videos">Videos</TabsTrigger>
+              <TabsTrigger value="reels">Reels</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="photos" className="px-4 mt-4">
+              <div className="grid grid-cols-3 gap-1">
+                {company.photos.map((photo: string, index: number) => (
+                  <div key={index} className="aspect-square">
+                    <img
+                      src={photo}
+                      alt={`${company.name} photo ${index + 1}`}
+                      className="w-full h-full object-cover rounded-sm"
+                    />
+                  </div>
+                ))}
+              </div>
+              {company.photos.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No photos available
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="videos" className="px-4 mt-4">
+              <div className="grid grid-cols-3 gap-1">
+                {company.videos.map((video: string, index: number) => (
+                  <div key={index} className="aspect-square bg-muted rounded-sm" />
+                ))}
+              </div>
+              {company.videos.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No videos available
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="reels" className="px-4 mt-4">
+              <div className="grid grid-cols-3 gap-1">
+                {company.reels.map((reel: string, index: number) => (
+                  <div key={index} className="aspect-[9/16] bg-muted rounded-sm" />
+                ))}
+              </div>
+              {company.reels.length === 0 && (
+                <div className="text-center py-12 text-muted-foreground">
+                  No reels available
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+      </main>
+
+      <BottomNav />
+    </div>
+  );
+};
+
+export default CompanyProfile;

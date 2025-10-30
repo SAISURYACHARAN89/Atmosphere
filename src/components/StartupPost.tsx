@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -6,6 +7,7 @@ import { Heart, Crown, MessageCircle, Bookmark, Share2 } from "lucide-react";
 
 interface StartupPostProps {
   company: {
+    id: string;
     name: string;
     logo: string;
     tagline: string;
@@ -22,6 +24,7 @@ interface StartupPostProps {
 }
 
 const StartupPost = ({ company }: StartupPostProps) => {
+  const navigate = useNavigate();
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [liked, setLiked] = useState(false);
   const [crowned, setCrowned] = useState(false);
@@ -43,7 +46,10 @@ const StartupPost = ({ company }: StartupPostProps) => {
   return (
     <Card className="mb-4 overflow-hidden border-border">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4">
+      <div 
+        className="flex items-center gap-3 p-4 cursor-pointer hover:bg-accent/5 transition-colors"
+        onClick={() => navigate(`/company/${company.id}`)}
+      >
         <Avatar className="h-10 w-10">
           <AvatarImage src={company.logo} alt={company.name} />
           <AvatarFallback>{company.name[0]}</AvatarFallback>

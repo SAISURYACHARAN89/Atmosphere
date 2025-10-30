@@ -4,6 +4,7 @@ import StartupPost from "@/components/StartupPost";
 
 const mockStartups = [
   {
+    id: "airbound-co",
     name: "Airbound.co",
     logo: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=100&h=100&fit=crop",
     tagline: "Revolutionary drone delivery for urban logistics",
@@ -22,6 +23,7 @@ const mockStartups = [
     postedTime: "2 hr"
   },
   {
+    id: "skyt-air",
     name: "Skyt Air",
     logo: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=100&h=100&fit=crop",
     tagline: "AI-powered air traffic management system",
@@ -39,6 +41,7 @@ const mockStartups = [
     postedTime: "4 hr"
   },
   {
+    id: "neuralhealth",
     name: "NeuralHealth",
     logo: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=100&h=100&fit=crop",
     tagline: "AI diagnostics for early disease detection",
@@ -57,6 +60,7 @@ const mockStartups = [
     postedTime: "6 hr"
   },
   {
+    id: "greencharge",
     name: "GreenCharge",
     logo: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=100&h=100&fit=crop",
     tagline: "Solar-powered EV charging network for highways",
@@ -72,6 +76,7 @@ const mockStartups = [
     postedTime: "8 hr"
   },
   {
+    id: "foodflow",
     name: "FoodFlow",
     logo: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=100&h=100&fit=crop",
     tagline: "B2B food supply chain automation platform",
@@ -90,6 +95,7 @@ const mockStartups = [
     postedTime: "12 hr"
   },
   {
+    id: "codementor-ai",
     name: "CodeMentor AI",
     logo: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=100&h=100&fit=crop",
     tagline: "AI-powered coding education and mentorship",
@@ -107,6 +113,7 @@ const mockStartups = [
     postedTime: "1 day"
   },
   {
+    id: "urbanfarm",
     name: "UrbanFarm",
     logo: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=100&h=100&fit=crop",
     tagline: "Vertical farming solutions for city buildings",

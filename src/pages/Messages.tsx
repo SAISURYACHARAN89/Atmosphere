@@ -1,7 +1,6 @@
-import { User, Plus } from "lucide-react";
+import { User, Plus, ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import BottomNav from "@/components/BottomNav";
-import TopBar from "@/components/TopBar";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 type TabType = "all" | "groups";
@@ -20,6 +19,7 @@ interface Group {
 }
 
 const Messages = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<TabType>("all");
 
   const messages: Message[] = [
@@ -83,7 +83,19 @@ const Messages = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <TopBar />
+      {/* Header with Back Button */}
+      <div className="fixed top-0 left-0 right-0 bg-background border-b border-border z-50">
+        <div className="max-w-2xl mx-auto flex items-center px-4 h-14">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-muted/50 rounded-lg transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-6 h-6 text-foreground" />
+          </button>
+          <h1 className="text-lg font-semibold ml-4">Messages</h1>
+        </div>
+      </div>
 
       {/* Tabs */}
       <div className="fixed top-14 left-0 right-0 bg-background border-b border-border z-40">
@@ -129,7 +141,7 @@ const Messages = () => {
       </div>
 
       {/* Content */}
-      <main className="pt-28 pb-16">
+      <main className="pt-28 pb-8">
         <div className="max-w-2xl mx-auto">
           {activeTab === "all" ? (
             // All Mail View
@@ -198,9 +210,6 @@ const Messages = () => {
           )}
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 };

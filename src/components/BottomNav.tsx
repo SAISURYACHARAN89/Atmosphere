@@ -38,14 +38,13 @@ const BottomNav = () => {
             <button
               key={tab.id}
               onClick={() => handleTabClick(tab)}
-              className="flex flex-col items-center justify-center gap-1 flex-1 transition-all duration-300 active:scale-95 hover:bg-muted/30 rounded-lg py-2"
+              className="flex flex-col items-center justify-center gap-1 flex-1 transition-all duration-300"
               aria-label={tab.label}
             >
               <Icon
-                className={`transition-colors duration-300 ${isActive ? 'text-white' : 'text-muted-foreground'}`}
+                className={`transition-colors duration-300 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
                 strokeWidth={isActive ? 2.5 : 2}
                 size={24}
-                fill={isActive ? "currentColor" : "none"}
               />
             </button>
           );

@@ -42,9 +42,14 @@ const BottomNav = () => {
               aria-label={tab.label}
             >
               <Icon
-                className={`transition-colors duration-300 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
+                className={`transition-colors duration-300 ${
+                  isActive 
+                    ? 'text-primary fill-primary' 
+                    : 'text-muted-foreground'
+                }`}
                 strokeWidth={isActive ? 2.5 : 2}
                 size={24}
+                fill={isActive ? "currentColor" : "none"}
               />
             </button>
           );

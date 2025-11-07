@@ -1,5 +1,7 @@
-import { User, Search, MessageCircle, ChevronLeft } from "lucide-react";
+import { User, Search, MessageCircle, ChevronLeft, Briefcase } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useState } from "react";
+import GrantsSheet from "./GrantsSheet";
 
 const TopBar = () => {
   const navigate = useNavigate();
@@ -7,6 +9,7 @@ const TopBar = () => {
   const isMessagesPage = location.pathname === '/messages';
   const isCompanyProfile = location.pathname.startsWith('/company/');
   const fromPath = location.state?.from;
+  const [grantsOpen, setGrantsOpen] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-background border-b border-border z-50">
@@ -28,6 +31,14 @@ const TopBar = () => {
               <User className="w-5 h-5 text-foreground" strokeWidth={1.5} />
             </button>
           )}
+          
+          {/* Grants Button */}
+          <button 
+            onClick={() => setGrantsOpen(true)}
+            className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors"
+          >
+            <Briefcase className="w-5 h-5 text-primary" strokeWidth={1.5} />
+          </button>
         </div>
 
         {/* Right Icons */}
@@ -55,6 +66,8 @@ const TopBar = () => {
           </button>
         </div>
       </div>
+      
+      <GrantsSheet open={grantsOpen} onOpenChange={setGrantsOpen} />
     </header>
   );
 };

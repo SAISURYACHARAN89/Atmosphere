@@ -54,7 +54,7 @@ const BottomNav = () => {
               ) : (
                 // Regular nav icons
                 <Icon
-                  className={`transition-colors duration-300 ${isActive ? 'text-primary' : 'text-muted-foreground'}`}
+                  className={`transition-colors duration-300 ${isActive ? 'text-white' : 'text-muted-foreground'}`}
                   strokeWidth={isActive ? 2.5 : 2}
                   size={24}
                   fill={isActive ? "currentColor" : "none"}

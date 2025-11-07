@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Rocket, Plus, Play, DollarSign } from "lucide-react";
+import { Home, Rocket, Plus, Film, Wallet } from "lucide-react";
 
 type TabType = "home" | "launch" | "trade" | "reels" | "assets";
 
@@ -16,8 +16,8 @@ const BottomNav = () => {
     { id: "home" as TabType, icon: Home, label: "Home", path: "/" },
     { id: "launch" as TabType, icon: Rocket, label: "Launch", path: "/launch" },
     { id: "trade" as TabType, icon: Plus, label: "Trade", path: "/trade" },
-    { id: "reels" as TabType, icon: Play, label: "Reels", path: "/reels" },
-    { id: "assets" as TabType, icon: DollarSign, label: "Assets", path: "/assets" },
+    { id: "reels" as TabType, icon: Film, label: "Reels", path: "/reels" },
+    { id: "assets" as TabType, icon: Wallet, label: "Assets", path: "/assets" },
   ];
 
   const handleTabClick = (tab: typeof tabs[0]) => {

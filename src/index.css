@@ -18,10 +18,10 @@
     --card-hover: 240 10% 99%;
     --card-foreground: 222 47% 11%;
     
-    /* Sophisticated Primary - Deep Professional Blue */
-    --primary: 221 83% 53%;
-    --primary-hover: 221 83% 48%;
-    --primary-light: 221 83% 96%;
+    /* Sophisticated Primary - Greyish Black */
+    --primary: 220 10% 25%;
+    --primary-hover: 220 10% 30%;
+    --primary-light: 220 10% 95%;
     --primary-foreground: 0 0% 100%;
     
     /* Refined Secondary System */
@@ -34,9 +34,9 @@
     --muted-hover: 240 5% 92%;
     --muted-foreground: 215 16% 47%;
     
-    /* Vibrant Accent - Trust & Energy */
-    --accent: 217 91% 60%;
-    --accent-light: 217 91% 95%;
+    /* Vibrant Accent - Greyish Black */
+    --accent: 220 10% 30%;
+    --accent-light: 220 10% 95%;
     --accent-foreground: 0 0% 100%;
     
     /* Success - Growth & Positive */
@@ -58,7 +58,7 @@
     --border: 240 6% 90%;
     --border-subtle: 240 4% 95%;
     --input: 240 6% 90%;
-    --ring: 221 83% 53%;
+    --ring: 220 10% 25%;
     
     /* Popover System */
     --popover: 0 0% 100%;
@@ -74,7 +74,7 @@
     --notification: 0 84% 60%;
     
     /* Gradient System */
-    --gradient-primary: linear-gradient(135deg, hsl(221 83% 53%), hsl(217 91% 60%));
+    --gradient-primary: linear-gradient(135deg, hsl(220 10% 25%), hsl(220 10% 35%));
     --gradient-success: linear-gradient(135deg, hsl(142 71% 45%), hsl(158 64% 52%));
     --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(240 10% 99%));
     --gradient-shine: linear-gradient(135deg, hsla(0 0% 100% / 0.1), hsla(0 0% 100% / 0));
@@ -86,7 +86,7 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-    --shadow-primary: 0 10px 25px -5px hsl(221 83% 53% / 0.2);
+    --shadow-primary: 0 10px 25px -5px hsl(220 10% 25% / 0.3);
     --shadow-success: 0 10px 25px -5px hsl(142 71% 45% / 0.2);
   }
   
@@ -99,9 +99,9 @@
     --card-hover: 222 47% 15%;
     --card-foreground: 0 0% 98%;
     
-    --primary: 221 83% 53%;
-    --primary-hover: 221 83% 58%;
-    --primary-light: 221 83% 20%;
+    --primary: 220 10% 35%;
+    --primary-hover: 220 10% 40%;
+    --primary-light: 220 10% 20%;
     --primary-foreground: 0 0% 100%;
     
     --muted: 217 19% 27%;

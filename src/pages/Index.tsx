@@ -1,11 +1,6 @@
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import StartupPost from "@/components/StartupPost";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-} from "@/components/ui/carousel";
 
 const mockStartups = [
   {
@@ -145,35 +140,20 @@ const Index = () => {
       <TopBar />
 
       {/* Main Feed Area */}
-      <main className="pt-14 pb-16 h-screen overflow-hidden">
-        <div className="max-w-2xl mx-auto h-full flex flex-col">
+      <main className="pt-14 pb-16">
+        <div className="max-w-2xl mx-auto px-4 py-6 overflow-y-auto space-y-6">
           {/* Welcome Header with Gradient */}
-          <div className="bg-gradient-card rounded-xl p-4 border border-border/50 shadow-lg mx-4 mt-4 mb-2">
-            <h1 className="text-xl font-bold text-gradient mb-1">Discover Startups</h1>
-            <p className="text-sm text-muted-foreground">Swipe to explore investment opportunities</p>
+          <div className="bg-gradient-card rounded-xl p-6 border border-border/50 shadow-lg">
+            <h1 className="text-2xl font-bold text-gradient mb-2">Discover Startups</h1>
+            <p className="text-muted-foreground">Connect with innovative companies and investment opportunities</p>
           </div>
 
-          {/* Startup Posts Carousel */}
-          <div className="flex-1 overflow-hidden px-4">
-            <Carousel 
-              opts={{
-                align: "center",
-                loop: true,
-                dragFree: false,
-              }}
-              className="h-full w-full"
-            >
-              <CarouselContent className="h-full">
-                {mockStartups.map((startup, index) => (
-                  <CarouselItem key={index} className="h-full flex items-start py-2">
-                    <div className="w-full">
-                      <StartupPost company={startup} />
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
-          </div>
+          {/* Startup Posts */}
+          {mockStartups.map((startup, index) => (
+            <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+              <StartupPost company={startup} />
+            </div>
+          ))}
         </div>
       </main>
 

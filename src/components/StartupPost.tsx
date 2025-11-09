@@ -10,16 +10,12 @@ interface StartupPostProps {
     id: string;
     name: string;
     logo: string;
-    tagline: string;
-    preValuation: string;
-    postValuation: string;
+    revenueGenerating: boolean;
     fundsRaised: string;
     currentInvestors: string[];
     lookingToDilute: boolean;
     dilutionAmount?: string;
-    fundingGoal?: string;
     images: string[];
-    postedTime: string;
   };
 }
 
@@ -44,73 +40,49 @@ const StartupPost = ({ company }: StartupPostProps) => {
   };
 
   return (
-    <Card className="mb-4 overflow-hidden border-border">
+    <Card className="overflow-hidden border-border/50 bg-card shadow-sm">
       {/* Header - Clickable */}
       <div 
-        className="flex items-center gap-3 p-4 cursor-pointer"
+        className="flex items-center justify-between p-4 cursor-pointer hover:bg-muted/30 transition-colors"
         onClick={() => navigate(`/company/${company.id}`, { state: { from: '/' } })}
       >
-        <Avatar className="h-10 w-10">
-          <AvatarImage src={company.logo} alt={company.name} />
-          <AvatarFallback>{company.name[0]}</AvatarFallback>
-        </Avatar>
-        <div className="flex-1">
-          <div className="flex items-center gap-1">
-            <h3 className="font-semibold text-sm">{company.name}</h3>
-            <ShieldCheck className="w-3.5 h-3.5 text-yellow-500 flex-shrink-0" />
-          </div>
-          <p className="text-xs text-muted-foreground">{company.postedTime}</p>
-        </div>
-      </div>
-
-      {/* Company Details - Clickable */}
-      <div 
-        className="px-4 pb-3 space-y-2 cursor-pointer"
-        onClick={() => navigate(`/company/${company.id}`, { state: { from: '/' } })}
-      >
-        <p className="text-sm font-medium">{company.tagline}</p>
-        
-        <div className="grid grid-cols-2 gap-2 text-xs">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-12 w-12 border-2 border-border/50">
+            <AvatarImage src={company.logo} alt={company.name} />
+            <AvatarFallback className="bg-muted text-foreground">{company.name[0]}</AvatarFallback>
+          </Avatar>
           <div>
-            <span className="text-muted-foreground">Pre-Valuation:</span>
-            <p className="font-semibold">{company.preValuation}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Post-Valuation:</span>
-            <p className="font-semibold">{company.postValuation}</p>
-          </div>
-          <div>
-            <span className="text-muted-foreground">Funds Raised:</span>
-            <p className="font-semibold">{company.fundsRaised}</p>
-          </div>
-          {company.fundingGoal && (
-            <div>
-              <span className="text-muted-foreground">Funding Goal:</span>
-              <p className="font-semibold">{company.fundingGoal}</p>
+            <div className="flex items-center gap-1.5">
+              <h3 className="font-semibold text-base">{company.name}</h3>
+              <ShieldCheck className="w-4 h-4 text-primary flex-shrink-0" />
             </div>
-          )}
-        </div>
-
-        <div className="text-xs">
-          <span className="text-muted-foreground">Current Investors:</span>
-          <p className="font-medium">{company.currentInvestors.join(", ")}</p>
-        </div>
-
-        {company.lookingToDilute && company.dilutionAmount && (
-          <div className="text-xs bg-accent/10 text-accent p-2 rounded">
-            <span className="font-semibold">Seeking Investment: </span>
-            {company.dilutionAmount}
+            <div className="flex items-center gap-2 mt-0.5">
+              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                company.revenueGenerating 
+                  ? 'bg-success/10 text-success' 
+                  : 'bg-muted text-muted-foreground'
+              }`}>
+                {company.revenueGenerating ? 'Revenue Generating' : 'Pre-Revenue'}
+              </span>
+            </div>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Image Carousel - NOT clickable for profile navigation */}
+      {/* Image Carousel */}
       <div className="relative bg-muted">
         <img
           src={company.images[currentImageIndex]}
           alt={`${company.name} ${currentImageIndex + 1}`}
           className="w-full aspect-[4/3] object-cover"
         />
+        
+        {/* Seeking Investment Badge */}
+        {company.lookingToDilute && company.dilutionAmount && (
+          <div className="absolute top-3 right-3 bg-primary/90 backdrop-blur-sm text-primary-foreground px-3 py-1.5 rounded-full text-xs font-semibold shadow-lg">
+            Seeking: {company.dilutionAmount}
+          </div>
+        )}
         
         {/* Image Indicators */}
         {company.images.length > 1 && (
@@ -133,21 +105,40 @@ const StartupPost = ({ company }: StartupPostProps) => {
         )}
       </div>
 
-      {/* Action Buttons - NOT clickable for profile navigation */}
+      {/* Company Info */}
       <div className="p-4 space-y-3">
-        <div className="flex items-center gap-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <span className="text-xs text-muted-foreground">Funds Raised</span>
+            <p className="font-semibold text-sm">{company.fundsRaised}</p>
+          </div>
+          <div className="space-y-1">
+            <span className="text-xs text-muted-foreground">Investors</span>
+            <p className="font-semibold text-sm">{company.currentInvestors.length}</p>
+          </div>
+        </div>
+
+        <div className="space-y-1">
+          <span className="text-xs text-muted-foreground">Current Investors</span>
+          <p className="text-sm">{company.currentInvestors.join(", ")}</p>
+        </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="px-4 pb-4 pt-0">
+        <div className="flex items-center gap-4 pt-3 border-t border-border/50">
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto p-0 hover:bg-transparent"
+            className="h-auto p-0 hover:bg-transparent group"
             onClick={(e) => {
               e.stopPropagation();
               handleLike();
             }}
           >
             <Heart
-              className={`h-6 w-6 ${
-                liked ? "fill-accent text-accent" : "text-foreground"
+              className={`h-5 w-5 transition-colors ${
+                liked ? "fill-accent text-accent" : "text-foreground group-hover:text-accent"
               }`}
             />
           </Button>
@@ -155,15 +146,15 @@ const StartupPost = ({ company }: StartupPostProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto p-0 hover:bg-transparent"
+            className="h-auto p-0 hover:bg-transparent group"
             onClick={(e) => {
               e.stopPropagation();
               handleCrown();
             }}
           >
             <Crown
-              className={`h-6 w-6 ${
-                crowned ? "fill-yellow-500 text-yellow-500" : "text-foreground"
+              className={`h-5 w-5 transition-colors ${
+                crowned ? "fill-primary text-primary" : "text-foreground group-hover:text-primary"
               }`}
             />
           </Button>
@@ -171,10 +162,10 @@ const StartupPost = ({ company }: StartupPostProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto p-0 hover:bg-transparent"
+            className="h-auto p-0 hover:bg-transparent group"
             onClick={(e) => e.stopPropagation()}
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-5 w-5 text-foreground group-hover:text-accent transition-colors" />
           </Button>
 
           <div className="flex-1" />
@@ -182,15 +173,15 @@ const StartupPost = ({ company }: StartupPostProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto p-0 hover:bg-transparent"
+            className="h-auto p-0 hover:bg-transparent group"
             onClick={(e) => {
               e.stopPropagation();
               setSaved(!saved);
             }}
           >
             <Bookmark
-              className={`h-6 w-6 ${
-                saved ? "fill-foreground" : ""
+              className={`h-5 w-5 transition-colors ${
+                saved ? "fill-foreground" : "text-foreground group-hover:fill-muted-foreground"
               }`}
             />
           </Button>
@@ -198,18 +189,18 @@ const StartupPost = ({ company }: StartupPostProps) => {
           <Button
             variant="ghost"
             size="sm"
-            className="h-auto p-0 hover:bg-transparent"
+            className="h-auto p-0 hover:bg-transparent group"
             onClick={(e) => e.stopPropagation()}
           >
-            <Share2 className="h-6 w-6" />
+            <Share2 className="h-5 w-5 text-foreground group-hover:text-accent transition-colors" />
           </Button>
         </div>
 
         {/* Counts */}
-        <div className="flex items-center gap-4 text-sm">
-          <span className="font-semibold">{likes} likes</span>
-          <span className="font-semibold text-yellow-600">{crowns} crowns</span>
-          <span className="text-muted-foreground">{comments} comments</span>
+        <div className="flex items-center gap-4 text-xs text-muted-foreground mt-3">
+          <span>{likes} likes</span>
+          <span>{crowns} crowns</span>
+          <span>{comments} comments</span>
         </div>
       </div>
     </Card>

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Home, Rocket, TrendingUp, Film, Wallet } from "lucide-react";
+import { Home, Rocket, TrendingUp, Film, User } from "lucide-react";
 
-type TabType = "home" | "launch" | "trade" | "reels" | "assets";
+type TabType = "home" | "launch" | "trade" | "reels" | "profile";
 
 const BottomNav = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const BottomNav = () => {
     { id: "launch" as TabType, icon: Rocket, label: "Launch", path: "/launch" },
     { id: "trade" as TabType, icon: TrendingUp, label: "Trade", path: "/trade" },
     { id: "reels" as TabType, icon: Film, label: "Reels", path: "/reels" },
-    { id: "assets" as TabType, icon: Wallet, label: "Assets", path: "/assets" },
+    { id: "profile" as TabType, icon: User, label: "Profile", path: "/profile" },
   ];
 
   const handleTabClick = (tab: typeof tabs[0]) => {

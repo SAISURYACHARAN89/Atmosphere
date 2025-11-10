@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import BottomNav from "@/components/BottomNav";
-import { Heart, MessageCircle, Share2, Bookmark, MoreVertical, ChevronLeft } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, MoreVertical, ChevronLeft, BadgeCheck } from "lucide-react";
 
 interface Reel {
   id: string;
@@ -16,6 +16,7 @@ interface Reel {
   shares: number;
   isLiked: boolean;
   isSaved: boolean;
+  isVerified?: boolean;
 }
 
 const mockReels: Reel[] = [
@@ -31,6 +32,7 @@ const mockReels: Reel[] = [
     shares: 89,
     isLiked: false,
     isSaved: false,
+    isVerified: true,
   },
   {
     id: "2",
@@ -44,6 +46,7 @@ const mockReels: Reel[] = [
     shares: 45,
     isLiked: true,
     isSaved: false,
+    isVerified: true,
   },
   {
     id: "3",
@@ -57,6 +60,7 @@ const mockReels: Reel[] = [
     shares: 156,
     isLiked: false,
     isSaved: true,
+    isVerified: true,
   },
   {
     id: "4",
@@ -136,10 +140,10 @@ const Reels = () => {
         {reels.map((reel, index) => (
           <div
             key={reel.id}
-            className="relative h-screen w-full snap-start snap-always flex-shrink-0"
+            className="relative h-screen w-full snap-start snap-always flex-shrink-0 flex items-center justify-center"
           >
-            {/* Video/Image background */}
-            <div className="absolute inset-0">
+            {/* Video/Image background - constrained to 9:16 on larger screens */}
+            <div className="relative w-full h-full md:w-auto md:aspect-[9/16] md:max-h-screen">
               <img
                 src={reel.videoUrl}
                 alt={reel.companyName}
@@ -147,90 +151,99 @@ const Reels = () => {
               />
               {/* Gradient overlay for text readability */}
               <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
-            </div>
+            
+            {/* Black borders on sides for larger screens */}
+            <div className="hidden md:block absolute inset-y-0 -left-full w-full bg-black -z-10" />
+            <div className="hidden md:block absolute inset-y-0 -right-full w-full bg-black -z-10" />
 
-            {/* Right side action buttons */}
-            <div className="absolute right-3 bottom-24 flex flex-col gap-6 z-10">
-              {/* Like button */}
-              <button 
-                onClick={() => handleLike(index)}
-                className="flex flex-col items-center gap-1"
-              >
-                <Heart
-                  size={32}
-                  className={`${reel.isLiked ? 'fill-red-500 text-red-500' : 'text-white'} drop-shadow-lg transition-all`}
-                  strokeWidth={1.5}
-                />
-                <span className="text-white text-xs font-medium drop-shadow-lg">
-                  {formatNumber(reel.likes)}
-                </span>
-              </button>
+              {/* Right side action buttons */}
+              <div className="absolute right-3 bottom-24 flex flex-col gap-6 z-10">
+                {/* Like button */}
+                <button 
+                  onClick={() => handleLike(index)}
+                  className="flex flex-col items-center gap-1"
+                >
+                  <Heart
+                    size={32}
+                    className={`${reel.isLiked ? 'fill-red-500 text-red-500' : 'text-white'} drop-shadow-lg transition-all`}
+                    strokeWidth={1.5}
+                  />
+                  <span className="text-white text-xs font-medium drop-shadow-lg">
+                    {formatNumber(reel.likes)}
+                  </span>
+                </button>
 
-              {/* Comment button */}
-              <button className="flex flex-col items-center gap-1">
-                <MessageCircle
-                  size={32}
-                  className="text-white drop-shadow-lg"
-                  strokeWidth={1.5}
-                />
-                <span className="text-white text-xs font-medium drop-shadow-lg">
-                  {formatNumber(reel.comments)}
-                </span>
-              </button>
+                {/* Comment button */}
+                <button className="flex flex-col items-center gap-1">
+                  <MessageCircle
+                    size={32}
+                    className="text-white drop-shadow-lg"
+                    strokeWidth={1.5}
+                  />
+                  <span className="text-white text-xs font-medium drop-shadow-lg">
+                    {formatNumber(reel.comments)}
+                  </span>
+                </button>
 
-              {/* Share button */}
-              <button className="flex flex-col items-center gap-1">
-                <Share2
-                  size={32}
-                  className="text-white drop-shadow-lg"
-                  strokeWidth={1.5}
-                />
-                <span className="text-white text-xs font-medium drop-shadow-lg">
-                  {formatNumber(reel.shares)}
-                </span>
-              </button>
+                {/* Share button */}
+                <button className="flex flex-col items-center gap-1">
+                  <Share2
+                    size={32}
+                    className="text-white drop-shadow-lg"
+                    strokeWidth={1.5}
+                  />
+                  <span className="text-white text-xs font-medium drop-shadow-lg">
+                    {formatNumber(reel.shares)}
+                  </span>
+                </button>
 
-              {/* Save button */}
-              <button onClick={() => handleSave(index)}>
-                <Bookmark
-                  size={32}
-                  className={`${reel.isSaved ? 'fill-white text-white' : 'text-white'} drop-shadow-lg transition-all`}
-                  strokeWidth={1.5}
-                />
-              </button>
+                {/* Save button */}
+                <button onClick={() => handleSave(index)}>
+                  <Bookmark
+                    size={32}
+                    className={`${reel.isSaved ? 'fill-white text-white' : 'text-white'} drop-shadow-lg transition-all`}
+                    strokeWidth={1.5}
+                  />
+                </button>
 
-              {/* More options */}
-              <button>
-                <MoreVertical
-                  size={32}
-                  className="text-white drop-shadow-lg"
-                  strokeWidth={1.5}
-                />
-              </button>
-            </div>
+                {/* More options */}
+                <button>
+                  <MoreVertical
+                    size={32}
+                    className="text-white drop-shadow-lg"
+                    strokeWidth={1.5}
+                  />
+                </button>
+              </div>
 
-            {/* Bottom company info */}
-            <div className="absolute bottom-24 left-4 right-20 z-10">
-              {/* Company profile */}
-              <button 
-                onClick={() => handleProfileClick(reel.companyId)}
-                className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity"
-              >
-                <Avatar className="w-10 h-10 border-2 border-white">
-                  <AvatarImage src={reel.companyLogo} alt={reel.companyName} />
-                  <AvatarFallback className="bg-primary text-primary-foreground">
-                    {reel.companyName[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="text-white font-semibold drop-shadow-lg">
-                  {reel.companyName}
-                </span>
-              </button>
+              {/* Bottom company info */}
+              <div className="absolute bottom-24 left-4 right-20 z-10">
+                {/* Company profile */}
+                <button 
+                  onClick={() => handleProfileClick(reel.companyId)}
+                  className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity"
+                >
+                  <Avatar className="w-10 h-10 border-2 border-white">
+                    <AvatarImage src={reel.companyLogo} alt={reel.companyName} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {reel.companyName[0]}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex items-center gap-1">
+                    <span className="text-white font-semibold drop-shadow-lg">
+                      {reel.companyName}
+                    </span>
+                    {reel.isVerified && (
+                      <BadgeCheck size={16} className="text-blue-500 fill-blue-500 drop-shadow-lg" />
+                    )}
+                  </div>
+                </button>
 
-              {/* Description */}
-              <p className="text-white text-sm drop-shadow-lg line-clamp-2">
-                {reel.description}
-              </p>
+                {/* Description */}
+                <p className="text-white text-sm drop-shadow-lg line-clamp-2">
+                  {reel.description}
+                </p>
+              </div>
             </div>
           </div>
         ))}

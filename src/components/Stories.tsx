@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Plus } from "lucide-react";
 
 const stories = [
   {
@@ -41,19 +42,34 @@ const stories = [
 
 const Stories = () => {
   return (
-    <div className="bg-card border border-border rounded-lg p-4 mb-6">
-      <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+    <div className="mb-6">
+      <div className="flex gap-5 overflow-x-auto pb-2 scrollbar-hide">
+        {/* Add Story - User's own story */}
+        <div className="flex flex-col items-center gap-2 min-w-[80px] cursor-pointer group">
+          <div className="relative">
+            <Avatar className="h-20 w-20 border-2 border-border">
+              <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop" alt="Your story" />
+              <AvatarFallback className="bg-muted text-foreground">You</AvatarFallback>
+            </Avatar>
+            <div className="absolute bottom-0 right-0 h-6 w-6 bg-primary rounded-full flex items-center justify-center border-2 border-background group-hover:scale-110 transition-transform">
+              <Plus className="h-4 w-4 text-primary-foreground" />
+            </div>
+          </div>
+          <span className="text-xs text-foreground font-medium truncate max-w-[80px]">Add Story</span>
+        </div>
+
+        {/* Other stories */}
         {stories.map((story) => (
-          <div key={story.id} className="flex flex-col items-center gap-2 min-w-[70px] cursor-pointer">
-            <div className={`p-[2px] rounded-full ${story.hasNewStory ? 'bg-gradient-to-tr from-primary via-accent to-warning' : 'bg-border'}`}>
-              <div className="p-[2px] bg-card rounded-full">
-                <Avatar className="h-14 w-14">
+          <div key={story.id} className="flex flex-col items-center gap-2 min-w-[80px] cursor-pointer">
+            <div className={`p-[2.5px] rounded-full ${story.hasNewStory ? 'bg-gradient-to-tr from-primary via-accent to-warning' : 'bg-border'}`}>
+              <div className="p-[2.5px] bg-background rounded-full">
+                <Avatar className="h-20 w-20">
                   <AvatarImage src={story.image} alt={story.name} />
                   <AvatarFallback className="bg-muted text-foreground">{story.name[0]}</AvatarFallback>
                 </Avatar>
               </div>
             </div>
-            <span className="text-xs text-muted-foreground truncate max-w-[70px]">{story.name}</span>
+            <span className="text-xs text-muted-foreground truncate max-w-[80px]">{story.name}</span>
           </div>
         ))}
       </div>

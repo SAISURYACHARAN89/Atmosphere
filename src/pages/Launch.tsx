@@ -16,7 +16,9 @@ type FilterDay = "today" | "yesterday";
 
 const industryTags = [
   "AI", "ML", "Fintech", "HealthTech", "EV", "SaaS", 
-  "E-commerce", "EdTech", "AgriTech", "Blockchain", "IoT", "CleanTech"
+  "E-commerce", "EdTech", "AgriTech", "Blockchain", "IoT", "CleanTech",
+  "FoodTech", "PropTech", "InsurTech", "LegalTech", "MarTech", "RetailTech",
+  "TravelTech", "Logistics", "Cybersecurity", "Gaming", "Media", "SpaceTech"
 ];
 
 const Launch = () => {
@@ -24,7 +26,8 @@ const Launch = () => {
   const [joinExpanded, setJoinExpanded] = useState(false);
   const [meetingType, setMeetingType] = useState<MeetingType>("public");
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
-  const [valuationRange, setValuationRange] = useState([0, 100]);
+  const [selectedFundingStages, setSelectedFundingStages] = useState<string[]>([]);
+  const [selectedRevenueStatus, setSelectedRevenueStatus] = useState<string[]>([]);
   const [filterDay, setFilterDay] = useState<FilterDay>("today");
   const [timeRemaining, setTimeRemaining] = useState({ hours: 2, minutes: 30, seconds: 45 });
   const [filterEligibility, setFilterEligibility] = useState(false);
@@ -53,6 +56,22 @@ const Launch = () => {
       prev.includes(industry) 
         ? prev.filter(i => i !== industry)
         : [...prev, industry]
+    );
+  };
+
+  const toggleFundingStage = (stage: string) => {
+    setSelectedFundingStages(prev =>
+      prev.includes(stage) 
+        ? prev.filter(s => s !== stage)
+        : [...prev, stage]
+    );
+  };
+
+  const toggleRevenueStatus = (status: string) => {
+    setSelectedRevenueStatus(prev =>
+      prev.includes(status) 
+        ? prev.filter(s => s !== status)
+        : [...prev, status]
     );
   };
 
@@ -197,21 +216,21 @@ const Launch = () => {
                   <Input id="meeting-title" placeholder="Enter meeting title" />
                 </div>
 
-                <div className="flex gap-3">
-                  <div className="flex-1 space-y-1.5">
-                    <Label htmlFor="meeting-date" className="text-xs text-muted-foreground">Date</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="meeting-date">Date</Label>
                     <Input 
                       id="meeting-date" 
                       type="date" 
-                      className="h-10 text-sm border-muted bg-muted/50 focus:bg-background" 
+                      className="h-11 font-medium" 
                     />
                   </div>
-                  <div className="flex-1 space-y-1.5">
-                    <Label htmlFor="meeting-time" className="text-xs text-muted-foreground">Time</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="meeting-time">Time</Label>
                     <Input 
                       id="meeting-time" 
                       type="time" 
-                      className="h-10 text-sm border-muted bg-muted/50 focus:bg-background" 
+                      className="h-11 font-medium" 
                     />
                   </div>
                 </div>
@@ -239,27 +258,16 @@ const Launch = () => {
                   {meetingType === "public" && (
                     <div className="space-y-4 pt-2 border-t">
                       <div className="space-y-2">
-                        <Label>Company Valuation Range (in millions)</Label>
-                        <div className="px-2">
-                          <Slider
-                            value={valuationRange}
-                            onValueChange={setValuationRange}
-                            max={100}
-                            step={5}
-                            className="w-full"
-                          />
-                          <div className="flex justify-between text-xs text-muted-foreground mt-2">
-                            <span>${valuationRange[0]}M</span>
-                            <span>${valuationRange[1]}M</span>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2">
                         <Label>Funding Stage</Label>
                         <div className="grid grid-cols-4 gap-2">
                           {["Pre-seed", "Seed", "Series A", "Series B"].map(stage => (
-                            <Button key={stage} variant="outline" size="sm" className="text-xs">
+                            <Button 
+                              key={stage} 
+                              variant={selectedFundingStages.includes(stage) ? "default" : "outline"}
+                              size="sm" 
+                              className="text-xs"
+                              onClick={() => toggleFundingStage(stage)}
+                            >
                               {stage}
                             </Button>
                           ))}
@@ -269,14 +277,26 @@ const Launch = () => {
                       <div className="space-y-2">
                         <Label>Revenue Status</Label>
                         <div className="grid grid-cols-2 gap-2">
-                          <Button variant="outline" size="sm">Generating</Button>
-                          <Button variant="outline" size="sm">Pre-revenue</Button>
+                          <Button 
+                            variant={selectedRevenueStatus.includes("Generating") ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => toggleRevenueStatus("Generating")}
+                          >
+                            Generating
+                          </Button>
+                          <Button 
+                            variant={selectedRevenueStatus.includes("Pre-revenue") ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => toggleRevenueStatus("Pre-revenue")}
+                          >
+                            Pre-revenue
+                          </Button>
                         </div>
                       </div>
 
                       <div className="space-y-2">
                         <Label>Industry Filters</Label>
-                        <ScrollArea className="h-24">
+                        <ScrollArea className="h-32">
                           <div className="flex flex-wrap gap-2">
                             {industryTags.map(industry => (
                               <button

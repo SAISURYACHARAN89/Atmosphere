@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, SlidersHorizontal, ChevronDown, ChevronUp, Trash2, Edit, Bookmark, Zap, Info, Heart } from "lucide-react";
+import { Search, X, SlidersHorizontal, ChevronDown, ChevronUp, Trash2, Edit, Bookmark, Zap, Heart } from "lucide-react";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import { Input } from "@/components/ui/input";
@@ -38,6 +38,7 @@ interface ScanAd {
   postMoneyValuation: string;
   minRange: number;
   maxRange: number;
+  companyPhotos: string[];
   isSponsored?: boolean;
 }
 
@@ -66,6 +67,11 @@ const scanAds: ScanAd[] = [
     postMoneyValuation: "₹50,00,000",
     minRange: 15,
     maxRange: 40,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1508614999368-9260051292e5?w=400&h=300&fit=crop"
+    ],
     isSponsored: true
   },
   { 
@@ -81,7 +87,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹80,00,000",
     postMoneyValuation: "₹1,20,00,000",
     minRange: 10,
-    maxRange: 35
+    maxRange: 35,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 3, 
@@ -96,7 +107,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹60,00,000",
     postMoneyValuation: "₹90,00,000",
     minRange: 20,
-    maxRange: 50
+    maxRange: 50,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1551434678-e076c223a692?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 4, 
@@ -112,6 +128,11 @@ const scanAds: ScanAd[] = [
     postMoneyValuation: "₹70,00,000",
     minRange: 12,
     maxRange: 30,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=400&h=300&fit=crop"
+    ],
     isSponsored: true
   },
   { 
@@ -127,7 +148,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹55,00,000",
     postMoneyValuation: "₹85,00,000",
     minRange: 18,
-    maxRange: 45
+    maxRange: 45,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 6, 
@@ -142,7 +168,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹70,00,000",
     postMoneyValuation: "₹1,05,00,000",
     minRange: 25,
-    maxRange: 55
+    maxRange: 55,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 7, 
@@ -157,7 +188,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹42,00,000",
     postMoneyValuation: "₹65,00,000",
     minRange: 15,
-    maxRange: 38
+    maxRange: 38,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 8, 
@@ -172,7 +208,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹95,00,000",
     postMoneyValuation: "₹1,40,00,000",
     minRange: 20,
-    maxRange: 48
+    maxRange: 48,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1504439904031-93ded9f93e4e?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 9, 
@@ -187,7 +228,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹52,00,000",
     postMoneyValuation: "₹78,00,000",
     minRange: 12,
-    maxRange: 35
+    maxRange: 35,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1639322537228-f710d846310a?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1558403194-611308249627?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=400&h=300&fit=crop"
+    ]
   },
   { 
     id: 10, 
@@ -202,7 +248,12 @@ const scanAds: ScanAd[] = [
     preMoneyValuation: "₹48,00,000",
     postMoneyValuation: "₹72,00,000",
     minRange: 16,
-    maxRange: 42
+    maxRange: 42,
+    companyPhotos: [
+      "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=300&fit=crop",
+      "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=400&h=300&fit=crop"
+    ]
   },
 ];
 
@@ -435,11 +486,12 @@ const Trade = () => {
               {scanAds.map((ad) => (
                 <div
                   key={ad.id}
-                  className={`border rounded-xl p-4 transition-all ${
+                  className={`border rounded-xl p-4 transition-all cursor-pointer ${
                     ad.isSponsored
                       ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg ring-2 ring-primary/20'
                       : 'border-border bg-card hover:bg-muted/50'
                   }`}
+                  onClick={() => setExpandedInfoId(expandedInfoId === ad.id ? null : ad.id)}
                 >
                   {/* Sponsored Badge */}
                   {ad.isSponsored && (
@@ -454,7 +506,12 @@ const Trade = () => {
                   {/* Main Content */}
                   <div className="flex items-start gap-3">
                     {/* Profile Pic - Clickable */}
-                    <button onClick={() => navigate('/profile')}>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate('/profile');
+                      }}
+                    >
                       <Avatar className={ad.isSponsored ? "w-14 h-14 ring-2 ring-primary" : "w-12 h-12"}>
                         <AvatarImage src={ad.avatar} />
                         <AvatarFallback className="bg-muted text-foreground font-semibold">
@@ -468,7 +525,10 @@ const Trade = () => {
                       {/* Name with Type Badge - Clickable */}
                       <div className="flex items-center gap-2">
                         <button 
-                          onClick={() => navigate('/profile')}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/profile');
+                          }}
                           className="font-semibold text-foreground hover:text-primary transition-colors text-left"
                         >
                           {ad.name}
@@ -481,26 +541,33 @@ const Trade = () => {
                         </Badge>
                       </div>
 
-                      {/* Company Name with Info Icon - Clickable */}
-                      <div className="flex items-center gap-1.5 mt-0.5">
-                        <button 
-                          onClick={() => navigate('/company-profile')}
-                          className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                        >
-                          {ad.companyName}
-                        </button>
-                        <button 
-                          onClick={() => setExpandedInfoId(expandedInfoId === ad.id ? null : ad.id)}
-                          className="p-0.5 hover:bg-muted rounded-full transition-colors"
-                        >
-                          <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                        </button>
-                      </div>
+                      {/* Company Name - Clickable */}
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate('/company-profile');
+                        }}
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
+                      >
+                        {ad.companyName}
+                      </button>
 
-                      {/* Expanded Tagline */}
+                      {/* Expanded Tagline and Photos */}
                       {expandedInfoId === ad.id && (
-                        <div className="mt-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
-                          {ad.companyTagline}
+                        <div className="mt-3 space-y-3">
+                          <div className="text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
+                            {ad.companyTagline}
+                          </div>
+                          <div className="grid grid-cols-3 gap-2">
+                            {ad.companyPhotos.map((photo, index) => (
+                              <img 
+                                key={index}
+                                src={photo} 
+                                alt={`${ad.companyName} ${index + 1}`}
+                                className="w-full h-20 object-cover rounded-md border border-border"
+                              />
+                            ))}
+                          </div>
                         </div>
                       )}
 
@@ -530,7 +597,10 @@ const Trade = () => {
                     {/* Action Buttons */}
                     <div className="flex flex-col gap-2">
                       <button
-                        onClick={() => handleToggleSaveScanAd(ad.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleSaveScanAd(ad.id);
+                        }}
                         className="p-2 hover:bg-background/80 rounded-lg transition-colors"
                         title={savedScanAds.includes(ad.id) ? "Unsave" : "Save"}
                       >
@@ -539,6 +609,7 @@ const Trade = () => {
                         />
                       </button>
                       <button
+                        onClick={(e) => e.stopPropagation()}
                         className="p-2 hover:bg-background/80 rounded-lg transition-colors"
                         title="Show interest"
                       >
@@ -837,28 +908,13 @@ const Trade = () => {
                             {seller.name}
                           </button>
 
-                          {/* Company Name with Info Icon - Clickable */}
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <button 
-                              onClick={() => navigate('/company-profile')}
-                              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {seller.companyName}
-                            </button>
-                            <button 
-                              onClick={() => setExpandedInfoId(expandedInfoId === seller.id ? null : seller.id)}
-                              className="p-0.5 hover:bg-muted rounded-full transition-colors"
-                            >
-                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                            </button>
-                          </div>
-
-                          {/* Expanded Tagline */}
-                          {expandedInfoId === seller.id && (
-                            <div className="mt-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
-                              {seller.companyTagline}
-                            </div>
-                          )}
+                          {/* Company Name - Clickable */}
+                          <button 
+                            onClick={() => navigate('/company-profile')}
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
+                          >
+                            {seller.companyName}
+                          </button>
 
                           {/* Revenue and Funds Raised */}
                           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
@@ -942,28 +998,13 @@ const Trade = () => {
                             {seller.name}
                           </button>
 
-                          {/* Company Name with Info Icon - Clickable */}
-                          <div className="flex items-center gap-1.5 mt-0.5">
-                            <button 
-                              onClick={() => navigate('/company-profile')}
-                              className="text-sm text-muted-foreground hover:text-primary transition-colors"
-                            >
-                              {seller.companyName}
-                            </button>
-                            <button 
-                              onClick={() => setExpandedInfoId(expandedInfoId === seller.id ? null : seller.id)}
-                              className="p-0.5 hover:bg-muted rounded-full transition-colors"
-                            >
-                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                            </button>
-                          </div>
-
-                          {/* Expanded Tagline */}
-                          {expandedInfoId === seller.id && (
-                            <div className="mt-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
-                              {seller.companyTagline}
-                            </div>
-                          )}
+                          {/* Company Name - Clickable */}
+                          <button 
+                            onClick={() => navigate('/company-profile')}
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
+                          >
+                            {seller.companyName}
+                          </button>
 
                           {/* Revenue and Funds Raised */}
                           <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">

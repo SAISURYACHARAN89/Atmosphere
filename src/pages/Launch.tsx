@@ -28,11 +28,30 @@ const Launch = () => {
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedFundingStages, setSelectedFundingStages] = useState<string[]>([]);
   const [selectedRevenueStatus, setSelectedRevenueStatus] = useState<string[]>([]);
+  const [filterDay, setFilterDay] = useState<FilterDay>("today");
+  const [timeRemaining, setTimeRemaining] = useState({ hours: 2, minutes: 30, seconds: 45 });
   const [filterEligibility, setFilterEligibility] = useState(false);
   const [filterMeetingIndustries, setFilterMeetingIndustries] = useState<string[]>([]);
   const [startupTypeFilters, setStartupTypeFilters] = useState<string[]>([]);
   const [startupIndustryFilters, setStartupIndustryFilters] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (filterDay === "today") {
+      const timer = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev.seconds > 0) {
+            return { ...prev, seconds: prev.seconds - 1 };
+          } else if (prev.minutes > 0) {
+            return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
+          } else if (prev.hours > 0) {
+            return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
+          }
+          return prev;
+        });
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [filterDay]);
 
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries(prev =>
@@ -493,129 +512,175 @@ const Launch = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-semibold">Startup Launches</h2>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <Filter className="w-5 h-5" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80">
-                  <div className="space-y-4">
-                    <h4 className="font-semibold">Filters</h4>
-                    
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Type</Label>
-                      <div className="flex flex-wrap gap-2">
-                        {startupTypes.map(type => (
-                          <button
-                            key={type}
-                            onClick={() => toggleStartupType(type)}
-                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                              startupTypeFilters.includes(type)
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-foreground hover:bg-muted/80"
-                            }`}
-                          >
-                            {type}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium">Main Filters</Label>
-                      <ScrollArea className="h-32">
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => setFilterDay(filterDay === "today" ? "yesterday" : "today")}
+                  className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+                >
+                  {filterDay === "today" ? "Today" : "Yesterday"}
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="ghost" size="icon">
+                      <Filter className="w-5 h-5" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <div className="space-y-4">
+                      <h4 className="font-semibold">Filters</h4>
+                      
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Type</Label>
                         <div className="flex flex-wrap gap-2">
-                          {startupMainFilters.map(industry => (
+                          {startupTypes.map(type => (
                             <button
-                              key={industry}
-                              onClick={() => toggleStartupIndustry(industry)}
+                              key={type}
+                              onClick={() => toggleStartupType(type)}
                               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
-                                startupIndustryFilters.includes(industry)
+                                startupTypeFilters.includes(type)
                                   ? "bg-primary text-primary-foreground"
                                   : "bg-muted text-foreground hover:bg-muted/80"
                               }`}
                             >
-                              {industry}
+                              {type}
                             </button>
                           ))}
                         </div>
-                      </ScrollArea>
-                    </div>
+                      </div>
 
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="w-full"
-                      onClick={() => {
-                        setStartupTypeFilters([]);
-                        setStartupIndustryFilters([]);
-                      }}
-                    >
-                      Clear Filters
-                    </Button>
-                  </div>
-                </PopoverContent>
-              </Popover>
+                      <div className="space-y-2">
+                        <Label className="text-sm font-medium">Main Filters</Label>
+                        <ScrollArea className="h-32">
+                          <div className="flex flex-wrap gap-2">
+                            {startupMainFilters.map(industry => (
+                              <button
+                                key={industry}
+                                onClick={() => toggleStartupIndustry(industry)}
+                                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                                  startupIndustryFilters.includes(industry)
+                                    ? "bg-primary text-primary-foreground"
+                                    : "bg-muted text-foreground hover:bg-muted/80"
+                                }`}
+                              >
+                                {industry}
+                              </button>
+                            ))}
+                          </div>
+                        </ScrollArea>
+                      </div>
+
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="w-full"
+                        onClick={() => {
+                          setStartupTypeFilters([]);
+                          setStartupIndustryFilters([]);
+                        }}
+                      >
+                        Clear Filters
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              {filteredStartups.length > 0 ? (
-                filteredStartups.map(startup => (
-                  <div key={startup.id} className="bg-card border rounded-lg p-4 shadow-sm space-y-3">
-                    <div className="flex items-start gap-3">
-                      <div className={`w-12 h-12 rounded-lg ${startup.color} flex items-center justify-center text-white font-bold flex-shrink-0`}>
-                        {startup.initials}
+            {filterDay === "today" ? (
+              <div className="bg-card border rounded-lg p-6 shadow-sm">
+                <div className="text-center space-y-6 py-8">
+                  <div>
+                    <h3 className="text-lg font-semibold mb-2">Next Launch Starting In</h3>
+                    <p className="text-sm text-muted-foreground">Airbound Pvt. Ltd. - Drone Delivery Platform</p>
+                  </div>
+                  
+                  <div className="flex justify-center gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-20 h-20 rounded-lg bg-primary/10 border-2 border-primary flex items-center justify-center">
+                        <span className="text-3xl font-bold text-primary">{String(timeRemaining.hours).padStart(2, '0')}</span>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-base">{startup.name}</h3>
-                        <p className="text-sm text-muted-foreground mt-1">{startup.tagline}</p>
-                      </div>
+                      <span className="text-xs text-muted-foreground mt-2">Hours</span>
                     </div>
-                    
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
-                        {startup.type}
-                      </span>
-                      {startup.industries.map(ind => (
-                        <span key={ind} className="px-2 py-1 bg-muted rounded-full text-xs">
-                          {ind}
-                        </span>
-                      ))}
+                    <div className="flex flex-col items-center">
+                      <div className="w-20 h-20 rounded-lg bg-primary/10 border-2 border-primary flex items-center justify-center">
+                        <span className="text-3xl font-bold text-primary">{String(timeRemaining.minutes).padStart(2, '0')}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground mt-2">Minutes</span>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-muted-foreground" />
-                        <span className="text-muted-foreground">Valuation:</span>
-                        <span className="font-medium">{startup.valuation}</span>
+                    <div className="flex flex-col items-center">
+                      <div className="w-20 h-20 rounded-lg bg-primary/10 border-2 border-primary flex items-center justify-center">
+                        <span className="text-3xl font-bold text-primary">{String(timeRemaining.seconds).padStart(2, '0')}</span>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Revenue:</span>
-                        <span className="font-medium">{startup.revenue}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                      <div>
-                        <span className="text-muted-foreground">Funding Rounds: </span>
-                        <span className="font-medium">{startup.fundingRounds}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-muted-foreground">Looking for Funds:</span>
-                        <span className={`font-medium ${startup.lookingForFunds ? 'text-green-600' : 'text-muted-foreground'}`}>
-                          {startup.lookingForFunds ? "Yes" : "No"}
-                        </span>
-                      </div>
+                      <span className="text-xs text-muted-foreground mt-2">Seconds</span>
                     </div>
                   </div>
-                ))
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  No startups match your filters
+
+                  <div className="pt-4 border-t">
+                    <p className="text-sm text-muted-foreground mb-3">3 more launches scheduled today</p>
+                    <Button className="w-full">Set Reminder</Button>
+                  </div>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {filteredStartups.length > 0 ? (
+                  filteredStartups.map(startup => (
+                    <div key={startup.id} className="bg-card border rounded-lg p-4 shadow-sm space-y-3">
+                      <div className="flex items-start gap-3">
+                        <div className={`w-12 h-12 rounded-lg ${startup.color} flex items-center justify-center text-white font-bold flex-shrink-0`}>
+                          {startup.initials}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-semibold text-base">{startup.name}</h3>
+                          <p className="text-sm text-muted-foreground mt-1">{startup.tagline}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2">
+                        <span className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs font-medium">
+                          {startup.type}
+                        </span>
+                        {startup.industries.map(ind => (
+                          <span key={ind} className="px-2 py-1 bg-muted rounded-full text-xs">
+                            {ind}
+                          </span>
+                        ))}
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <TrendingUp className="w-4 h-4 text-muted-foreground" />
+                          <span className="text-muted-foreground">Valuation:</span>
+                          <span className="font-medium">{startup.valuation}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Revenue:</span>
+                          <span className="font-medium">{startup.revenue}</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
+                        <div>
+                          <span className="text-muted-foreground">Funding Rounds: </span>
+                          <span className="font-medium">{startup.fundingRounds}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-muted-foreground">Looking for Funds:</span>
+                          <span className={`font-medium ${startup.lookingForFunds ? 'text-green-600' : 'text-muted-foreground'}`}>
+                            {startup.lookingForFunds ? "Yes" : "No"}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No startups match your filters
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </main>

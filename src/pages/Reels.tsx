@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import BottomNav from "@/components/BottomNav";
-import { Heart, MessageCircle, Share2, Bookmark, MoreVertical, ChevronLeft, Crown } from "lucide-react";
+import { Heart, MessageCircle, Share2, Bookmark, MoreVertical, ChevronLeft } from "lucide-react";
 
 interface Reel {
   id: string;
@@ -16,7 +16,6 @@ interface Reel {
   shares: number;
   isLiked: boolean;
   isSaved: boolean;
-  isFeatured?: boolean;
 }
 
 const mockReels: Reel[] = [
@@ -32,7 +31,6 @@ const mockReels: Reel[] = [
     shares: 89,
     isLiked: false,
     isSaved: false,
-    isFeatured: true,
   },
   {
     id: "2",
@@ -59,7 +57,6 @@ const mockReels: Reel[] = [
     shares: 156,
     isLiked: false,
     isSaved: true,
-    isFeatured: true,
   },
   {
     id: "4",
@@ -154,17 +151,6 @@ const Reels = () => {
 
             {/* Right side action buttons */}
             <div className="absolute right-3 bottom-24 flex flex-col gap-6 z-10">
-              {/* Featured Crown */}
-              {reel.isFeatured && (
-                <div className="flex flex-col items-center gap-1">
-                  <Crown
-                    size={32}
-                    className="text-yellow-400 fill-yellow-400 drop-shadow-lg"
-                    strokeWidth={1.5}
-                  />
-                </div>
-              )}
-
               {/* Like button */}
               <button 
                 onClick={() => handleLike(index)}

@@ -8,6 +8,7 @@ const TopBar = () => {
   const location = useLocation();
   const isMessagesPage = location.pathname === '/messages';
   const isCompanyProfile = location.pathname.startsWith('/company/');
+  const isTradePage = location.pathname === '/trade';
   const fromPath = location.state?.from;
   const [grantsOpen, setGrantsOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -33,7 +34,7 @@ const TopBar = () => {
   }, [lastScrollY]);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-b border-border/50 z-50 shadow-sm transition-transform duration-300 ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+    <header className={`fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-b border-border/50 z-50 shadow-sm transition-transform duration-300 ${isVisible || isTradePage ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="max-w-2xl mx-auto flex items-center justify-between px-4 h-14">
         {/* Left side - Back Button */}
         <div className="flex items-center gap-3">

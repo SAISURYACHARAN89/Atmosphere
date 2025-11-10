@@ -48,7 +48,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 1, 
     name: "Rajesh Mukarji", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=12",
     companyName: "Airbound Pvt Ltd",
     preMoneyValuation: "₹35,00,000",
     postMoneyValuation: "₹50,00,000",
@@ -59,7 +59,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 2, 
     name: "Joshua Paul", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=33",
     companyName: "Zlyft Autonomy Pvt Ltd",
     preMoneyValuation: "₹80,00,000",
     postMoneyValuation: "₹1,20,00,000",
@@ -69,7 +69,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 3, 
     name: "Priya Sharma", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=47",
     companyName: "TechFlow Solutions",
     preMoneyValuation: "₹60,00,000",
     postMoneyValuation: "₹90,00,000",
@@ -79,7 +79,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 4, 
     name: "Alex Chen", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=68",
     companyName: "CloudSync Systems",
     preMoneyValuation: "₹45,00,000",
     postMoneyValuation: "₹70,00,000",
@@ -90,7 +90,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 5, 
     name: "Sarah Williams", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=25",
     companyName: "GreenTech Innovations",
     preMoneyValuation: "₹55,00,000",
     postMoneyValuation: "₹85,00,000",
@@ -100,7 +100,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 6, 
     name: "Michael Rodriguez", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=52",
     companyName: "FinNext Solutions",
     preMoneyValuation: "₹70,00,000",
     postMoneyValuation: "₹1,05,00,000",
@@ -110,7 +110,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 7, 
     name: "Aisha Patel", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=38",
     companyName: "EduTech Pro",
     preMoneyValuation: "₹42,00,000",
     postMoneyValuation: "₹65,00,000",
@@ -120,7 +120,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 8, 
     name: "David Kim", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=61",
     companyName: "HealthSync AI",
     preMoneyValuation: "₹95,00,000",
     postMoneyValuation: "₹1,40,00,000",
@@ -130,7 +130,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 9, 
     name: "Emma Thompson", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=29",
     companyName: "LogiChain Systems",
     preMoneyValuation: "₹52,00,000",
     postMoneyValuation: "₹78,00,000",
@@ -140,7 +140,7 @@ const scanAds: ScanAd[] = [
   { 
     id: 10, 
     name: "Arjun Mehta", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=15",
     companyName: "FoodTech Ventures",
     preMoneyValuation: "₹48,00,000",
     postMoneyValuation: "₹72,00,000",
@@ -153,7 +153,7 @@ const sellers = [
   { 
     id: 1, 
     name: "Rajesh Mukarji", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=12",
     companyName: "Airbound Pvt Ltd",
     preMoneyValuation: "₹35,00,000",
     postMoneyValuation: "₹50,00,000",
@@ -163,7 +163,7 @@ const sellers = [
   { 
     id: 2, 
     name: "Joshua Paul", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=33",
     companyName: "Zlyft Autonomy Pvt Ltd",
     preMoneyValuation: "₹80,00,000",
     postMoneyValuation: "₹1,20,00,000",
@@ -173,7 +173,7 @@ const sellers = [
   { 
     id: 3, 
     name: "Priya Sharma", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=47",
     companyName: "TechFlow Solutions",
     preMoneyValuation: "₹60,00,000",
     postMoneyValuation: "₹90,00,000",
@@ -183,7 +183,7 @@ const sellers = [
   { 
     id: 4, 
     name: "Alex Chen", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=68",
     companyName: "CloudSync Systems",
     preMoneyValuation: "₹45,00,000",
     postMoneyValuation: "₹70,00,000",
@@ -193,7 +193,7 @@ const sellers = [
   { 
     id: 5, 
     name: "Sarah Williams", 
-    avatar: "",
+    avatar: "https://i.pravatar.cc/150?img=25",
     companyName: "GreenTech Innovations",
     preMoneyValuation: "₹55,00,000",
     postMoneyValuation: "₹85,00,000",
@@ -296,24 +296,36 @@ const Trade = () => {
         <div className="sticky top-14 z-40 flex items-center justify-between gap-2 px-4 py-3 border-b border-border bg-background/95 backdrop-blur-sm">
           <Button 
             size="sm" 
-            variant={activeView === 'buy' ? 'default' : 'secondary'}
-            className="h-8 flex-1 text-xs font-semibold"
+            variant="outline"
+            className={`h-8 flex-1 text-xs font-semibold transition-all ${
+              activeView === 'buy' 
+                ? 'bg-primary/10 border-primary/50 hover:bg-primary/15' 
+                : 'bg-muted hover:bg-muted/80'
+            }`}
             onClick={() => setActiveView('buy')}
           >
             BUY
           </Button>
           <Button 
             size="sm" 
-            variant={activeView === 'scan' ? 'default' : 'secondary'}
-            className="h-8 flex-1 text-xs font-semibold"
+            variant="outline"
+            className={`h-8 flex-1 text-xs font-semibold transition-all ${
+              activeView === 'scan' 
+                ? 'bg-primary/10 border-primary/50 hover:bg-primary/15' 
+                : 'bg-muted hover:bg-muted/80'
+            }`}
             onClick={() => setActiveView('scan')}
           >
             SCAN
           </Button>
           <Button 
             size="sm" 
-            variant={activeView === 'sell' ? 'default' : 'secondary'}
-            className="h-8 flex-1 text-xs font-semibold"
+            variant="outline"
+            className={`h-8 flex-1 text-xs font-semibold transition-all ${
+              activeView === 'sell' 
+                ? 'bg-primary/10 border-primary/50 hover:bg-primary/15' 
+                : 'bg-muted hover:bg-muted/80'
+            }`}
             onClick={() => setActiveView('sell')}
           >
             SELL

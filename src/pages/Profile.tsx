@@ -7,14 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Menu, Eye, Bookmark, Users, MapPin, TrendingUp, TrendingDown, DollarSign, Target, Activity, Calendar, ArrowUpRight, ArrowDownRight, Wallet, LogOut, UserPen, BarChart3 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Menu, MapPin, TrendingUp, TrendingDown, DollarSign, Target, Activity, Calendar, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react";
 
 interface Investment {
   id: string;
@@ -31,7 +24,6 @@ interface Investment {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("portfolio");
 
   // Mock investor data
   const investorData = {
@@ -173,31 +165,13 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                    >
-                      <Menu className="h-5 w-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuItem onClick={() => setActiveTab("insights")}>
-                      <BarChart3 className="h-4 w-4 mr-2" />
-                      Insights
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => {/* Edit profile logic */}}>
-                      <UserPen className="h-4 w-4 mr-2" />
-                      Edit Profile
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive" onClick={() => {/* Logout logic */}}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Log Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate("/settings")}
+                >
+                  <Menu className="h-5 w-5" />
+                </Button>
               </div>
 
               <p className="text-sm text-foreground/80 leading-relaxed mb-4">
@@ -236,67 +210,11 @@ const Profile = () => {
 
           {/* Tabbed Content Section */}
           <div className="mt-6">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="w-full grid grid-cols-3 mb-6">
-                <TabsTrigger value="insights">Insights</TabsTrigger>
+            <Tabs defaultValue="portfolio" className="w-full">
+              <TabsList className="w-full grid grid-cols-2 mb-6">
                 <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
                 <TabsTrigger value="criteria">Criteria</TabsTrigger>
               </TabsList>
-
-              {/* Insights Tab */}
-              <TabsContent value="insights" className="space-y-4 px-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-primary" />
-                      Activity Overview
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="flex justify-between items-center py-2 border-b">
-                      <span className="text-sm text-muted-foreground">Profile Reach</span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {formatNumber(investorData.stats.profileViews)} views
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center py-2 border-b">
-                      <span className="text-sm text-muted-foreground">Engagement Rate</span>
-                      <span className="text-sm font-semibold text-foreground">8.4%</span>
-                    </div>
-                    <div className="flex justify-between items-center py-2">
-                      <span className="text-sm text-muted-foreground">Saved Opportunities</span>
-                      <span className="text-sm font-semibold text-foreground">
-                        {investorData.stats.postsSaved} startups
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="text-base flex items-center gap-2">
-                      <Eye className="h-4 w-4 text-primary" />
-                      Recent Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-3">
-                      <div className="text-sm">
-                        <p className="text-foreground font-medium">Viewed 12 startup profiles</p>
-                        <p className="text-xs text-muted-foreground">Last 7 days</p>
-                      </div>
-                      <div className="text-sm">
-                        <p className="text-foreground font-medium">Saved 5 opportunities</p>
-                        <p className="text-xs text-muted-foreground">Last 7 days</p>
-                      </div>
-                      <div className="text-sm">
-                        <p className="text-foreground font-medium">Connected with 8 founders</p>
-                        <p className="text-xs text-muted-foreground">Last 30 days</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
 
               {/* Portfolio Tab */}
               <TabsContent value="portfolio" className="space-y-4 px-4">

@@ -7,7 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Settings, Eye, Bookmark, Users, MapPin, TrendingUp, TrendingDown, DollarSign, Target, Activity, Calendar, ArrowUpRight, ArrowDownRight, Wallet } from "lucide-react";
+import { Menu, Eye, Bookmark, Users, MapPin, TrendingUp, TrendingDown, DollarSign, Target, Activity, Calendar, ArrowUpRight, ArrowDownRight, Wallet, LogOut, UserPen, BarChart3 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Investment {
   id: string;
@@ -24,6 +31,7 @@ interface Investment {
 
 const Profile = () => {
   const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState("portfolio");
 
   // Mock investor data
   const investorData = {
@@ -165,22 +173,36 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => {/* Navigate to settings */}}
-                >
-                  <Settings className="h-5 w-5" />
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <Menu className="h-5 w-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem onClick={() => setActiveTab("insights")}>
+                      <BarChart3 className="h-4 w-4 mr-2" />
+                      Insights
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => {/* Edit profile logic */}}>
+                      <UserPen className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem className="text-destructive" onClick={() => {/* Logout logic */}}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Log Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <p className="text-sm text-foreground/80 leading-relaxed mb-4">
                 {investorData.bio}
               </p>
-
-              <Button variant="outline" className="w-full">
-                Edit Profile
-              </Button>
             </div>
 
             {/* Stats Bar */}
@@ -214,7 +236,7 @@ const Profile = () => {
 
           {/* Tabbed Content Section */}
           <div className="mt-6">
-            <Tabs defaultValue="insights" className="w-full">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
               <TabsList className="w-full grid grid-cols-3 mb-6">
                 <TabsTrigger value="insights">Insights</TabsTrigger>
                 <TabsTrigger value="portfolio">Portfolio</TabsTrigger>

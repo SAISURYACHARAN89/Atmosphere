@@ -154,6 +154,17 @@ const Reels = () => {
 
             {/* Right side action buttons */}
             <div className="absolute right-3 bottom-24 flex flex-col gap-6 z-10">
+              {/* Featured Crown */}
+              {reel.isFeatured && (
+                <div className="flex flex-col items-center gap-1">
+                  <Crown
+                    size={32}
+                    className="text-yellow-400 fill-yellow-400 drop-shadow-lg"
+                    strokeWidth={1.5}
+                  />
+                </div>
+              )}
+
               {/* Like button */}
               <button 
                 onClick={() => handleLike(index)}
@@ -219,24 +230,14 @@ const Reels = () => {
                 onClick={() => handleProfileClick(reel.companyId)}
                 className="flex items-center gap-3 mb-3 hover:opacity-80 transition-opacity"
               >
-                <div className="relative">
-                  <Avatar className="w-10 h-10 border-2 border-white">
-                    <AvatarImage src={reel.companyLogo} alt={reel.companyName} />
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {reel.companyName[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  {reel.isFeatured && (
-                    <div className="absolute -top-1 -right-1 bg-yellow-400 rounded-full p-0.5">
-                      <Crown className="w-3 h-3 text-yellow-900 fill-yellow-900" />
-                    </div>
-                  )}
-                </div>
-                <span className="text-white font-semibold drop-shadow-lg flex items-center gap-1.5">
+                <Avatar className="w-10 h-10 border-2 border-white">
+                  <AvatarImage src={reel.companyLogo} alt={reel.companyName} />
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {reel.companyName[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="text-white font-semibold drop-shadow-lg">
                   {reel.companyName}
-                  {reel.isFeatured && (
-                    <Crown className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  )}
                 </span>
               </button>
 

@@ -284,7 +284,7 @@ const Search = () => {
       
       <main className="pt-14 px-4 max-w-2xl mx-auto">
         {/* Search Bar */}
-        <div className="mt-6 mb-4">
+        <div className="mt-6 mb-4 relative">
           <div className="relative">
             <SearchIcon 
               className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground cursor-pointer"
@@ -510,10 +510,6 @@ const Search = () => {
         {/* For You Feed - Default View */}
         {!searchQuery && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-foreground">For You</h2>
-            </div>
-            
             <div className="grid grid-cols-3 gap-2">
               {forYouContent.map((content) => (
                 <div 

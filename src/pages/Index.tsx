@@ -2,6 +2,7 @@ import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import StartupPost from "@/components/StartupPost";
 import Stories from "@/components/Stories";
+import { Separator } from "@/components/ui/separator";
 
 const mockStartups = [
   {
@@ -133,8 +134,13 @@ const Index = () => {
 
           {/* Startup Posts */}
           {mockStartups.map((startup, index) => (
-            <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
-              <StartupPost company={startup} />
+            <div key={index}>
+              <div className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
+                <StartupPost company={startup} />
+              </div>
+              {index < mockStartups.length - 1 && (
+                <Separator className="my-6" />
+              )}
             </div>
           ))}
         </div>

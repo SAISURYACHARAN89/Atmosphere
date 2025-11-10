@@ -41,7 +41,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
   };
 
   return (
-    <Card className="overflow-hidden border-border bg-card shadow-lg">
+    <Card className="overflow-hidden border-0 bg-card shadow-none">
       {/* Header - Clickable */}
       <div 
         className="flex items-center justify-between p-4 cursor-pointer hover:bg-card-hover transition-colors"

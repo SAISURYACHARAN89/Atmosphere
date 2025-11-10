@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+
 
 interface ActiveTrade {
   id: number;
@@ -30,6 +30,8 @@ interface ScanAd {
   avatar: string;
   companyName: string;
   companyTagline: string;
+  revenue: string;
+  fundsRaised: string;
   preMoneyValuation: string;
   postMoneyValuation: string;
   minRange: number;
@@ -54,6 +56,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=12",
     companyName: "Airbound Pvt Ltd",
     companyTagline: "Revolutionizing logistics with AI-powered drone delivery solutions",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹25,00,000",
     preMoneyValuation: "₹35,00,000",
     postMoneyValuation: "₹50,00,000",
     minRange: 15,
@@ -66,6 +70,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=33",
     companyName: "Zlyft Autonomy Pvt Ltd",
     companyTagline: "Building next-gen autonomous vehicles for urban transportation",
+    revenue: "Pre Revenue",
+    fundsRaised: "₹15,00,000",
     preMoneyValuation: "₹80,00,000",
     postMoneyValuation: "₹1,20,00,000",
     minRange: 10,
@@ -77,6 +83,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=47",
     companyName: "TechFlow Solutions",
     companyTagline: "Streamlining enterprise workflows with intelligent automation",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹40,00,000",
     preMoneyValuation: "₹60,00,000",
     postMoneyValuation: "₹90,00,000",
     minRange: 20,
@@ -88,6 +96,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=68",
     companyName: "CloudSync Systems",
     companyTagline: "Seamless multi-cloud data synchronization and management platform",
+    revenue: "Pre Revenue",
+    fundsRaised: "₹10,00,000",
     preMoneyValuation: "₹45,00,000",
     postMoneyValuation: "₹70,00,000",
     minRange: 12,
@@ -100,6 +110,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=25",
     companyName: "GreenTech Innovations",
     companyTagline: "Sustainable energy solutions for a carbon-neutral future",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹32,00,000",
     preMoneyValuation: "₹55,00,000",
     postMoneyValuation: "₹85,00,000",
     minRange: 18,
@@ -111,6 +123,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=52",
     companyName: "FinNext Solutions",
     companyTagline: "Digital banking infrastructure for the next generation",
+    revenue: "Pre Revenue",
+    fundsRaised: "₹50,00,000",
     preMoneyValuation: "₹70,00,000",
     postMoneyValuation: "₹1,05,00,000",
     minRange: 25,
@@ -122,6 +136,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=38",
     companyName: "EduTech Pro",
     companyTagline: "Personalized learning experiences powered by AI",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹18,00,000",
     preMoneyValuation: "₹42,00,000",
     postMoneyValuation: "₹65,00,000",
     minRange: 15,
@@ -133,6 +149,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=61",
     companyName: "HealthSync AI",
     companyTagline: "AI-driven healthcare coordination and patient management",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹60,00,000",
     preMoneyValuation: "₹95,00,000",
     postMoneyValuation: "₹1,40,00,000",
     minRange: 20,
@@ -144,6 +162,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=29",
     companyName: "LogiChain Systems",
     companyTagline: "Blockchain-based supply chain transparency solutions",
+    revenue: "Pre Revenue",
+    fundsRaised: "₹22,00,000",
     preMoneyValuation: "₹52,00,000",
     postMoneyValuation: "₹78,00,000",
     minRange: 12,
@@ -155,6 +175,8 @@ const scanAds: ScanAd[] = [
     avatar: "https://i.pravatar.cc/150?img=15",
     companyName: "FoodTech Ventures",
     companyTagline: "Farm-to-table technology for sustainable food systems",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹28,00,000",
     preMoneyValuation: "₹48,00,000",
     postMoneyValuation: "₹72,00,000",
     minRange: 16,
@@ -169,6 +191,8 @@ const sellers = [
     avatar: "https://i.pravatar.cc/150?img=12",
     companyName: "Airbound Pvt Ltd",
     companyTagline: "Revolutionizing logistics with AI-powered drone delivery solutions",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹25,00,000",
     preMoneyValuation: "₹35,00,000",
     postMoneyValuation: "₹50,00,000",
     minRange: 15,
@@ -180,6 +204,8 @@ const sellers = [
     avatar: "https://i.pravatar.cc/150?img=33",
     companyName: "Zlyft Autonomy Pvt Ltd",
     companyTagline: "Building next-gen autonomous vehicles for urban transportation",
+    revenue: "Pre Revenue",
+    fundsRaised: "₹15,00,000",
     preMoneyValuation: "₹80,00,000",
     postMoneyValuation: "₹1,20,00,000",
     minRange: 10,
@@ -191,6 +217,8 @@ const sellers = [
     avatar: "https://i.pravatar.cc/150?img=47",
     companyName: "TechFlow Solutions",
     companyTagline: "Streamlining enterprise workflows with intelligent automation",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹40,00,000",
     preMoneyValuation: "₹60,00,000",
     postMoneyValuation: "₹90,00,000",
     minRange: 20,
@@ -202,6 +230,8 @@ const sellers = [
     avatar: "https://i.pravatar.cc/150?img=68",
     companyName: "CloudSync Systems",
     companyTagline: "Seamless multi-cloud data synchronization and management platform",
+    revenue: "Pre Revenue",
+    fundsRaised: "₹10,00,000",
     preMoneyValuation: "₹45,00,000",
     postMoneyValuation: "₹70,00,000",
     minRange: 12,
@@ -213,6 +243,8 @@ const sellers = [
     avatar: "https://i.pravatar.cc/150?img=25",
     companyName: "GreenTech Innovations",
     companyTagline: "Sustainable energy solutions for a carbon-neutral future",
+    revenue: "Revenue Generating",
+    fundsRaised: "₹32,00,000",
     preMoneyValuation: "₹55,00,000",
     postMoneyValuation: "₹85,00,000",
     minRange: 18,
@@ -239,6 +271,7 @@ const Trade = () => {
   const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [expandedInfoId, setExpandedInfoId] = useState<number | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -426,16 +459,31 @@ const Trade = () => {
                         >
                           {ad.companyName}
                         </button>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <button className="p-0.5 hover:bg-muted rounded-full transition-colors">
-                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                            </button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-64 text-sm">
-                            {ad.companyTagline}
-                          </PopoverContent>
-                        </Popover>
+                        <button 
+                          onClick={() => setExpandedInfoId(expandedInfoId === ad.id ? null : ad.id)}
+                          className="p-0.5 hover:bg-muted rounded-full transition-colors"
+                        >
+                          <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                        </button>
+                      </div>
+
+                      {/* Expanded Tagline */}
+                      {expandedInfoId === ad.id && (
+                        <div className="mt-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
+                          {ad.companyTagline}
+                        </div>
+                      )}
+
+                      {/* Revenue and Funds Raised */}
+                      <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                        <div>
+                          <span className="text-muted-foreground">Revenue: </span>
+                          <span className="font-medium text-foreground">{ad.revenue}</span>
+                        </div>
+                        <div>
+                          <span className="text-muted-foreground">Funds: </span>
+                          <span className="font-medium text-foreground">{ad.fundsRaised}</span>
+                        </div>
                       </div>
 
                       {/* Buying Range - Text Only */}
@@ -763,16 +811,31 @@ const Trade = () => {
                             >
                               {seller.companyName}
                             </button>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button className="p-0.5 hover:bg-muted rounded-full transition-colors">
-                                  <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-64 text-sm">
-                                {seller.companyTagline}
-                              </PopoverContent>
-                            </Popover>
+                            <button 
+                              onClick={() => setExpandedInfoId(expandedInfoId === seller.id ? null : seller.id)}
+                              className="p-0.5 hover:bg-muted rounded-full transition-colors"
+                            >
+                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                            </button>
+                          </div>
+
+                          {/* Expanded Tagline */}
+                          {expandedInfoId === seller.id && (
+                            <div className="mt-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
+                              {seller.companyTagline}
+                            </div>
+                          )}
+
+                          {/* Revenue and Funds Raised */}
+                          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                            <div>
+                              <span className="text-muted-foreground">Revenue: </span>
+                              <span className="font-medium text-foreground">{seller.revenue}</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Funds: </span>
+                              <span className="font-medium text-foreground">{seller.fundsRaised}</span>
+                            </div>
                           </div>
 
                           {/* Buying Range - Text Only */}
@@ -853,16 +916,31 @@ const Trade = () => {
                             >
                               {seller.companyName}
                             </button>
-                            <Popover>
-                              <PopoverTrigger asChild>
-                                <button className="p-0.5 hover:bg-muted rounded-full transition-colors">
-                                  <Info className="w-3.5 h-3.5 text-muted-foreground" />
-                                </button>
-                              </PopoverTrigger>
-                              <PopoverContent className="w-64 text-sm">
-                                {seller.companyTagline}
-                              </PopoverContent>
-                            </Popover>
+                            <button 
+                              onClick={() => setExpandedInfoId(expandedInfoId === seller.id ? null : seller.id)}
+                              className="p-0.5 hover:bg-muted rounded-full transition-colors"
+                            >
+                              <Info className="w-3.5 h-3.5 text-muted-foreground" />
+                            </button>
+                          </div>
+
+                          {/* Expanded Tagline */}
+                          {expandedInfoId === seller.id && (
+                            <div className="mt-2 text-xs text-muted-foreground italic bg-muted/30 p-2 rounded">
+                              {seller.companyTagline}
+                            </div>
+                          )}
+
+                          {/* Revenue and Funds Raised */}
+                          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+                            <div>
+                              <span className="text-muted-foreground">Revenue: </span>
+                              <span className="font-medium text-foreground">{seller.revenue}</span>
+                            </div>
+                            <div>
+                              <span className="text-muted-foreground">Funds: </span>
+                              <span className="font-medium text-foreground">{seller.fundsRaised}</span>
+                            </div>
                           </div>
 
                           {/* Buying Range - Text Only */}

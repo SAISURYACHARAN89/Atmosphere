@@ -1,4 +1,4 @@
-import { Search, MessageCircle, ChevronLeft, Briefcase } from "lucide-react";
+import { Search, MessageCircle, ChevronLeft, Briefcase, Bell } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import GrantsSheet from "./GrantsSheet";
@@ -36,34 +36,49 @@ const TopBar = () => {
   return (
     <header className={`fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-b border-border/50 z-50 shadow-sm transition-transform duration-300 ${isVisible || isTradePage ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="max-w-2xl mx-auto flex items-center justify-between px-4 h-14">
-        {/* Left side - Back Button */}
-        <div className="flex items-center gap-3">
-          {isCompanyProfile && fromPath && (
+        {/* Left side - Search & Grants or Back Button */}
+        <div className="flex items-center gap-2">
+          {isCompanyProfile && fromPath ? (
             <button 
               onClick={() => navigate(fromPath)}
               className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-muted/80 transition-all duration-300 active:scale-95"
             >
               <ChevronLeft className="w-5 h-5 text-foreground" strokeWidth={2} />
             </button>
+          ) : (
+            <>
+              <button 
+                onClick={() => navigate('/search')}
+                className="p-2 rounded-lg hover:bg-muted/80 transition-all duration-300 active:scale-95"
+              >
+                <Search className="w-5 h-5 text-foreground" strokeWidth={2} />
+              </button>
+
+              <button 
+                onClick={() => setGrantsOpen(true)}
+                className="p-2 rounded-lg hover:bg-muted/80 transition-all duration-300 active:scale-95"
+              >
+                <Briefcase className="w-5 h-5 text-foreground" strokeWidth={2} />
+              </button>
+            </>
           )}
         </div>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-2">
-          {/* Search */}
-          <button 
-            onClick={() => navigate('/search')}
-            className="p-2 rounded-lg hover:bg-muted/80 transition-all duration-300 active:scale-95"
-          >
-            <Search className="w-5 h-5 text-foreground" strokeWidth={2} />
-          </button>
+        {/* Center - App Name */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <h1 className="font-cursive text-2xl font-semibold text-foreground">
+            Ventura
+          </h1>
+        </div>
 
-          {/* Grants Button */}
+        {/* Right Icons - Notifications & Messages */}
+        <div className="flex items-center gap-2">
+          {/* Notifications */}
           <button 
-            onClick={() => setGrantsOpen(true)}
-            className="transition-all duration-300 hover:scale-110 active:scale-95"
+            className="p-2 rounded-lg hover:bg-muted/80 transition-all duration-300 active:scale-95 relative"
           >
-            <Briefcase className="w-5 h-5 text-foreground" strokeWidth={2} />
+            <Bell className="w-5 h-5 text-foreground" strokeWidth={2} />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
           </button>
 
           {/* Messages with notification badge */}

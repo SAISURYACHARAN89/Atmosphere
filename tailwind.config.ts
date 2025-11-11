@@ -13,6 +13,9 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        cursive: ['Dancing Script', 'cursive'],
+      },
       colors: {
         border: {
           DEFAULT: "hsl(var(--border))",

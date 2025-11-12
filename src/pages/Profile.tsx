@@ -162,8 +162,8 @@ const Profile = () => {
         <div className="max-w-2xl mx-auto">
           {/* Instagram-style Profile Header */}
           <div className="px-4 pt-4 pb-2">
-            {/* Avatar and Name Row */}
-            <div className="flex items-center gap-4 mb-3">
+            {/* Avatar, Name, and Stats Row */}
+            <div className="flex items-start gap-4 mb-4">
               {/* Avatar with Story Ring */}
               <div className="relative flex-shrink-0">
                 <Avatar className="h-20 w-20 border-2 border-primary">
@@ -177,9 +177,10 @@ const Profile = () => {
                 </button>
               </div>
 
-              {/* Name and Menu Button */}
+              {/* Name, Stats, and Menu */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-2">
+                {/* Name with verification and menu */}
+                <div className="flex items-center gap-2 mb-3">
                   <h1 className="text-base font-semibold text-foreground truncate">
                     {investorData.name}
                   </h1>
@@ -195,29 +196,29 @@ const Profile = () => {
                     <Menu className="h-5 w-5" />
                   </Button>
                 </div>
-              </div>
-            </div>
 
-            {/* Stats Row - Full Width */}
-            <div className="flex gap-8 mb-4">
-              <button className="flex items-center gap-1">
-                <p className="text-base font-semibold text-foreground">
-                  {formatNumber(investorData.stats.postsSaved)}
-                </p>
-                <p className="text-sm text-muted-foreground">posts</p>
-              </button>
-              <button className="flex items-center gap-1">
-                <p className="text-base font-semibold text-foreground">
-                  {formatNumber(investorData.stats.followers)}
-                </p>
-                <p className="text-sm text-muted-foreground">followers</p>
-              </button>
-              <button className="flex items-center gap-1">
-                <p className="text-base font-semibold text-foreground">
-                  {formatNumber(investorData.stats.following)}
-                </p>
-                <p className="text-sm text-muted-foreground">following</p>
-              </button>
+                {/* Stats Row - Instagram Style */}
+                <div className="flex gap-6">
+                  <button className="flex flex-col items-center">
+                    <p className="text-base font-semibold text-foreground">
+                      {formatNumber(investorData.stats.postsSaved)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">posts</p>
+                  </button>
+                  <button className="flex flex-col items-center">
+                    <p className="text-base font-semibold text-foreground">
+                      {formatNumber(investorData.stats.followers)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">followers</p>
+                  </button>
+                  <button className="flex flex-col items-center">
+                    <p className="text-base font-semibold text-foreground">
+                      {formatNumber(investorData.stats.following)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">following</p>
+                  </button>
+                </div>
+              </div>
             </div>
 
             {/* Location */}

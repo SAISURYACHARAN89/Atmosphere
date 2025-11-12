@@ -163,9 +163,9 @@ const Profile = () => {
           {/* Instagram-style Profile Header */}
           <div className="px-4 pt-4 pb-2">
             {/* Avatar and Name Row */}
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-4 mb-3">
               {/* Avatar with Story Ring */}
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <Avatar className="h-20 w-20 border-2 border-primary">
                   <AvatarImage src={investorData.avatar} alt={investorData.name} />
                   <AvatarFallback className="text-xl bg-muted">
@@ -177,20 +177,20 @@ const Profile = () => {
                 </button>
               </div>
 
-              {/* Name with Verification and Menu */}
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-base font-semibold text-foreground">
+              {/* Name and Menu Button */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-2">
+                  <h1 className="text-base font-semibold text-foreground truncate">
                     {investorData.name}
                   </h1>
                   {isVerified && (
-                    <CheckCircle2 className="h-4 w-4 text-blue-500" />
+                    <CheckCircle2 className="h-4 w-4 text-blue-500 flex-shrink-0" />
                   )}
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => navigate("/settings")}
-                    className="h-8 w-8 ml-auto"
+                    className="h-8 w-8 ml-auto flex-shrink-0"
                   >
                     <Menu className="h-5 w-5" />
                   </Button>
@@ -198,22 +198,22 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Stats Row */}
-            <div className="flex gap-6 mb-4">
+            {/* Stats Row - Full Width */}
+            <div className="flex gap-8 mb-4">
               <button className="flex items-center gap-1">
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-base font-semibold text-foreground">
                   {formatNumber(investorData.stats.postsSaved)}
                 </p>
                 <p className="text-sm text-muted-foreground">posts</p>
               </button>
               <button className="flex items-center gap-1">
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-base font-semibold text-foreground">
                   {formatNumber(investorData.stats.followers)}
                 </p>
                 <p className="text-sm text-muted-foreground">followers</p>
               </button>
               <button className="flex items-center gap-1">
-                <p className="text-sm font-semibold text-foreground">
+                <p className="text-base font-semibold text-foreground">
                   {formatNumber(investorData.stats.following)}
                 </p>
                 <p className="text-sm text-muted-foreground">following</p>

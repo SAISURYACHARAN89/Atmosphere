@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Menu, MapPin, TrendingUp, Users, DollarSign, Target, Rocket, Calendar, Building2, CheckCircle2 } from "lucide-react";
+import { MapPin, Users, DollarSign, Target, Rocket, Calendar, Building2, CheckCircle2, ChevronLeft } from "lucide-react";
 
 interface Milestone {
   id: string;
@@ -101,90 +101,96 @@ const StartupProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <TopBar />
       
-      <main className="pt-14 pb-20">
-        <div className="max-w-2xl mx-auto">
-          {/* Professional Header Section */}
-          <div className="bg-card border-b">
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-6">
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-20 w-20 border-2 border-border">
-                    <AvatarImage src={startupData.logo} alt={startupData.name} />
-                    <AvatarFallback className="text-xl bg-muted">
-                      {startupData.name[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h1 className="text-xl font-semibold text-foreground">
-                        {startupData.name}
-                      </h1>
-                      {isVerified && (
-                        <CheckCircle2 className="h-5 w-5 text-blue-500" />
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {startupData.username}
-                    </p>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <MapPin className="h-3 w-3" />
-                      {startupData.location}
-                    </div>
-                  </div>
-                </div>
+      {/* Instagram-style Header */}
+      <header className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border/50 z-50">
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-4 h-14">
+          <button 
+            onClick={() => navigate(-1)}
+            className="p-2 hover:bg-muted/80 rounded-lg transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5 text-foreground" />
+          </button>
+          
+          <h2 className="font-medium text-base text-foreground">
+            {startupData.username.replace('@', '')}
+          </h2>
+          
+          <div className="w-10" />
+        </div>
+      </header>
 
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => navigate("/settings")}
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
+      <main className="pt-14">
+        <div className="max-w-2xl mx-auto">
+          {/* Instagram-style Profile Header */}
+          <div className="px-4 pt-4 pb-2">
+            {/* Avatar, Name, and Stats Row */}
+            <div className="flex items-start gap-4 mb-4">
+              {/* Avatar */}
+              <div className="relative flex-shrink-0">
+                <Avatar className="h-20 w-20 border-2 border-primary">
+                  <AvatarImage src={startupData.logo} alt={startupData.name} />
+                  <AvatarFallback className="text-xl bg-muted">
+                    {startupData.name[0]}
+                  </AvatarFallback>
+                </Avatar>
               </div>
 
-              <p className="text-sm font-medium text-foreground mb-2">
-                {startupData.tagline}
-              </p>
-              <p className="text-sm text-foreground/80 leading-relaxed mb-4">
-                {startupData.description}
-              </p>
+              {/* Name and Stats */}
+              <div className="flex-1 min-w-0">
+                {/* Name with verification */}
+                <div className="flex items-center gap-2 mb-3">
+                  <h1 className="text-base font-semibold text-foreground truncate">
+                    {startupData.name}
+                  </h1>
+                  {isVerified && (
+                    <CheckCircle2 className="h-4 w-4 text-blue-500 flex-shrink-0" />
+                  )}
+                </div>
 
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary">{startupData.industry}</Badge>
-                <Badge variant="secondary">{startupData.stage}</Badge>
-                <Badge variant="outline">Founded {startupData.founded}</Badge>
+                {/* Stats Row - Instagram Style */}
+                <div className="flex gap-6">
+                  <button className="flex flex-col items-center">
+                    <p className="text-base font-semibold text-foreground">
+                      {startupData.stats.followers}
+                    </p>
+                    <p className="text-xs text-muted-foreground">followers</p>
+                  </button>
+                  <button className="flex flex-col items-center">
+                    <p className="text-base font-semibold text-foreground">
+                      {startupData.stats.teamSize}
+                    </p>
+                    <p className="text-xs text-muted-foreground">team size</p>
+                  </button>
+                  <button className="flex flex-col items-center">
+                    <p className="text-base font-semibold text-foreground">
+                      {formatNumber(startupData.stats.fundingRaised)}
+                    </p>
+                    <p className="text-xs text-muted-foreground">raised</p>
+                  </button>
+                </div>
               </div>
             </div>
 
-            {/* Stats Bar */}
-            <div className="grid grid-cols-4 border-t">
-              <button className="p-4 text-center hover:bg-muted/50 transition-colors">
-                <p className="text-lg font-semibold text-foreground">
-                  {startupData.stats.followers}
-                </p>
-                <p className="text-xs text-muted-foreground">Followers</p>
-              </button>
-              <button className="p-4 text-center hover:bg-muted/50 transition-colors border-l">
-                <p className="text-lg font-semibold text-foreground">
-                  {startupData.stats.teamSize}
-                </p>
-                <p className="text-xs text-muted-foreground">Team Size</p>
-              </button>
-              <button className="p-4 text-center hover:bg-muted/50 transition-colors border-l">
-                <p className="text-lg font-semibold text-foreground">
-                  {formatNumber(startupData.stats.fundingRaised)}
-                </p>
-                <p className="text-xs text-muted-foreground">Raised</p>
-              </button>
-              <button className="p-4 text-center hover:bg-muted/50 transition-colors border-l">
-                <p className="text-lg font-semibold text-foreground">
-                  {formatNumber(startupData.stats.valuation)}
-                </p>
-                <p className="text-xs text-muted-foreground">Valuation</p>
-              </button>
+            {/* Location */}
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+              <MapPin className="h-3 w-3" />
+              {startupData.location}
+            </div>
+
+            {/* Tagline and Description */}
+            <p className="text-sm font-medium text-foreground mb-1">
+              {startupData.tagline}
+            </p>
+            <p className="text-sm text-foreground leading-relaxed mb-3">
+              {startupData.description}
+            </p>
+
+            {/* Badges */}
+            <div className="flex flex-wrap gap-2">
+              <Badge variant="secondary" className="text-xs">{startupData.industry}</Badge>
+              <Badge variant="secondary" className="text-xs">{startupData.stage}</Badge>
+              <Badge variant="outline" className="text-xs">Founded {startupData.founded}</Badge>
             </div>
           </div>
 
@@ -360,8 +366,6 @@ const StartupProfile = () => {
           </div>
         </div>
       </main>
-
-      <BottomNav />
     </div>
   );
 };

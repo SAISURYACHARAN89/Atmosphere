@@ -267,7 +267,7 @@ const Settings = () => {
 
       {/* Name Drawer */}
       <Drawer open={nameDrawerOpen} onOpenChange={setNameDrawerOpen}>
-        <DrawerContent className="h-[60vh]">
+        <DrawerContent className="h-[60vh] md:max-w-lg md:mx-auto">
           <DrawerHeader>
             <DrawerTitle>Change Name</DrawerTitle>
             <DrawerDescription>Update your display name</DrawerDescription>
@@ -295,7 +295,7 @@ const Settings = () => {
 
       {/* Username Drawer */}
       <Drawer open={usernameDrawerOpen} onOpenChange={setUsernameDrawerOpen}>
-        <DrawerContent className="h-[60vh]">
+        <DrawerContent className="h-[60vh] md:max-w-lg md:mx-auto">
           <DrawerHeader>
             <DrawerTitle>Change Username</DrawerTitle>
             <DrawerDescription>Update your username</DrawerDescription>
@@ -323,7 +323,7 @@ const Settings = () => {
 
       {/* Password Drawer */}
       <Drawer open={passwordDrawerOpen} onOpenChange={setPasswordDrawerOpen}>
-        <DrawerContent className="h-[60vh]">
+        <DrawerContent className="h-[60vh] md:max-w-lg md:mx-auto">
           <DrawerHeader>
             <DrawerTitle>Change Password</DrawerTitle>
             <DrawerDescription>Update your password</DrawerDescription>
@@ -371,7 +371,7 @@ const Settings = () => {
 
       {/* Email Drawer */}
       <Drawer open={emailDrawerOpen} onOpenChange={setEmailDrawerOpen}>
-        <DrawerContent className="h-[60vh]">
+        <DrawerContent className="h-[60vh] md:max-w-lg md:mx-auto">
           <DrawerHeader>
             <DrawerTitle>Change Email</DrawerTitle>
             <DrawerDescription>Update your email address</DrawerDescription>
@@ -410,7 +410,7 @@ const Settings = () => {
 
       {/* Phone Drawer */}
       <Drawer open={phoneDrawerOpen} onOpenChange={setPhoneDrawerOpen}>
-        <DrawerContent className="h-[60vh]">
+        <DrawerContent className="h-[60vh] md:max-w-lg md:mx-auto">
           <DrawerHeader>
             <DrawerTitle>Change Phone</DrawerTitle>
             <DrawerDescription>Update your phone number</DrawerDescription>

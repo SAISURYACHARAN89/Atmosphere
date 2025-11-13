@@ -239,37 +239,47 @@ const CompanyProfile = () => {
         <div className="max-w-2xl mx-auto bg-background">
           {/* Profile Section */}
           <div className="px-4 pt-5 pb-2">
-            <div className="flex items-start justify-between mb-5">
+            <div className="flex items-start gap-4 mb-3">
               <Avatar className="h-20 w-20 border border-border">
                 <AvatarImage src={company.logo} alt={company.name} />
                 <AvatarFallback className="bg-muted text-foreground text-xl">{company.name[0]}</AvatarFallback>
               </Avatar>
               
-              <div className="flex gap-8 pt-2">
-                <div className="text-center">
-                  <div className="font-semibold text-base">342</div>
-                  <div className="text-xs text-muted-foreground">posts</div>
+              <div className="flex-1 pt-1">
+                <div className="space-y-1 mb-2">
+                  <h2 className="font-normal text-sm">{company.name}</h2>
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                      <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="2"/>
+                    </svg>
+                  </div>
                 </div>
-                <div className="text-center">
-                  <div className="font-semibold text-base">{company.isPublic ? company.followers?.toLocaleString() || '0' : '0'}</div>
-                  <div className="text-xs text-muted-foreground">followers</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-semibold text-base">{company.isPublic ? company.following?.toLocaleString() || '0' : '0'}</div>
-                  <div className="text-xs text-muted-foreground">following</div>
+                
+                <div className="flex gap-6 text-xs">
+                  <div>
+                    <span className="font-semibold">342</span>
+                    <span className="text-muted-foreground ml-1">posts</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold">{company.isPublic ? company.followers?.toLocaleString() || '0' : '0'}</span>
+                    <span className="text-muted-foreground ml-1">followers</span>
+                  </div>
+                  <div>
+                    <span className="font-semibold">{company.isPublic ? company.following?.toLocaleString() || '0' : '0'}</span>
+                    <span className="text-muted-foreground ml-1">following</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-1 mb-3">
-              <h2 className="font-normal text-sm">{company.name}</h2>
-              <div className="flex items-center gap-1.5">
-                <p className="text-sm font-semibold">@{companyId}</p>
-                <svg className="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
-                  <circle cx="12" cy="12" r="11" fill="none" stroke="currentColor" strokeWidth="2"/>
-                </svg>
+            {/* Location and Bio */}
+            <div className="space-y-1 text-sm mb-3">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <MapPin className="h-3.5 w-3.5" />
+                <span>{company.location}</span>
               </div>
+              <p className="text-foreground/90 leading-relaxed">{company.description}</p>
             </div>
 
             {/* Follow and Message Buttons */}
@@ -280,15 +290,6 @@ const CompanyProfile = () => {
               <Button variant="outline" className="flex-1 h-8 text-sm font-semibold">
                 Message
               </Button>
-            </div>
-
-            {/* Location and Bio */}
-            <div className="space-y-1 text-sm">
-              <div className="flex items-center gap-1.5 text-muted-foreground">
-                <MapPin className="h-3.5 w-3.5" />
-                <span>{company.location}</span>
-              </div>
-              <p className="text-foreground/90 leading-relaxed">{company.description}</p>
             </div>
           </div>
 

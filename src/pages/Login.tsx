@@ -11,10 +11,19 @@ const Login = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Dummy login - just navigate to home
-    localStorage.setItem("userId", "dummy-user");
-    localStorage.setItem("userName", "User");
-    localStorage.setItem("userMode", "investor");
+    // Special handling for "John" - fully verified user
+    if (email.toLowerCase() === "john") {
+      localStorage.setItem("userId", "john-verified");
+      localStorage.setItem("userName", "John");
+      localStorage.setItem("userMode", "investor");
+      localStorage.setItem("verified", "true");
+      localStorage.setItem("premium", "true");
+    } else {
+      // Regular dummy login
+      localStorage.setItem("userId", "dummy-user");
+      localStorage.setItem("userName", "User");
+      localStorage.setItem("userMode", "investor");
+    }
     navigate("/");
   };
 

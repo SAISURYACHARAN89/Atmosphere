@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, AtSign, BarChart3, Bookmark, Activity, Settings as SettingsIcon, MessageSquare, Lock, Briefcase, Crown, HelpCircle, Info, ChevronRight, Mail, Phone as PhoneIcon, KeyRound, TrendingUp } from "lucide-react";
+import { ArrowLeft, User, AtSign, BarChart3, Bookmark, Activity, Settings as SettingsIcon, MessageSquare, Lock, Briefcase, Crown, HelpCircle, Info, ChevronRight, Mail, Phone as PhoneIcon, KeyRound, Play, ShoppingBag, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -154,19 +154,6 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Professional Section */}
-          <div className="space-y-2">
-            <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">Professional</h2>
-            <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
-              <SettingItem
-                icon={TrendingUp}
-                title="Professional Dashboard"
-                subtitle="View your metrics and analytics"
-                onClick={() => navigate("/dashboard")}
-              />
-            </div>
-          </div>
-
           {/* Content Section */}
           <div className="space-y-2">
             <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">Content</h2>
@@ -175,7 +162,7 @@ const Settings = () => {
                 icon={BarChart3}
                 title="Professional Dashboard"
                 subtitle="View analytics and insights"
-                onClick={() => navigate("/profile")}
+                onClick={() => navigate("/dashboard")}
               />
               <Separator />
               <SettingItem
@@ -465,13 +452,55 @@ const Settings = () => {
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Saved Content</DialogTitle>
-            <DialogDescription>Your saved posts and startups</DialogDescription>
+            <DialogDescription>Your saved items across different categories</DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 pt-4">
-            <div className="text-center py-12 text-muted-foreground">
-              <Bookmark className="h-12 w-12 mx-auto mb-3 opacity-50" />
-              <p>No saved content yet</p>
-              <p className="text-sm mt-1">Save posts and startups to view them here</p>
+          <div className="space-y-6 pt-4">
+            {/* Sell Ads */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="h-5 w-5 text-primary" />
+                <h3 className="font-semibold text-foreground">Sell Ads</h3>
+              </div>
+              <div className="text-center py-8 text-muted-foreground bg-muted/30 rounded-lg">
+                <ShoppingBag className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No saved sell ads yet</p>
+              </div>
+            </div>
+
+            {/* Company Cards */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Briefcase className="h-5 w-5 text-primary" />
+                <h3 className="font-semibold text-foreground">Company Cards</h3>
+              </div>
+              <div className="text-center py-8 text-muted-foreground bg-muted/30 rounded-lg">
+                <Briefcase className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No saved company cards yet</p>
+              </div>
+            </div>
+
+            {/* Reels */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <Play className="h-5 w-5 text-primary" />
+                <h3 className="font-semibold text-foreground">Reels</h3>
+              </div>
+              <div className="text-center py-8 text-muted-foreground bg-muted/30 rounded-lg">
+                <Play className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No saved reels yet</p>
+              </div>
+            </div>
+
+            {/* Posts */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                <h3 className="font-semibold text-foreground">Posts</h3>
+              </div>
+              <div className="text-center py-8 text-muted-foreground bg-muted/30 rounded-lg">
+                <FileText className="h-10 w-10 mx-auto mb-2 opacity-50" />
+                <p className="text-sm">No saved posts yet</p>
+              </div>
             </div>
           </div>
         </DialogContent>

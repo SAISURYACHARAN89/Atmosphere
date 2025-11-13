@@ -45,6 +45,7 @@ const TopBar = () => {
             </button>
           ) : (
             <button 
+              onClick={() => navigate('/notifications')}
               className="p-2 rounded-lg hover:bg-muted/80 transition-all duration-300 active:scale-95 relative"
             >
               <Heart className="w-5 h-5 text-foreground" strokeWidth={2} />

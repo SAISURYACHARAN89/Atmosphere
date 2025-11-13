@@ -140,7 +140,7 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Instagram-style Header */}
-      <header className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md border-b border-border/50 z-50">
+      <header className="fixed top-0 left-0 right-0 bg-background/95 backdrop-blur-md z-50">
         <div className="max-w-2xl mx-auto flex items-center justify-between px-4 h-14">
           <button 
             onClick={() => navigate(-1)}
@@ -181,8 +181,8 @@ const Profile = () => {
               {/* Name, Stats, and Menu */}
               <div className="flex-1 min-w-0">
                 {/* Name with verification and menu */}
-                <div className="flex items-center gap-2 mb-3">
-                  <h1 className="text-base font-semibold text-foreground truncate">
+                <div className="flex items-center gap-2 mb-2">
+                  <h1 className="text-sm font-semibold text-foreground truncate">
                     {investorData.name}
                   </h1>
                   <CheckCircle2 className="h-4 w-4 text-blue-500 flex-shrink-0" />
@@ -199,19 +199,19 @@ const Profile = () => {
                 {/* Stats Row - Instagram Style */}
                 <div className="flex gap-6">
                   <button className="flex flex-col items-center">
-                    <p className="text-base font-semibold text-foreground">
+                    <p className="text-sm font-semibold text-foreground">
                       {formatNumber(investorData.stats.postsSaved)}
                     </p>
                     <p className="text-xs text-muted-foreground">posts</p>
                   </button>
                   <button className="flex flex-col items-center">
-                    <p className="text-base font-semibold text-foreground">
+                    <p className="text-sm font-semibold text-foreground">
                       {formatNumber(investorData.stats.followers)}
                     </p>
                     <p className="text-xs text-muted-foreground">followers</p>
                   </button>
                   <button className="flex flex-col items-center">
-                    <p className="text-base font-semibold text-foreground">
+                    <p className="text-sm font-semibold text-foreground">
                       {formatNumber(investorData.stats.following)}
                     </p>
                     <p className="text-xs text-muted-foreground">following</p>
@@ -233,7 +233,7 @@ const Profile = () => {
           </div>
 
           {/* Three Section Navigation */}
-          <div className="mt-6 border-t border-border">
+          <div className="mt-3">
             <div className="grid grid-cols-3 text-center">
               <button
                 onClick={() => setActiveSection('posts')}

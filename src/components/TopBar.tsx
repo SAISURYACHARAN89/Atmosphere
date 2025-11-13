@@ -14,27 +14,29 @@ const TopBar = () => {
   // Check if we're in second mode (professional mode)
   const isSecondMode = ['/launch', '/trade', '/opportunities', '/meetings'].includes(location.pathname);
   
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(!isSecondMode);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [manuallyHidden, setManuallyHidden] = useState(false);
 
   // Don't render the top bar on search page
   if (isSearchPage) {
     return null;
   }
 
+  // Reset visibility when switching between modes
+  useEffect(() => {
+    setIsVisible(!isSecondMode);
+  }, [isSecondMode]);
+
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       
-      if (isSecondMode) {
-        // In second mode, hide on scroll down, don't auto-show
+      if (isSecondMode && isVisible) {
+        // In second mode, hide on scroll down when visible
         if (currentScrollY > lastScrollY && currentScrollY > 50) {
-          // Scrolling down
           setIsVisible(false);
-          setManuallyHidden(true);
         }
-      } else {
+      } else if (!isSecondMode) {
         // Normal mode behavior
         if (currentScrollY < lastScrollY && lastScrollY - currentScrollY > 5) {
           // Scrolling up with threshold
@@ -50,11 +52,10 @@ const TopBar = () => {
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY, isSecondMode]);
+  }, [lastScrollY, isSecondMode, isVisible]);
 
   const handleToggleVisibility = () => {
-    setIsVisible(!isVisible);
-    setManuallyHidden(!isVisible);
+    setIsVisible(true);
   };
 
   return (

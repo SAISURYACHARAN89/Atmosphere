@@ -307,7 +307,7 @@ const Profile = () => {
             )}
 
             {activeSection === 'expand' && (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {!isVerified ? (
                   <Card>
                     <CardContent className="py-6 text-center space-y-3">
@@ -326,210 +326,240 @@ const Profile = () => {
                   </Card>
                 ) : (
                   <>
-                    {/* About Section */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm">About</CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-2">
-                        <p className="text-xs text-muted-foreground leading-relaxed">
-                          {investorData.bio}
-                        </p>
-                      </CardContent>
-                    </Card>
-
-                    {/* Portfolio Summary */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <Wallet className="h-4 w-4 text-primary" />
-                          Portfolio Summary
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3 pt-2">
-                        <div>
-                          <p className="text-xs text-muted-foreground mb-1">Total Portfolio Value</p>
-                          <h2 className="text-xl font-bold text-foreground">
-                            {formatCurrency(currentPortfolioValue)}
-                          </h2>
-                        </div>
-                        
-                        <div className="grid grid-cols-3 gap-3">
+                    {/* Investor Overview */}
+                    <div className="space-y-3">
+                      <h3 className="text-base font-semibold text-foreground">Investor Profile</h3>
+                      
+                      <Card className="border-primary/20">
+                        <CardContent className="p-4 space-y-4">
                           <div>
-                            <p className="text-xs text-muted-foreground mb-1">Invested</p>
-                            <p className="text-sm font-semibold text-foreground">
-                              {formatCurrency(totalInvested)}
+                            <h4 className="text-xs font-medium text-muted-foreground mb-2">About</h4>
+                            <p className="text-sm text-foreground leading-relaxed">
+                              {investorData.bio}
                             </p>
                           </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">Return</p>
-                            <div className="flex items-center gap-1">
-                              {totalReturn >= 0 ? (
-                                <ArrowUpRight className="h-3 w-3 text-green-600" />
-                              ) : (
-                                <ArrowDownRight className="h-3 w-3 text-red-600" />
-                              )}
-                              <p className={`text-sm font-semibold ${totalReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {formatCurrency(Math.abs(totalReturn))}
-                              </p>
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-xs text-muted-foreground mb-1">%</p>
-                            <div className="flex items-center gap-1">
-                              {parseFloat(totalReturnPercentage) >= 0 ? (
-                                <TrendingUp className="h-3 w-3 text-green-600" />
-                              ) : (
-                                <TrendingDown className="h-3 w-3 text-red-600" />
-                              )}
-                              <p className={`text-sm font-semibold ${parseFloat(totalReturnPercentage) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                {totalReturnPercentage}%
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
 
-                    {/* Active Investments */}
-                    <div className="space-y-2">
+                          <div className="pt-2 border-t">
+                            <h4 className="text-xs font-medium text-muted-foreground mb-3">Investment Focus</h4>
+                            <div className="space-y-2">
+                              <div className="flex items-start gap-2">
+                                <Target className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-xs font-medium text-foreground">Industries</p>
+                                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                                    {["AI & ML", "SaaS", "FinTech", "HealthTech"].map(tag => (
+                                      <span 
+                                        key={tag}
+                                        className="px-2 py-0.5 bg-primary/10 text-primary text-xs rounded font-medium"
+                                      >
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2">
+                                <Activity className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-xs font-medium text-foreground">Stage</p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">Pre-seed, Seed, Series A</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2">
+                                <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-xs font-medium text-foreground">Geography</p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">North America, Europe</p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2">
+                                <DollarSign className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                                <div>
+                                  <p className="text-xs font-medium text-foreground">Check Size</p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">$50K - $500K (Sweet spot: $150K - $250K)</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t">
+                            <h4 className="text-xs font-medium text-muted-foreground mb-2">Investment Track Record</h4>
+                            <div className="grid grid-cols-3 gap-3">
+                              <div className="text-center p-2 bg-muted/50 rounded">
+                                <p className="text-lg font-bold text-foreground">{investments.length}</p>
+                                <p className="text-xs text-muted-foreground">Companies</p>
+                              </div>
+                              <div className="text-center p-2 bg-muted/50 rounded">
+                                <p className="text-lg font-bold text-foreground">8</p>
+                                <p className="text-xs text-muted-foreground">Years Active</p>
+                              </div>
+                              <div className="text-center p-2 bg-muted/50 rounded">
+                                <p className="text-lg font-bold text-green-600">{totalReturnPercentage}%</p>
+                                <p className="text-xs text-muted-foreground">Avg Return</p>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Portfolio Performance */}
+                    <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <h3 className="text-xs font-semibold text-foreground">
-                          Active Investments ({investments.length})
-                        </h3>
-                        <Badge variant="outline" className="text-xs h-5">
-                          <Activity className="h-3 w-3 mr-1" />
+                        <h3 className="text-base font-semibold text-foreground">Portfolio Performance</h3>
+                        <Badge variant="outline" className="text-xs">
+                          <TrendingUp className="h-3 w-3 mr-1" />
                           Live
                         </Badge>
                       </div>
 
-                      {investments.map((investment) => (
-                        <Card key={investment.id} className="hover:border-primary/50 transition-colors cursor-pointer">
-                          <CardContent className="p-3">
-                            <div className="flex items-start justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <Avatar className="h-10 w-10 border">
-                                  <AvatarImage src={investment.companyLogo} alt={investment.companyName} />
-                                  <AvatarFallback>{investment.companyName[0]}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <h4 className="font-semibold text-foreground text-xs">
-                                    {investment.companyName}
-                                  </h4>
-                                  <p className="text-xs text-muted-foreground">{investment.sector}</p>
-                                </div>
-                              </div>
-                              <Badge 
-                                variant={investment.returnPercentage >= 0 ? "default" : "destructive"}
-                                className="text-xs h-5"
-                              >
-                                {investment.returnPercentage >= 0 ? '+' : ''}
-                                {investment.returnPercentage.toFixed(1)}%
-                              </Badge>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-2 text-xs">
-                              <div>
-                                <p className="text-muted-foreground mb-0.5 text-xs">Invested</p>
-                                <p className="font-semibold text-foreground text-xs">
-                                  {formatCurrency(investment.investmentAmount)}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-muted-foreground mb-0.5 text-xs">Current</p>
-                                <p className="font-semibold text-foreground text-xs">
-                                  {formatCurrency(investment.currentValue)}
-                                </p>
-                              </div>
-                              <div>
-                                <p className="text-muted-foreground mb-0.5 text-xs">Shares</p>
-                                <p className="font-semibold text-foreground text-xs">
-                                  {investment.shares.toLocaleString()}
-                                </p>
+                      {/* Performance Metrics */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-2 mb-1">
+                              <div className="h-8 w-8 rounded-full bg-primary/20 flex items-center justify-center">
+                                <Wallet className="h-4 w-4 text-primary" />
                               </div>
                             </div>
-
-                            <div className="mt-2 pt-2 border-t flex items-center justify-between">
-                              <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <Calendar className="h-3 w-3" />
-                                {formatDate(investment.investmentDate)}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                {investment.currentValue > investment.investmentAmount ? (
-                                  <ArrowUpRight className="h-3 w-3 text-green-600" />
-                                ) : (
-                                  <ArrowDownRight className="h-3 w-3 text-red-600" />
-                                )}
-                                <span className={`text-xs font-semibold ${
-                                  investment.currentValue > investment.investmentAmount 
-                                    ? 'text-green-600' 
-                                    : 'text-red-600'
-                                }`}>
-                                  {formatCurrency(Math.abs(investment.currentValue - investment.investmentAmount))}
-                                </span>
-                              </div>
-                            </div>
+                            <p className="text-xs text-muted-foreground mb-1">Total Value</p>
+                            <p className="text-xl font-bold text-foreground">
+                              {formatCurrency(currentPortfolioValue)}
+                            </p>
                           </CardContent>
                         </Card>
-                      ))}
+
+                        <Card className="bg-gradient-to-br from-green-500/5 to-green-500/10 border-green-500/20">
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-2 mb-1">
+                              <div className="h-8 w-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                                <TrendingUp className="h-4 w-4 text-green-600" />
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground mb-1">Total Return</p>
+                            <p className="text-xl font-bold text-green-600">
+                              +{formatCurrency(totalReturn)}
+                            </p>
+                            <p className="text-xs text-green-600 font-medium">+{totalReturnPercentage}%</p>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Portfolio Breakdown */}
+                      <Card>
+                        <CardContent className="p-4">
+                          <h4 className="text-sm font-semibold text-foreground mb-3">Portfolio Composition</h4>
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center py-1">
+                              <span className="text-xs text-muted-foreground">Capital Deployed</span>
+                              <span className="text-xs font-semibold text-foreground">{formatCurrency(totalInvested)}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-1">
+                              <span className="text-xs text-muted-foreground">Active Investments</span>
+                              <span className="text-xs font-semibold text-foreground">{investments.length} companies</span>
+                            </div>
+                            <div className="flex justify-between items-center py-1">
+                              <span className="text-xs text-muted-foreground">Avg. Investment</span>
+                              <span className="text-xs font-semibold text-foreground">
+                                {formatCurrency(totalInvested / investments.length)}
+                              </span>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
                     </div>
 
-                    {/* Investment Criteria */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <Target className="h-4 w-4 text-primary" />
-                          Investment Criteria
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-3 pt-2">
-                        <div>
-                          <p className="text-xs font-medium text-foreground mb-2">
-                            Preferred Industries
-                          </p>
-                          <div className="flex flex-wrap gap-1.5">
-                            {["AI & ML", "SaaS", "FinTech", "HealthTech"].map(tag => (
-                              <span 
-                                key={tag}
-                                className="px-2.5 py-1 bg-primary/10 text-primary text-xs rounded-md font-medium"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                        
-                        <div className="pt-1">
-                          <p className="text-xs font-medium text-foreground mb-1">Stage Preference</p>
-                          <p className="text-xs text-muted-foreground">Pre-seed, Seed, Series A</p>
-                        </div>
+                    {/* Portfolio Holdings */}
+                    <div className="space-y-3">
+                      <h3 className="text-base font-semibold text-foreground">Portfolio Holdings</h3>
+                      
+                      <div className="space-y-2">
+                        {investments.map((investment, index) => (
+                          <Card 
+                            key={investment.id} 
+                            className="hover:shadow-lg transition-all cursor-pointer border-l-4"
+                            style={{
+                              borderLeftColor: investment.returnPercentage >= 0 
+                                ? 'rgb(22, 163, 74)' 
+                                : 'rgb(220, 38, 38)'
+                            }}
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="relative">
+                                    <Avatar className="h-12 w-12 border-2">
+                                      <AvatarImage src={investment.companyLogo} alt={investment.companyName} />
+                                      <AvatarFallback className="font-semibold">{investment.companyName[0]}</AvatarFallback>
+                                    </Avatar>
+                                    <div className="absolute -bottom-1 -right-1 h-5 w-5 bg-background rounded-full flex items-center justify-center border">
+                                      <span className="text-xs font-bold">#{index + 1}</span>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-semibold text-foreground text-sm mb-0.5">
+                                      {investment.companyName}
+                                    </h4>
+                                    <p className="text-xs text-muted-foreground">{investment.sector}</p>
+                                  </div>
+                                </div>
+                                <div className="text-right">
+                                  <Badge 
+                                    variant={investment.returnPercentage >= 0 ? "default" : "destructive"}
+                                    className="text-xs mb-1"
+                                  >
+                                    {investment.returnPercentage >= 0 ? '+' : ''}
+                                    {investment.returnPercentage.toFixed(1)}%
+                                  </Badge>
+                                  <p className="text-xs text-muted-foreground">
+                                    {investment.shares.toLocaleString()} shares
+                                  </p>
+                                </div>
+                              </div>
 
-                        <div className="pt-1">
-                          <p className="text-xs font-medium text-foreground mb-1">Geographic Focus</p>
-                          <p className="text-xs text-muted-foreground">North America, Europe</p>
-                        </div>
-                      </CardContent>
-                    </Card>
+                              <div className="grid grid-cols-2 gap-3 mb-3">
+                                <div className="bg-muted/50 p-2 rounded">
+                                  <p className="text-xs text-muted-foreground mb-0.5">Invested</p>
+                                  <p className="text-sm font-bold text-foreground">
+                                    {formatCurrency(investment.investmentAmount)}
+                                  </p>
+                                </div>
+                                <div className="bg-muted/50 p-2 rounded">
+                                  <p className="text-xs text-muted-foreground mb-0.5">Current Value</p>
+                                  <p className="text-sm font-bold text-foreground">
+                                    {formatCurrency(investment.currentValue)}
+                                  </p>
+                                </div>
+                              </div>
 
-                    {/* Investment Range */}
-                    <Card>
-                      <CardHeader className="pb-2">
-                        <CardTitle className="text-sm flex items-center gap-2">
-                          <DollarSign className="h-4 w-4 text-primary" />
-                          Investment Range
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="space-y-2 pt-2">
-                        <div className="flex justify-between items-center py-1.5">
-                          <span className="text-xs text-muted-foreground">Typical Check Size</span>
-                          <span className="text-xs font-semibold text-foreground">$50K - $500K</span>
-                        </div>
-                        <div className="flex justify-between items-center py-1.5 border-t">
-                          <span className="text-xs text-muted-foreground">Sweet Spot</span>
-                          <span className="text-xs font-semibold text-foreground">$150K - $250K</span>
-                        </div>
-                      </CardContent>
-                    </Card>
+                              <div className="flex items-center justify-between pt-2 border-t">
+                                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                                  <Calendar className="h-3 w-3" />
+                                  <span>Since {formatDate(investment.investmentDate)}</span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  {investment.currentValue > investment.investmentAmount ? (
+                                    <ArrowUpRight className="h-4 w-4 text-green-600" />
+                                  ) : (
+                                    <ArrowDownRight className="h-4 w-4 text-red-600" />
+                                  )}
+                                  <span className={`text-sm font-bold ${
+                                    investment.currentValue > investment.investmentAmount 
+                                      ? 'text-green-600' 
+                                      : 'text-red-600'
+                                  }`}>
+                                    {formatCurrency(Math.abs(investment.currentValue - investment.investmentAmount))}
+                                  </span>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
                   </>
                 )}
               </div>

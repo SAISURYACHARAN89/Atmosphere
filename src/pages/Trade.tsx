@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, SlidersHorizontal, ChevronDown, ChevronUp, Trash2, Edit, Bookmark, Zap, Heart, AlertCircle } from "lucide-react";
+import { Search, X, SlidersHorizontal, ChevronDown, ChevronUp, Trash2, Edit, Bookmark, Zap, Heart, AlertCircle, TrendingUp, DollarSign, Calendar, Target } from "lucide-react";
 import TopBar from "@/components/TopBar";
 import BottomNav from "@/components/BottomNav";
 import { Input } from "@/components/ui/input";
@@ -335,7 +335,9 @@ const Trade = () => {
   const navigate = useNavigate();
   const isVerified = localStorage.getItem("isVerified") === "true";
   const userMode = localStorage.getItem("userMode");
-  const [activeView, setActiveView] = useState<'scan' | 'buy' | 'sell'>('scan');
+  const [activeView, setActiveView] = useState<'buy' | 'sell'>('buy');
+  const [expandedBuyId, setExpandedBuyId] = useState<number | null>(null);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState<{ [key: number]: number }>({});
   const [searchValue, setSearchValue] = useState("");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [expandedCompany, setExpandedCompany] = useState<number | null>(null);
@@ -467,14 +469,14 @@ const Trade = () => {
       <TopBar />
       
       <main className="pt-14 max-w-2xl mx-auto">
-        {/* Compact Buy/Scan/Sell Buttons at Top */}
-        <div className={`fixed top-14 left-0 right-0 z-40 flex items-center justify-between gap-2 px-4 py-3 border-b border-border bg-background/95 backdrop-blur-sm max-w-2xl mx-auto transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        {/* Compact Buy/Sell Buttons at Top */}
+        <div className={`fixed top-14 left-0 right-0 z-40 flex items-center justify-between gap-3 px-4 py-3 border-b border-border bg-background/95 backdrop-blur-sm max-w-2xl mx-auto transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
           <Button 
             size="sm" 
             variant="outline"
-            className={`h-8 flex-1 text-xs font-semibold transition-all ${
+            className={`h-9 flex-1 text-sm font-semibold transition-all ${
               activeView === 'buy' 
-                ? 'bg-primary/10 border-primary/50 hover:bg-primary/15' 
+                ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90' 
                 : 'bg-muted hover:bg-muted/80'
             }`}
             onClick={() => setActiveView('buy')}
@@ -484,21 +486,9 @@ const Trade = () => {
           <Button 
             size="sm" 
             variant="outline"
-            className={`h-8 flex-1 text-xs font-semibold transition-all ${
-              activeView === 'scan' 
-                ? 'bg-primary/10 border-primary/50 hover:bg-primary/15' 
-                : 'bg-muted hover:bg-muted/80'
-            }`}
-            onClick={() => setActiveView('scan')}
-          >
-            SCAN
-          </Button>
-          <Button 
-            size="sm" 
-            variant="outline"
-            className={`h-8 flex-1 text-xs font-semibold transition-all ${
+            className={`h-9 flex-1 text-sm font-semibold transition-all ${
               activeView === 'sell' 
-                ? 'bg-primary/10 border-primary/50 hover:bg-primary/15' 
+                ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90' 
                 : 'bg-muted hover:bg-muted/80'
             }`}
             onClick={() => setActiveView('sell')}
@@ -513,185 +503,7 @@ const Trade = () => {
           <VerificationBlock />
         ) : (
           <>
-          {activeView === 'scan' ? (
-          /* Scan View - All Ads with Sponsored */
-          <ScrollArea className="h-[calc(100vh-8rem)]">
-            <div className="px-4 py-4 space-y-4">
-              {scanAds.map((ad) => (
-                <div
-                  key={ad.id}
-                  className={`border rounded-xl p-4 transition-all cursor-pointer ${
-                    ad.isSponsored
-                      ? 'border-primary bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg ring-2 ring-primary/20'
-                      : 'border-border bg-card hover:bg-muted/50'
-                  }`}
-                  onClick={() => setExpandedInfoId(expandedInfoId === ad.id ? null : ad.id)}
-                >
-                  {/* Sponsored Badge */}
-                  {ad.isSponsored && (
-                    <div className="flex items-center gap-1.5 mb-3">
-                      <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
-                      <span className="text-xs font-bold text-primary uppercase tracking-wide">
-                        Sponsored
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Main Content */}
-                  <div className="flex items-start gap-3">
-                    {/* Profile Pic - Clickable */}
-                    <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/profile');
-                      }}
-                    >
-                      <Avatar className={ad.isSponsored ? "w-14 h-14 ring-2 ring-primary" : "w-12 h-12"}>
-                        <AvatarImage src={ad.avatar} />
-                        <AvatarFallback className="bg-muted text-foreground font-semibold">
-                          {ad.name.split(" ").map((n) => n[0]).join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                    </button>
-
-                    {/* Details */}
-                    <div className="flex-1 min-w-0">
-                      {/* Name with Type Badge - Clickable */}
-                      <div className="flex items-center gap-2">
-                        <button 
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate('/profile');
-                          }}
-                          className="font-semibold text-foreground hover:text-primary transition-colors text-left"
-                        >
-                          {ad.name}
-                        </button>
-                        <Badge 
-                          variant="secondary" 
-                          className="text-[10px] px-1.5 py-0 h-4 font-medium"
-                        >
-                          {ad.type}
-                        </Badge>
-                      </div>
-
-                      {/* Company Name - Clickable */}
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          navigate('/company-profile');
-                        }}
-                        className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
-                      >
-                        {ad.companyName}
-                      </button>
-
-                      {/* Revenue, Funds Raised, and Age - Only when NOT expanded */}
-                      {!expandedInfoId || expandedInfoId !== ad.id ? (
-                        <>
-                          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                            <div>
-                              <span className="text-muted-foreground">Revenue: </span>
-                              <span className="font-medium text-foreground">{ad.revenue}</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Funds: </span>
-                              <span className="font-medium text-foreground">{ad.fundsRaised}</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Age: </span>
-                              <span className="font-medium text-foreground">{ad.companyAge}</span>
-                            </div>
-                          </div>
-
-                          {/* Buying Range - Text Only */}
-                          <div className="mt-2 text-sm">
-                            <span className="text-muted-foreground">Range: </span>
-                            <span className="font-semibold text-foreground">{ad.minRange}% - {ad.maxRange}%</span>
-                          </div>
-                        </>
-                      ) : null}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-2">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleToggleSaveScanAd(ad.id);
-                        }}
-                        className="p-2 hover:bg-background/80 rounded-lg transition-colors"
-                        title={savedScanAds.includes(ad.id) ? "Unsave" : "Save"}
-                      >
-                        <Bookmark 
-                          className={`w-4 h-4 ${savedScanAds.includes(ad.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
-                        />
-                      </button>
-                      <button
-                        onClick={(e) => e.stopPropagation()}
-                        className="p-2 hover:bg-background/80 rounded-lg transition-colors"
-                        title="Show interest"
-                      >
-                        <Heart className="w-4 h-4 text-muted-foreground hover:fill-primary hover:text-primary transition-all" />
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Expanded Section - Full Width */}
-                  {expandedInfoId === ad.id && (
-                    <div className="mt-4 animate-accordion-down">
-                      {/* Tagline */}
-                      <div className="mb-4 px-1">
-                        <p className="text-sm text-muted-foreground italic leading-relaxed">
-                          "{ad.companyTagline}"
-                        </p>
-                      </div>
-
-                      {/* Company Photos - Full Width */}
-                      <div className="-mx-4 mb-4 px-2">
-                        <div className="grid grid-cols-3 gap-1.5">
-                          {ad.companyPhotos.map((photo, index) => (
-                            <div 
-                              key={index}
-                              className="relative overflow-hidden rounded-lg aspect-[4/3] group"
-                            >
-                              <img 
-                                src={photo} 
-                                alt={`${ad.companyName} ${index + 1}`}
-                                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Stats Grid */}
-                      <div className="grid grid-cols-2 gap-3 px-1">
-                        <div className="bg-muted/50 rounded-lg p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Revenue</div>
-                          <div className="font-semibold text-sm text-foreground">{ad.revenue}</div>
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Funds Raised</div>
-                          <div className="font-semibold text-sm text-foreground">{ad.fundsRaised}</div>
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Company Age</div>
-                          <div className="font-semibold text-sm text-foreground">{ad.companyAge}</div>
-                        </div>
-                        <div className="bg-muted/50 rounded-lg p-3">
-                          <div className="text-xs text-muted-foreground mb-1">Buying Range</div>
-                          <div className="font-semibold text-sm text-foreground">{ad.minRange}% - {ad.maxRange}%</div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </ScrollArea>
-        ) : activeView === 'sell' ? (
+          {activeView === 'sell' ? (
           /* Selling Page - Portfolio View */
           <div className="px-4 py-6">
             {/* Portfolio Section */}
@@ -889,237 +701,506 @@ const Trade = () => {
           </div>
         ) : (
           /* Buying Page */
-          <div className="px-4 py-6">
-            {/* Search Bar and Saved Toggle */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                <Input
-                  value={searchValue}
-                  onChange={(e) => setSearchValue(e.target.value)}
-                  placeholder="Search..."
-                  className="pl-10 pr-10 h-12 rounded-full bg-muted border-0"
-                />
-                {searchValue && (
-                  <button
-                    onClick={() => setSearchValue("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                  >
-                    <X className="w-5 h-5 text-muted-foreground" />
-                  </button>
-                )}
+          <ScrollArea className="h-[calc(100vh-8rem)]">
+            <div className="px-4 py-4">
+              {/* Search Bar and Saved Toggle */}
+              <div className="flex items-center gap-3 mb-4">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <Input
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    placeholder="Search companies..."
+                    className="pl-10 pr-10 h-11 rounded-xl bg-muted border-0"
+                  />
+                  {searchValue && (
+                    <button
+                      onClick={() => setSearchValue("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                    >
+                      <X className="w-5 h-5 text-muted-foreground" />
+                    </button>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowSavedOnly(!showSavedOnly)}
+                  className={`h-11 w-11 flex-shrink-0 rounded-xl transition-colors ${showSavedOnly ? 'bg-primary text-primary-foreground hover:bg-primary/90' : 'hover:bg-muted'}`}
+                  title={showSavedOnly ? "Show all" : "Show saved"}
+                >
+                  <Bookmark className={`w-5 h-5 transition-all ${showSavedOnly ? 'fill-current' : ''}`} />
+                </Button>
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowSavedOnly(!showSavedOnly)}
-                className={`h-12 w-12 flex-shrink-0 rounded-full transition-colors ${showSavedOnly ? 'bg-foreground hover:bg-foreground/90' : 'hover:bg-muted'}`}
-                title={showSavedOnly ? "Show all sellers" : "Show saved sellers"}
-              >
-                <Bookmark className={`w-5 h-5 transition-all ${showSavedOnly ? 'fill-background text-background' : 'text-foreground'}`} />
-              </Button>
-            </div>
 
-            {/* Category Tags */}
-            {!showSavedOnly && (
-              <div className="bg-muted rounded-xl p-4 mb-6 max-h-48 overflow-y-auto">
-                <div className="flex flex-wrap gap-2">
-                  {categories.map((category) => {
-                    const isSelected = selectedCategories.includes(category);
-                    return (
-                      <Badge
-                        key={category}
-                        variant={isSelected ? "default" : "outline"}
-                        onClick={() => handleCategoryClick(category)}
-                        className="cursor-pointer transition-all"
+              {/* Category Tags */}
+              {!showSavedOnly && (searchValue || selectedCategories.length > 0) && (
+                <div className="bg-muted/50 rounded-xl p-3 mb-4 max-h-48 overflow-y-auto">
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map((category) => {
+                      const isSelected = selectedCategories.includes(category);
+                      return (
+                        <Badge
+                          key={category}
+                          variant={isSelected ? "default" : "outline"}
+                          onClick={() => handleCategoryClick(category)}
+                          className="cursor-pointer transition-all text-xs"
+                        >
+                          {category}
+                        </Badge>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* Suggested Companies - When no search/filter */}
+              {!showSellers && !showSavedOnly && (
+                <div className="space-y-4">
+                  <h2 className="text-base font-semibold text-foreground">Suggested for You</h2>
+                  
+                  {scanAds.map((ad) => (
+                    <div
+                      key={ad.id}
+                      className={`border rounded-xl p-4 transition-all cursor-pointer ${
+                        ad.isSponsored
+                          ? 'border-primary/30 bg-gradient-to-br from-primary/5 to-primary/10 shadow-md'
+                          : 'border-border bg-card hover:shadow-sm'
+                      }`}
+                      onClick={() => setExpandedBuyId(expandedBuyId === ad.id ? null : ad.id)}
+                    >
+                      {/* Sponsored Badge */}
+                      {ad.isSponsored && (
+                        <div className="flex items-center gap-1.5 mb-3">
+                          <Zap className="w-3.5 h-3.5 text-primary fill-primary" />
+                          <span className="text-xs font-bold text-primary uppercase tracking-wide">
+                            Sponsored
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Main Content */}
+                      <div className="flex items-start gap-3">
+                        {/* Profile Pic */}
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/profile');
+                          }}
+                        >
+                          <Avatar className={ad.isSponsored ? "w-14 h-14 ring-2 ring-primary/20" : "w-12 h-12"}>
+                            <AvatarImage src={ad.avatar} />
+                            <AvatarFallback className="bg-muted text-foreground font-semibold">
+                              {ad.name.split(" ").map((n) => n[0]).join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                        </button>
+
+                        {/* Details */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/profile');
+                              }}
+                              className="font-semibold text-foreground hover:text-primary transition-colors text-left text-sm"
+                            >
+                              {ad.name}
+                            </button>
+                            <Badge 
+                              variant="secondary" 
+                              className="text-[10px] px-1.5 py-0 h-4 font-medium"
+                            >
+                              {ad.type}
+                            </Badge>
+                          </div>
+
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate('/company-profile');
+                            }}
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block font-medium"
+                          >
+                            {ad.companyName}
+                          </button>
+
+                          {!expandedBuyId || expandedBuyId !== ad.id ? (
+                            <>
+                              <div className="mt-2.5 grid grid-cols-2 gap-2">
+                                <div className="bg-background/60 rounded-lg px-2.5 py-1.5">
+                                  <p className="text-[10px] text-muted-foreground mb-0.5">Revenue</p>
+                                  <p className="text-xs font-semibold text-foreground">{ad.revenue}</p>
+                                </div>
+                                <div className="bg-background/60 rounded-lg px-2.5 py-1.5">
+                                  <p className="text-[10px] text-muted-foreground mb-0.5">Funds Raised</p>
+                                  <p className="text-xs font-semibold text-foreground">{ad.fundsRaised}</p>
+                                </div>
+                              </div>
+
+                              <div className="mt-2 flex items-center gap-1.5">
+                                <Badge variant="outline" className="text-[11px] px-2 py-0.5">
+                                  {ad.minRange}% - {ad.maxRange}% Range
+                                </Badge>
+                                <span className="text-xs text-muted-foreground">• {ad.companyAge}</span>
+                              </div>
+                            </>
+                          ) : null}
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleSaveScanAd(ad.id);
+                            }}
+                            className="p-2 hover:bg-background/80 rounded-lg transition-colors"
+                          >
+                            <Bookmark 
+                              className={`w-4 h-4 ${savedScanAds.includes(ad.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
+                            />
+                          </button>
+                          <button
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-2 hover:bg-background/80 rounded-lg transition-colors"
+                          >
+                            <Heart className="w-4 h-4 text-muted-foreground hover:fill-primary hover:text-primary transition-all" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Expanded Section */}
+                      {expandedBuyId === ad.id && (
+                        <div className="mt-4 space-y-4 animate-accordion-down">
+                          {/* Tagline */}
+                          <div className="px-1">
+                            <p className="text-sm text-muted-foreground leading-relaxed">
+                              "{ad.companyTagline}"
+                            </p>
+                          </div>
+
+                          {/* Scrollable Photo Gallery */}
+                          <div className="relative -mx-4 px-4">
+                            <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-muted">
+                              <img 
+                                src={ad.companyPhotos[currentPhotoIndex[ad.id] || 0]} 
+                                alt={`${ad.companyName} ${(currentPhotoIndex[ad.id] || 0) + 1}`}
+                                className="w-full h-full object-cover"
+                              />
+                              
+                              {/* Navigation Buttons */}
+                              {ad.companyPhotos.length > 1 && (
+                                <>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setCurrentPhotoIndex(prev => ({
+                                        ...prev,
+                                        [ad.id]: Math.max(0, (prev[ad.id] || 0) - 1)
+                                      }));
+                                    }}
+                                    className={`absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center transition-opacity ${
+                                      (currentPhotoIndex[ad.id] || 0) === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                                    }`}
+                                  >
+                                    <ChevronUp className="w-4 h-4 rotate-90" />
+                                  </button>
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setCurrentPhotoIndex(prev => ({
+                                        ...prev,
+                                        [ad.id]: Math.min(ad.companyPhotos.length - 1, (prev[ad.id] || 0) + 1)
+                                      }));
+                                    }}
+                                    className={`absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center transition-opacity ${
+                                      (currentPhotoIndex[ad.id] || 0) === ad.companyPhotos.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                                    }`}
+                                  >
+                                    <ChevronUp className="w-4 h-4 -rotate-90" />
+                                  </button>
+                                  
+                                  {/* Photo Indicators */}
+                                  <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                    {ad.companyPhotos.map((_, index) => (
+                                      <button
+                                        key={index}
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setCurrentPhotoIndex(prev => ({
+                                            ...prev,
+                                            [ad.id]: index
+                                          }));
+                                        }}
+                                        className={`h-1.5 rounded-full transition-all ${
+                                          (currentPhotoIndex[ad.id] || 0) === index 
+                                            ? 'w-6 bg-primary' 
+                                            : 'w-1.5 bg-background/60'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Professional Stats Grid */}
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-3 border border-border/50">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                                  <TrendingUp className="w-3.5 h-3.5 text-primary" />
+                                </div>
+                                <p className="text-xs font-medium text-muted-foreground">Revenue Status</p>
+                              </div>
+                              <p className="text-sm font-bold text-foreground">{ad.revenue}</p>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-3 border border-border/50">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                                  <DollarSign className="w-3.5 h-3.5 text-primary" />
+                                </div>
+                                <p className="text-xs font-medium text-muted-foreground">Funds Raised</p>
+                              </div>
+                              <p className="text-sm font-bold text-foreground">{ad.fundsRaised}</p>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-3 border border-border/50">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-6 h-6 rounded-md bg-primary/10 flex items-center justify-center">
+                                  <Calendar className="w-3.5 h-3.5 text-primary" />
+                                </div>
+                                <p className="text-xs font-medium text-muted-foreground">Company Age</p>
+                              </div>
+                              <p className="text-sm font-bold text-foreground">{ad.companyAge}</p>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-3 border border-primary/20">
+                              <div className="flex items-center gap-2 mb-1">
+                                <div className="w-6 h-6 rounded-md bg-primary/20 flex items-center justify-center">
+                                  <Target className="w-3.5 h-3.5 text-primary" />
+                                </div>
+                                <p className="text-xs font-medium text-primary">Buying Range</p>
+                              </div>
+                              <p className="text-sm font-bold text-primary">{ad.minRange}% - {ad.maxRange}%</p>
+                            </div>
+                          </div>
+
+                          {/* CTA Button */}
+                          <Button className="w-full h-11 font-semibold">
+                            Express Interest
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Filtered Results */}
+              {showSellers && !showSavedOnly && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-base font-semibold text-foreground">
+                      {selectedCategories.length > 0 ? `${selectedCategories.join(", ")}` : "All Companies"}
+                    </h2>
+                    <button className="w-9 h-9 flex items-center justify-center hover:bg-muted rounded-lg transition-colors">
+                      <SlidersHorizontal className="w-4 h-4 text-foreground" />
+                    </button>
+                  </div>
+                  
+                  {scanAds.map((ad) => (
+                    <div
+                      key={ad.id}
+                      className="border border-border rounded-xl p-4 bg-card hover:shadow-sm transition-all cursor-pointer"
+                      onClick={() => setExpandedBuyId(expandedBuyId === ad.id ? null : ad.id)}
+                    >
+                      <div className="flex items-start gap-3">
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/profile');
+                          }}
+                        >
+                          <Avatar className="w-12 h-12">
+                            <AvatarImage src={ad.avatar} />
+                            <AvatarFallback className="bg-muted text-foreground font-semibold">
+                              {ad.name.split(" ").map((n) => n[0]).join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                        </button>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2">
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                navigate('/profile');
+                              }}
+                              className="font-semibold text-foreground hover:text-primary transition-colors text-left text-sm"
+                            >
+                              {ad.name}
+                            </button>
+                            <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-4">
+                              {ad.type}
+                            </Badge>
+                          </div>
+
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate('/company-profile');
+                            }}
+                            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
+                          >
+                            {ad.companyName}
+                          </button>
+
+                          {!expandedBuyId || expandedBuyId !== ad.id ? (
+                            <div className="mt-2 flex items-center gap-2 text-xs">
+                              <span className="text-muted-foreground">{ad.revenue}</span>
+                              <span className="text-muted-foreground">•</span>
+                              <span className="font-medium text-foreground">{ad.minRange}%-{ad.maxRange}%</span>
+                            </div>
+                          ) : null}
+                        </div>
+
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleToggleSaveScanAd(ad.id);
+                            }}
+                            className="p-2 hover:bg-background/80 rounded-lg transition-colors"
+                          >
+                            <Bookmark 
+                              className={`w-4 h-4 ${savedScanAds.includes(ad.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
+                            />
+                          </button>
+                        </div>
+                      </div>
+
+                      {expandedBuyId === ad.id && (
+                        <div className="mt-4 space-y-4 animate-accordion-down">
+                          <p className="text-sm text-muted-foreground">"{ad.companyTagline}"</p>
+                          
+                          <div className="relative aspect-[16/9] rounded-lg overflow-hidden bg-muted">
+                            <img 
+                              src={ad.companyPhotos[currentPhotoIndex[ad.id] || 0]} 
+                              alt={ad.companyName}
+                              className="w-full h-full object-cover"
+                            />
+                            
+                            {ad.companyPhotos.length > 1 && (
+                              <>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentPhotoIndex(prev => ({
+                                      ...prev,
+                                      [ad.id]: Math.max(0, (prev[ad.id] || 0) - 1)
+                                    }));
+                                  }}
+                                  className={`absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center transition-opacity ${
+                                    (currentPhotoIndex[ad.id] || 0) === 0 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                                  }`}
+                                >
+                                  <ChevronUp className="w-4 h-4 rotate-90" />
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setCurrentPhotoIndex(prev => ({
+                                      ...prev,
+                                      [ad.id]: Math.min(ad.companyPhotos.length - 1, (prev[ad.id] || 0) + 1)
+                                    }));
+                                  }}
+                                  className={`absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center transition-opacity ${
+                                    (currentPhotoIndex[ad.id] || 0) === ad.companyPhotos.length - 1 ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                                  }`}
+                                >
+                                  <ChevronUp className="w-4 h-4 -rotate-90" />
+                                </button>
+                                
+                                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
+                                  {ad.companyPhotos.map((_, index) => (
+                                    <div
+                                      key={index}
+                                      className={`h-1.5 rounded-full transition-all ${
+                                        (currentPhotoIndex[ad.id] || 0) === index ? 'w-6 bg-primary' : 'w-1.5 bg-background/60'
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-3 border border-border/50">
+                              <p className="text-xs text-muted-foreground mb-1">Revenue</p>
+                              <p className="text-sm font-bold text-foreground">{ad.revenue}</p>
+                            </div>
+                            <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-3 border border-border/50">
+                              <p className="text-xs text-muted-foreground mb-1">Funds</p>
+                              <p className="text-sm font-bold text-foreground">{ad.fundsRaised}</p>
+                            </div>
+                            <div className="bg-gradient-to-br from-muted/50 to-muted/30 rounded-lg p-3 border border-border/50">
+                              <p className="text-xs text-muted-foreground mb-1">Age</p>
+                              <p className="text-sm font-bold text-foreground">{ad.companyAge}</p>
+                            </div>
+                            <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-3 border border-primary/20">
+                              <p className="text-xs text-primary mb-1">Range</p>
+                              <p className="text-sm font-bold text-primary">{ad.minRange}%-{ad.maxRange}%</p>
+                            </div>
+                          </div>
+
+                          <Button className="w-full h-11 font-semibold">Express Interest</Button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Saved Section */}
+              {showSavedOnly && (
+                <div className="space-y-4">
+                  <h2 className="text-base font-semibold text-foreground">Saved Companies</h2>
+                  {scanAds
+                    .filter(ad => savedScanAds.includes(ad.id))
+                    .map((ad) => (
+                      <div
+                        key={ad.id}
+                        className="border border-border rounded-xl p-4 bg-card"
                       >
-                        {category}
-                      </Badge>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Saved Sellers Section */}
-            {showSavedOnly && (
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-sm font-medium text-foreground">
-                    Saved Sellers
-                  </h2>
-                </div>
-                <div className="space-y-4">
-                  {sellers
-                    .filter(seller => savedSellers.includes(seller.id))
-                    .map((seller) => (
-                    <div
-                      key={seller.id}
-                      className="border border-border rounded-lg p-4 bg-card hover:bg-muted/50 transition-all"
-                    >
-                      <div className="flex items-start gap-3">
-                        {/* Profile Pic - Clickable */}
-                        <button onClick={() => navigate('/profile')}>
+                        <div className="flex items-start gap-3">
                           <Avatar className="w-12 h-12">
-                            <AvatarImage src={seller.avatar} />
-                            <AvatarFallback className="bg-muted text-foreground">
-                              {seller.name.split(" ").map((n) => n[0]).join("")}
-                            </AvatarFallback>
+                            <AvatarImage src={ad.avatar} />
+                            <AvatarFallback>{ad.name[0]}</AvatarFallback>
                           </Avatar>
-                        </button>
-
-                        {/* Details */}
-                        <div className="flex-1 min-w-0">
-                          {/* Name - Clickable */}
-                          <button 
-                            onClick={() => navigate('/profile')}
-                            className="font-semibold text-foreground hover:text-primary transition-colors text-left"
-                          >
-                            {seller.name}
-                          </button>
-
-                          {/* Company Name - Clickable */}
-                          <button 
-                            onClick={() => navigate('/company-profile')}
-                            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
-                          >
-                            {seller.companyName}
-                          </button>
-
-                          {/* Revenue and Funds Raised */}
-                          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                            <div>
-                              <span className="text-muted-foreground">Revenue: </span>
-                              <span className="font-medium text-foreground">{seller.revenue}</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Funds: </span>
-                              <span className="font-medium text-foreground">{seller.fundsRaised}</span>
-                            </div>
+                          <div className="flex-1">
+                            <p className="font-semibold text-sm">{ad.name}</p>
+                            <p className="text-sm text-muted-foreground">{ad.companyName}</p>
+                            <p className="text-xs text-muted-foreground mt-1">{ad.minRange}%-{ad.maxRange}%</p>
                           </div>
-
-                          {/* Buying Range - Text Only */}
-                          <div className="mt-2 text-sm">
-                            <span className="text-muted-foreground">Range: </span>
-                            <span className="font-semibold text-foreground">{seller.minRange}% - {seller.maxRange}%</span>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-col gap-2">
                           <button
-                            onClick={() => handleToggleSaveSeller(seller.id)}
-                            className="p-2 hover:bg-background rounded-lg transition-colors"
-                            title={savedSellers.includes(seller.id) ? "Unsave" : "Save"}
+                            onClick={() => handleToggleSaveScanAd(ad.id)}
+                            className="p-2"
                           >
-                            <Bookmark 
-                              className={`w-4 h-4 ${savedSellers.includes(seller.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
-                            />
-                          </button>
-                          <button
-                            className="p-2 hover:bg-background rounded-lg transition-colors"
-                            title="Show interest"
-                          >
-                            <Heart className="w-4 h-4 text-muted-foreground hover:fill-primary hover:text-primary transition-all" />
+                            <Bookmark className="w-4 h-4 fill-primary text-primary" />
                           </button>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
-              </div>
-            )}
-
-            {/* Regular Sellers Section */}
-            {showSellers && !showSavedOnly && (
-              <div className="pb-4">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-sm font-medium text-foreground">
-                    Sellers in – "{selectedCategories.length > 0 ? selectedCategories.join(", ") : "All"}"
-                  </h2>
-                  <button className="w-8 h-8 flex items-center justify-center hover:bg-muted rounded-full transition-colors">
-                    <SlidersHorizontal className="w-5 h-5 text-foreground" />
-                  </button>
-                </div>
-                <div className="space-y-4">
-                  {sellers.map((seller) => (
-                    <div
-                      key={seller.id}
-                      className="border border-border rounded-lg p-4 bg-card hover:bg-muted/50 transition-all"
-                    >
-                      <div className="flex items-start gap-3">
-                        {/* Profile Pic - Clickable */}
-                        <button onClick={() => navigate('/profile')}>
-                          <Avatar className="w-12 h-12">
-                            <AvatarImage src={seller.avatar} />
-                            <AvatarFallback className="bg-muted text-foreground">
-                              {seller.name.split(" ").map((n) => n[0]).join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                        </button>
-
-                        {/* Details */}
-                        <div className="flex-1 min-w-0">
-                          {/* Name - Clickable */}
-                          <button 
-                            onClick={() => navigate('/profile')}
-                            className="font-semibold text-foreground hover:text-primary transition-colors text-left"
-                          >
-                            {seller.name}
-                          </button>
-
-                          {/* Company Name - Clickable */}
-                          <button 
-                            onClick={() => navigate('/company-profile')}
-                            className="text-sm text-muted-foreground hover:text-primary transition-colors mt-0.5 block"
-                          >
-                            {seller.companyName}
-                          </button>
-
-                          {/* Revenue and Funds Raised */}
-                          <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
-                            <div>
-                              <span className="text-muted-foreground">Revenue: </span>
-                              <span className="font-medium text-foreground">{seller.revenue}</span>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">Funds: </span>
-                              <span className="font-medium text-foreground">{seller.fundsRaised}</span>
-                            </div>
-                          </div>
-
-                          {/* Buying Range - Text Only */}
-                          <div className="mt-2 text-sm">
-                            <span className="text-muted-foreground">Range: </span>
-                            <span className="font-semibold text-foreground">{seller.minRange}% - {seller.maxRange}%</span>
-                          </div>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex flex-col gap-2">
-                          <button
-                            onClick={() => handleToggleSaveSeller(seller.id)}
-                            className="p-2 hover:bg-background rounded-lg transition-colors"
-                            title={savedSellers.includes(seller.id) ? "Unsave" : "Save"}
-                          >
-                            <Bookmark 
-                              className={`w-4 h-4 ${savedSellers.includes(seller.id) ? 'fill-primary text-primary' : 'text-muted-foreground'}`}
-                            />
-                          </button>
-                          <button
-                            className="p-2 hover:bg-background rounded-lg transition-colors"
-                            title="Show interest"
-                          >
-                            <Heart className="w-4 h-4 text-muted-foreground hover:fill-primary hover:text-primary transition-all" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          </ScrollArea>
         )}
         </>
         )}

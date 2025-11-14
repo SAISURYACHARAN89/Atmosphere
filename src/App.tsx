@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import Trade from "./pages/Trade";
 import Messages from "./pages/Messages";
+import ChatDetail from "./pages/ChatDetail";
 import Search from "./pages/Search";
 import Launch from "./pages/Launch";
 import CompanyProfile from "./pages/CompanyProfile";
@@ -50,6 +51,7 @@ const App = () => (
           <Route path="/role-selection" element={<RoleSelection />} />
           <Route path="/trade" element={<Trade />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:chatId" element={<ChatDetail />} />
           <Route path="/search" element={<Search />} />
           <Route path="/launch" element={<Launch />} />
           <Route path="/opportunities" element={<Opportunities />} />

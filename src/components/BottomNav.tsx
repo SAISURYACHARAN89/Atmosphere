@@ -12,6 +12,8 @@ const BottomNav = () => {
   const fromPath = location.state?.from;
   const isCompanyProfile = location.pathname.startsWith('/company/');
   const isStartupProfile = location.pathname.startsWith('/startup-profile/');
+  const isNotificationsPage = location.pathname === '/notifications';
+  const isMessagesPage = location.pathname === '/messages';
   
   // Determine mode based on current page
   const leftModePages = ["/", "/search", "/reels", "/profile"];
@@ -85,8 +87,8 @@ const BottomNav = () => {
     }
   };
 
-  // Hide mobile bottom nav on profile pages
-  const shouldHideMobileNav = isCompanyProfile || isStartupProfile;
+  // Hide mobile bottom nav on profile pages, notifications, and messages
+  const shouldHideMobileNav = isCompanyProfile || isStartupProfile || isNotificationsPage || isMessagesPage;
 
   return (
     <>

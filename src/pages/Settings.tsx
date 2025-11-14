@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, AtSign, BarChart3, Bookmark, Activity, Settings as SettingsIcon, MessageSquare, Lock, Briefcase, Crown, HelpCircle, Info, ChevronRight, Mail, Phone as PhoneIcon, KeyRound, Play, ShoppingBag, FileText, X, Filter } from "lucide-react";
+import { ArrowLeft, User, AtSign, BarChart3, Bookmark, Activity, Settings as SettingsIcon, MessageSquare, Lock, Briefcase, Crown, HelpCircle, Info, ChevronRight, Mail, Phone as PhoneIcon, KeyRound, Play, ShoppingBag, FileText, X, Filter, Shield, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { toast } from "sonner";
+import { VerificationFlow } from "@/components/VerificationFlow";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -29,6 +30,11 @@ const Settings = () => {
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  
+  // Verification Flows
+  const [kycVerificationOpen, setKycVerificationOpen] = useState(false);
+  const [portfolioVerificationOpen, setPortfolioVerificationOpen] = useState(false);
+  const [companyVerificationOpen, setCompanyVerificationOpen] = useState(false);
 
   // Form states
   const [name, setName] = useState("John Doe");
@@ -242,10 +248,24 @@ const Settings = () => {
             <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">Account</h2>
             <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
               <SettingItem
+                icon={Shield}
+                title="KYC Verification"
+                subtitle="Verify your identity"
+                onClick={() => setKycVerificationOpen(true)}
+              />
+              <Separator />
+              <SettingItem
                 icon={Briefcase}
-                title="Portfolio & KYC"
-                subtitle="Update portfolio or verify identity"
-                onClick={() => setPortfolioOpen(true)}
+                title="Portfolio Verification"
+                subtitle="Verify your investment portfolio"
+                onClick={() => setPortfolioVerificationOpen(true)}
+              />
+              <Separator />
+              <SettingItem
+                icon={Building}
+                title="Company Verification"
+                subtitle="Verify your company details"
+                onClick={() => setCompanyVerificationOpen(true)}
               />
               <Separator />
               <SettingItem
@@ -881,6 +901,36 @@ const Settings = () => {
               © 2025 Startup Connect. All rights reserved.
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* KYC Verification Dialog */}
+      <Dialog open={kycVerificationOpen} onOpenChange={setKycVerificationOpen}>
+        <DialogContent className="p-0 max-w-2xl border-0 bg-transparent">
+          <VerificationFlow 
+            type="kyc" 
+            onComplete={() => setKycVerificationOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Portfolio Verification Dialog */}
+      <Dialog open={portfolioVerificationOpen} onOpenChange={setPortfolioVerificationOpen}>
+        <DialogContent className="p-0 max-w-2xl border-0 bg-transparent">
+          <VerificationFlow 
+            type="portfolio" 
+            onComplete={() => setPortfolioVerificationOpen(false)} 
+          />
+        </DialogContent>
+      </Dialog>
+
+      {/* Company Verification Dialog */}
+      <Dialog open={companyVerificationOpen} onOpenChange={setCompanyVerificationOpen}>
+        <DialogContent className="p-0 max-w-2xl border-0 bg-transparent">
+          <VerificationFlow 
+            type="company" 
+            onComplete={() => setCompanyVerificationOpen(false)} 
+          />
         </DialogContent>
       </Dialog>
     </div>

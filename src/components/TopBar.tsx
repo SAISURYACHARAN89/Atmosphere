@@ -9,6 +9,7 @@ const TopBar = () => {
   const isSearchPage = location.pathname === '/search';
   const isCompanyProfile = location.pathname.startsWith('/company/');
   const isTradePage = location.pathname === '/trade';
+  const isProfilePage = location.pathname === '/profile';
   const fromPath = location.state?.from;
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -49,13 +50,15 @@ const TopBar = () => {
             >
               <ChevronLeft className="w-5 h-5 text-foreground" strokeWidth={2} />
             </button>
-          ) : (
+          ) : isProfilePage ? (
             <button 
               onClick={() => navigate('/settings')}
               className="p-2 rounded-lg hover:bg-muted/80 transition-all duration-300 active:scale-95"
             >
               <Menu className="w-5 h-5 text-foreground" strokeWidth={2} />
             </button>
+          ) : (
+            <div className="w-9 h-9" />
           )}
         </div>
 

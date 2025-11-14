@@ -18,9 +18,8 @@ const BottomNav = () => {
   // Determine mode based on current page
   const leftModePages = ["/", "/search", "/reels", "/profile"];
   const rightModePages = ["/launch", "/trade", "/opportunities", "/meetings"];
+  const neutralPages = ["/notifications", "/messages"]; // Pages that don't affect mode
   
-  const appMode: AppMode = rightModePages.includes(location.pathname) ? "right" : "left";
-
   // Initialize with current page if it matches a mode, otherwise use defaults
   const [lastLeftPage, setLastLeftPage] = useState(() => {
     return leftModePages.includes(location.pathname) ? location.pathname : "/";
@@ -28,6 +27,12 @@ const BottomNav = () => {
   const [lastRightPage, setLastRightPage] = useState(() => {
     return rightModePages.includes(location.pathname) ? location.pathname : "/launch";
   });
+
+  // If on a neutral page, maintain last known mode based on previous navigation
+  const appMode: AppMode = 
+    neutralPages.includes(location.pathname)
+      ? (rightModePages.includes(lastRightPage) ? "right" : "left")
+      : rightModePages.includes(location.pathname) ? "right" : "left";
 
   // Track the last visited page for each mode
   useEffect(() => {

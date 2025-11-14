@@ -337,67 +337,125 @@ const eventsData: Event[] = [
   }
 ];
 
-interface CoFounder {
+interface StartupRolePosting {
   id: string;
-  name: string;
-  title: string;
-  expertise: string[];
+  startupName: string;
+  startupLogo?: string;
+  roleTitle: string;
+  sector: string;
   location: string;
-  lookingFor: string;
-  bio: string;
-  availability: string;
+  isRemote: boolean;
+  employmentType: "Full-time" | "Part-time";
+  compensation: string;
+  description: string;
+  requirements: string;
+  applicantsCount: number;
 }
 
-const coFoundersData: CoFounder[] = [
+const startupRolePostings: StartupRolePosting[] = [
   {
     id: "1",
-    name: "Alex Chen",
-    title: "Full-Stack Developer",
-    expertise: ["React", "Node.js", "AWS", "Product Development"],
+    startupName: "NeuralTech AI",
+    roleTitle: "Co-Founder & CTO",
+    sector: "Artificial Intelligence",
     location: "San Francisco, USA",
-    lookingFor: "Technical Co-founder for SaaS startup",
-    bio: "10+ years building scalable web applications. Looking to join an early-stage startup as a technical co-founder.",
-    availability: "Full-time"
+    isRemote: true,
+    employmentType: "Full-time",
+    compensation: "Equity (15-20%) + Competitive Salary",
+    description: "Building next-generation AI solutions for enterprise automation. Seeking technical leader to drive product development and scale engineering team.",
+    requirements: "10+ years in software engineering, proven track record in AI/ML, startup experience preferred, strong leadership skills",
+    applicantsCount: 24
   },
   {
     id: "2",
-    name: "Sarah Johnson",
-    title: "Marketing & Growth Strategist",
-    expertise: ["Digital Marketing", "Growth Hacking", "Brand Strategy", "Content"],
-    location: "London, UK",
-    lookingFor: "Marketing Co-founder for B2B Tech",
-    bio: "Helped 3 startups achieve 10x growth. Seeking mission-driven B2B tech company.",
-    availability: "Part-time"
+    startupName: "GreenWave Energy",
+    roleTitle: "Head of Marketing",
+    sector: "Green Energy",
+    location: "Berlin, Germany",
+    isRemote: false,
+    employmentType: "Full-time",
+    compensation: "Equity (3-5%) + €80k-100k",
+    description: "Revolutionary renewable energy platform seeking marketing leader to drive B2B growth and brand positioning in European markets.",
+    requirements: "5+ years B2B marketing experience, climate tech interest, growth hacking expertise, fluent English and German",
+    applicantsCount: 12
   },
   {
     id: "3",
-    name: "Raj Patel",
-    title: "AI/ML Engineer",
-    expertise: ["Machine Learning", "Python", "Deep Learning", "Computer Vision"],
-    location: "Berlin, Germany",
-    lookingFor: "Co-founder for AI/ML startup",
-    bio: "PhD in AI, ex-Google. Building intelligent systems for healthcare and climate tech.",
-    availability: "Full-time"
+    startupName: "HealthSync",
+    roleTitle: "Product Designer (Co-Founder Level)",
+    sector: "Healthcare",
+    location: "London, UK",
+    isRemote: true,
+    employmentType: "Part-time",
+    compensation: "Equity (8-12%) + Part-time Salary",
+    description: "Digital health platform connecting patients with specialists. Looking for designer to shape product vision and create exceptional user experiences.",
+    requirements: "Healthcare or medtech design experience, user research skills, design systems expertise, passion for improving patient care",
+    applicantsCount: 8
   },
   {
     id: "4",
-    name: "Emma Williams",
-    title: "Product Designer",
-    expertise: ["UX/UI Design", "User Research", "Design Systems", "Prototyping"],
-    location: "New York, USA",
-    lookingFor: "Design Co-founder for Consumer App",
-    bio: "Award-winning designer with passion for creating delightful user experiences.",
-    availability: "Full-time"
+    startupName: "DroneFleet Pro",
+    roleTitle: "Operations Lead",
+    sector: "Robotics",
+    location: "Singapore",
+    isRemote: false,
+    employmentType: "Full-time",
+    compensation: "Equity (5-8%) + SGD 90k-120k",
+    description: "Commercial drone delivery startup scaling operations across Asia. Need experienced operations leader to build efficient logistics systems.",
+    requirements: "Logistics or supply chain experience, startup mindset, data-driven approach, willing to travel across Asia",
+    applicantsCount: 15
   },
   {
     id: "5",
-    name: "Michael Zhang",
-    title: "Finance & Operations",
-    expertise: ["Financial Planning", "Operations", "Fundraising", "Strategy"],
-    location: "Singapore",
-    lookingFor: "Business Co-founder for FinTech",
-    bio: "Ex-investment banker turned operator. Raised $50M+ for startups.",
-    availability: "Full-time"
+    startupName: "FinFlow",
+    roleTitle: "Co-Founder & CFO",
+    sector: "FinTech",
+    location: "New York, USA",
+    isRemote: true,
+    employmentType: "Full-time",
+    compensation: "Equity (18-25%) + Base Salary",
+    description: "Next-gen payment infrastructure for emerging markets. Seeking financial leader to manage fundraising, financial strategy, and investor relations.",
+    requirements: "Investment banking or VC background, fintech experience, proven fundraising track record, financial modeling expertise",
+    applicantsCount: 32
+  },
+  {
+    id: "6",
+    startupName: "EduLearn",
+    roleTitle: "Chief Technology Officer",
+    sector: "EdTech",
+    location: "Austin, USA",
+    isRemote: true,
+    employmentType: "Full-time",
+    compensation: "Equity (10-15%) + $140k-180k",
+    description: "AI-powered personalized learning platform for K-12 education. Looking for technical co-founder to lead engineering and product development.",
+    requirements: "Full-stack expertise, EdTech passion, experience with AI/ML, team building skills, scalability focus",
+    applicantsCount: 18
+  },
+  {
+    id: "7",
+    startupName: "AgriGrow",
+    roleTitle: "Business Development Lead",
+    sector: "AgriTech",
+    location: "Amsterdam, Netherlands",
+    isRemote: false,
+    employmentType: "Part-time",
+    compensation: "Equity (4-6%) + Part-time Salary",
+    description: "Sustainable farming technology startup seeking BD leader to establish partnerships with farms and distributors across Europe.",
+    requirements: "Agriculture industry knowledge, strong network in agritech, partnership development experience, sustainability focus",
+    applicantsCount: 7
+  },
+  {
+    id: "8",
+    startupName: "CyberShield",
+    roleTitle: "Co-Founder & Chief Security Officer",
+    sector: "Cybersecurity",
+    location: "Tel Aviv, Israel",
+    isRemote: true,
+    employmentType: "Full-time",
+    compensation: "Equity (20-25%) + Competitive Package",
+    description: "Enterprise cybersecurity platform protecting critical infrastructure. Seeking security expert to lead product vision and threat research.",
+    requirements: "Deep cybersecurity expertise, ethical hacking background, enterprise security experience, thought leadership",
+    applicantsCount: 21
   }
 ];
 
@@ -407,18 +465,25 @@ const Opportunities = () => {
   const [eventSector, setEventSector] = useState<string>("All Sectors");
   const [eventType, setEventType] = useState<string>("all");
   const [eventLocation, setEventLocation] = useState<string>("All Locations");
-  const [teamExpertise, setTeamExpertise] = useState<string>("All");
+  const [teamSector, setTeamSector] = useState<string>("All Sectors");
+  const [teamLocation, setTeamLocation] = useState<string>("All Locations");
+  const [teamRemote, setTeamRemote] = useState<string>("all");
+  const [teamEmploymentType, setTeamEmploymentType] = useState<string>("all");
   
   const [grantTypeOpen, setGrantTypeOpen] = useState(false);
   const [grantSectorOpen, setGrantSectorOpen] = useState(false);
   const [eventTypeOpen, setEventTypeOpen] = useState(false);
   const [eventSectorOpen, setEventSectorOpen] = useState(false);
   const [eventLocationOpen, setEventLocationOpen] = useState(false);
-  const [teamExpertiseOpen, setTeamExpertiseOpen] = useState(false);
+  const [teamSectorOpen, setTeamSectorOpen] = useState(false);
+  const [teamLocationOpen, setTeamLocationOpen] = useState(false);
+  const [teamRemoteOpen, setTeamRemoteOpen] = useState(false);
+  const [teamEmploymentOpen, setTeamEmploymentOpen] = useState(false);
 
   const grantTypes = ["all", "grant", "incubator", "accelerator"];
   const eventTypes = ["all", "physical", "virtual", "hybrid", "e-summit", "conference", "workshop", "networking"];
-  const teamExpertiseOptions = ["All", "Technical", "Business", "Design", "Marketing", "Finance"];
+  const remoteOptions = ["all", "remote", "on-site"];
+  const employmentOptions = ["all", "Full-time", "Part-time"];
 
   const filteredGrants = grantsData.filter(grant => {
     const sectorMatch = grantSector === "All Sectors" || grant.sector === grantSector;
@@ -433,9 +498,14 @@ const Opportunities = () => {
     return sectorMatch && typeMatch && locationMatch;
   });
 
-  const filteredCoFounders = coFoundersData.filter(cofounder => {
-    if (teamExpertise === "All") return true;
-    return cofounder.expertise.some(exp => exp.toLowerCase().includes(teamExpertise.toLowerCase()));
+  const filteredRolePostings = startupRolePostings.filter(posting => {
+    const sectorMatch = teamSector === "All Sectors" || posting.sector === teamSector;
+    const locationMatch = teamLocation === "All Locations" || posting.location.includes(teamLocation) || teamLocation === "Global";
+    const remoteMatch = teamRemote === "all" || 
+      (teamRemote === "remote" && posting.isRemote) || 
+      (teamRemote === "on-site" && !posting.isRemote);
+    const employmentMatch = teamEmploymentType === "all" || posting.employmentType === teamEmploymentType;
+    return sectorMatch && locationMatch && remoteMatch && employmentMatch;
   });
 
   const getGrantTypeBadge = (type: string) => {
@@ -810,31 +880,124 @@ const Opportunities = () => {
                 Filters
               </div>
               
-              {/* Expertise Filter */}
-              <Collapsible open={teamExpertiseOpen} onOpenChange={setTeamExpertiseOpen}>
+              {/* Sector Filter */}
+              <Collapsible open={teamSectorOpen} onOpenChange={setTeamSectorOpen}>
                 <CollapsibleTrigger className="w-full">
                   <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
-                    <span className="text-sm font-medium">Expertise: {teamExpertise}</span>
-                    <ChevronDown className={cn("w-4 h-4 transition-transform", teamExpertiseOpen && "rotate-180")} />
+                    <span className="text-sm font-medium">Sector: {teamSector}</span>
+                    <ChevronDown className={cn("w-4 h-4 transition-transform", teamSectorOpen && "rotate-180")} />
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                  <div className="flex flex-wrap gap-2 p-3 bg-muted/30 rounded-lg mt-2">
-                    {teamExpertiseOptions.map(exp => (
+                  <div className="grid grid-cols-2 gap-2 p-3 bg-muted/30 rounded-lg mt-2 max-h-[300px] overflow-y-auto">
+                    {sectors.map(sector => (
                       <button
-                        key={exp}
+                        key={sector}
                         onClick={() => {
-                          setTeamExpertise(exp);
-                          setTeamExpertiseOpen(false);
+                          setTeamSector(sector);
+                          setTeamSectorOpen(false);
                         }}
                         className={cn(
-                          "px-4 py-2 rounded-lg text-sm font-medium transition-colors",
-                          teamExpertise === exp
+                          "px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left",
+                          teamSector === sector
                             ? "bg-primary text-primary-foreground"
                             : "bg-card hover:bg-muted border border-border"
                         )}
                       >
-                        {exp}
+                        {sector}
+                      </button>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Location Filter */}
+              <Collapsible open={teamLocationOpen} onOpenChange={setTeamLocationOpen}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                    <span className="text-sm font-medium">Location: {teamLocation}</span>
+                    <ChevronDown className={cn("w-4 h-4 transition-transform", teamLocationOpen && "rotate-180")} />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="grid grid-cols-2 gap-2 p-3 bg-muted/30 rounded-lg mt-2 max-h-[300px] overflow-y-auto">
+                    {locations.map(location => (
+                      <button
+                        key={location}
+                        onClick={() => {
+                          setTeamLocation(location);
+                          setTeamLocationOpen(false);
+                        }}
+                        className={cn(
+                          "px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left",
+                          teamLocation === location
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-card hover:bg-muted border border-border"
+                        )}
+                      >
+                        {location}
+                      </button>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Remote/On-site Filter */}
+              <Collapsible open={teamRemoteOpen} onOpenChange={setTeamRemoteOpen}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                    <span className="text-sm font-medium">Work Mode: {teamRemote === "all" ? "All" : teamRemote === "remote" ? "Remote" : "On-site"}</span>
+                    <ChevronDown className={cn("w-4 h-4 transition-transform", teamRemoteOpen && "rotate-180")} />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="flex gap-2 p-3 bg-muted/30 rounded-lg mt-2">
+                    {remoteOptions.map(option => (
+                      <button
+                        key={option}
+                        onClick={() => {
+                          setTeamRemote(option);
+                          setTeamRemoteOpen(false);
+                        }}
+                        className={cn(
+                          "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize",
+                          teamRemote === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-card hover:bg-muted border border-border"
+                        )}
+                      >
+                        {option === "all" ? "All" : option === "remote" ? "Remote" : "On-site"}
+                      </button>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+
+              {/* Employment Type Filter */}
+              <Collapsible open={teamEmploymentOpen} onOpenChange={setTeamEmploymentOpen}>
+                <CollapsibleTrigger className="w-full">
+                  <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
+                    <span className="text-sm font-medium">Type: {teamEmploymentType === "all" ? "All" : teamEmploymentType}</span>
+                    <ChevronDown className={cn("w-4 h-4 transition-transform", teamEmploymentOpen && "rotate-180")} />
+                  </div>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="flex gap-2 p-3 bg-muted/30 rounded-lg mt-2">
+                    {employmentOptions.map(option => (
+                      <button
+                        key={option}
+                        onClick={() => {
+                          setTeamEmploymentType(option);
+                          setTeamEmploymentOpen(false);
+                        }}
+                        className={cn(
+                          "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
+                          teamEmploymentType === option
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-card hover:bg-muted border border-border"
+                        )}
+                      >
+                        {option === "all" ? "All" : option}
                       </button>
                     ))}
                   </div>
@@ -842,74 +1005,105 @@ const Opportunities = () => {
               </Collapsible>
 
               {/* Clear filters if any active */}
-              {teamExpertise !== "All" && (
+              {(teamSector !== "All Sectors" || teamLocation !== "All Locations" || teamRemote !== "all" || teamEmploymentType !== "all") && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setTeamExpertise("All")}
+                  onClick={() => {
+                    setTeamSector("All Sectors");
+                    setTeamLocation("All Locations");
+                    setTeamRemote("all");
+                    setTeamEmploymentType("all");
+                  }}
                   className="w-full gap-2"
                 >
-                  <X className="w-4 h-4" />
-                  Clear filters
+                  <X className="w-3 h-3" />
+                  Clear all filters
                 </Button>
               )}
             </div>
 
             {/* Team Results */}
             <div className="text-sm text-muted-foreground py-2">
-              {filteredCoFounders.length} {filteredCoFounders.length === 1 ? 'co-founder' : 'co-founders'} found
+              {filteredRolePostings.length} {filteredRolePostings.length === 1 ? 'position' : 'positions'} available
             </div>
 
             <div className="space-y-4">
-              {filteredCoFounders.map(cofounder => (
-                <div key={cofounder.id} className="border border-border rounded-xl p-4 space-y-3 hover:bg-muted/30 transition-colors bg-card">
+              {filteredRolePostings.map(posting => (
+                <div key={posting.id} className="border border-border rounded-xl p-5 space-y-4 hover:shadow-lg transition-all bg-card">
+                  {/* Header */}
                   <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-foreground">{cofounder.name}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{cofounder.title}</p>
+                    <div className="flex items-start gap-3 flex-1">
+                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <Building2 className="w-6 h-6 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-foreground text-lg">{posting.startupName}</h3>
+                        <p className="text-base text-foreground/90 font-semibold mt-1">{posting.roleTitle}</p>
+                      </div>
                     </div>
-                    <Badge variant="outline" className="whitespace-nowrap">
-                      {cofounder.availability}
+                    <Badge variant="default" className="whitespace-nowrap font-medium">
+                      {posting.employmentType}
                     </Badge>
                   </div>
 
-                  <p className="text-sm text-foreground/80">{cofounder.bio}</p>
+                  {/* Description */}
+                  <p className="text-sm text-foreground/80 leading-relaxed">{posting.description}</p>
 
-                  <div className="flex flex-wrap gap-2">
-                    {cofounder.expertise.map((skill, idx) => (
-                      <Badge key={idx} variant="secondary" className="text-xs">
-                        {skill}
-                      </Badge>
-                    ))}
+                  {/* Requirements */}
+                  <div className="bg-muted/50 rounded-lg p-3">
+                    <p className="text-xs font-medium text-muted-foreground mb-1">Looking for:</p>
+                    <p className="text-sm text-foreground/90">{posting.requirements}</p>
                   </div>
 
-                  <div className="flex items-center gap-3 text-xs text-muted-foreground pt-2 border-t border-border">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3 h-3" />
-                      {cofounder.location}
+                  {/* Compensation */}
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="font-semibold text-primary">Compensation:</span>
+                    <span className="text-foreground/90">{posting.compensation}</span>
+                  </div>
+
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-2 gap-3 text-xs">
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>{posting.location}</span>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Briefcase className="w-3 h-3" />
-                      {cofounder.lookingFor}
+                    <div className="flex items-center gap-1.5 text-muted-foreground">
+                      <Briefcase className="w-3.5 h-3.5" />
+                      <span>{posting.isRemote ? "Remote" : "On-site"}</span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 pt-2">
-                    <Button variant="default" size="sm" className="flex-1 gap-2">
-                      <Mail className="w-3 h-3" />
-                      Connect
+                  {/* Sector Badge */}
+                  <div>
+                    <Badge variant="secondary" className="text-xs">
+                      {posting.sector}
+                    </Badge>
+                  </div>
+
+                  {/* Applicants Count */}
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground pt-2 border-t border-border">
+                    <Users className="w-4 h-4" />
+                    <span className="font-medium">{posting.applicantsCount} applicants</span>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-3 pt-2">
+                    <Button size="sm" className="flex-1 gap-2 font-medium">
+                      Apply for Role
                     </Button>
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button size="sm" variant="outline" className="gap-2">
+                      <ExternalLink className="w-3.5 h-3.5" />
                       View Profile
                     </Button>
                   </div>
                 </div>
               ))}
 
-              {filteredCoFounders.length === 0 && (
+              {filteredRolePostings.length === 0 && (
                 <div className="text-center py-12 text-muted-foreground">
-                  <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                  <p>No co-founders found with current filters</p>
+                  <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                  <p>No positions found with current filters</p>
                 </div>
               )}
             </div>

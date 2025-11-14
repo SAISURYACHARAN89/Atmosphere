@@ -32,8 +32,6 @@ const Settings = () => {
   const [aboutOpen, setAboutOpen] = useState(false);
   
   // Verification Flows
-  const [kycVerificationOpen, setKycVerificationOpen] = useState(false);
-  const [portfolioVerificationOpen, setPortfolioVerificationOpen] = useState(false);
   const [companyVerificationOpen, setCompanyVerificationOpen] = useState(false);
 
   // Form states
@@ -251,14 +249,14 @@ const Settings = () => {
                 icon={Shield}
                 title="KYC Verification"
                 subtitle="Verify your identity"
-                onClick={() => setKycVerificationOpen(true)}
+                onClick={() => navigate("/kyc-verification")}
               />
               <Separator />
               <SettingItem
                 icon={Briefcase}
                 title="Portfolio Verification"
                 subtitle="Verify your investment portfolio"
-                onClick={() => setPortfolioVerificationOpen(true)}
+                onClick={() => navigate("/portfolio-verification")}
               />
               <Separator />
               <SettingItem
@@ -901,26 +899,6 @@ const Settings = () => {
               © 2025 Startup Connect. All rights reserved.
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* KYC Verification Dialog */}
-      <Dialog open={kycVerificationOpen} onOpenChange={setKycVerificationOpen}>
-        <DialogContent className="p-4 sm:p-6 max-w-md bg-background border">
-          <VerificationFlow 
-            type="kyc" 
-            onComplete={() => setKycVerificationOpen(false)} 
-          />
-        </DialogContent>
-      </Dialog>
-
-      {/* Portfolio Verification Dialog */}
-      <Dialog open={portfolioVerificationOpen} onOpenChange={setPortfolioVerificationOpen}>
-        <DialogContent className="p-4 sm:p-6 max-w-md bg-background border">
-          <VerificationFlow 
-            type="portfolio" 
-            onComplete={() => setPortfolioVerificationOpen(false)} 
-          />
         </DialogContent>
       </Dialog>
 

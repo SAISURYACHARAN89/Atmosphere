@@ -348,6 +348,7 @@ const Trade = () => {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [expandedInfoId, setExpandedInfoId] = useState<number | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -699,23 +700,50 @@ const Trade = () => {
                 </Button>
               </div>
 
-              {/* Category Tags - Always Show Below Search */}
+              {/* Category Tags Filter - Collapsible */}
               {!showSavedOnly && (
-                <div className="bg-muted/50 rounded-xl p-3 mb-4 max-h-48 overflow-y-auto">
-                  <div className="flex flex-wrap gap-2">
-                    {categories.map((category) => {
-                      const isSelected = selectedCategories.includes(category);
-                      return (
-                        <Badge
-                          key={category}
-                          variant={isSelected ? "default" : "outline"}
-                          onClick={() => handleCategoryClick(category)}
-                          className="cursor-pointer transition-all text-xs"
-                        >
-                          {category}
-                        </Badge>
-                      );
-                    })}
+                <div className="mb-4">
+                  {/* Filter Toggle Button */}
+                  <button
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                    className="w-full flex items-center justify-between px-4 py-3 bg-muted/50 hover:bg-muted/70 rounded-xl transition-all"
+                  >
+                    <div className="flex items-center gap-2">
+                      <SlidersHorizontal className="w-4 h-4 text-foreground" />
+                      <span className="text-sm font-medium text-foreground">
+                        Filters {selectedCategories.length > 0 && `(${selectedCategories.length})`}
+                      </span>
+                    </div>
+                    {isFilterOpen ? (
+                      <ChevronUp className="w-5 h-5 text-foreground" />
+                    ) : (
+                      <ChevronDown className="w-5 h-5 text-foreground" />
+                    )}
+                  </button>
+
+                  {/* Collapsible Filter Content */}
+                  <div
+                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                      isFilterOpen ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0'
+                    }`}
+                  >
+                    <div className="bg-muted/30 rounded-xl p-3 max-h-80 overflow-y-auto">
+                      <div className="flex flex-wrap gap-2">
+                        {categories.map((category) => {
+                          const isSelected = selectedCategories.includes(category);
+                          return (
+                            <Badge
+                              key={category}
+                              variant={isSelected ? "default" : "outline"}
+                              onClick={() => handleCategoryClick(category)}
+                              className="cursor-pointer transition-all text-xs hover:scale-105"
+                            >
+                              {category}
+                            </Badge>
+                          );
+                        })}
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}

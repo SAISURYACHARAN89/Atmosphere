@@ -32,6 +32,8 @@ import SavedReels from "./pages/SavedReels";
 import SavedSellAds from "./pages/SavedSellAds";
 import SavedPosts from "./pages/SavedPosts";
 import SavedCompanyCards from "./pages/SavedCompanyCards";
+import KYCVerification from "./pages/KYCVerification";
+import PortfolioVerification from "./pages/PortfolioVerification";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +72,8 @@ const App = () => (
           <Route path="/verification-startup" element={<VerificationStartup />} />
           <Route path="/verification-investor" element={<VerificationInvestor />} />
           <Route path="/verification-complete" element={<VerificationComplete />} />
+          <Route path="/kyc-verification" element={<KYCVerification />} />
+          <Route path="/portfolio-verification" element={<PortfolioVerification />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -216,7 +216,8 @@ const Messages = () => {
             <div className="px-4 space-y-1">
               {messages.map((message) => (
                 <button 
-                  key={message.id} 
+                  key={message.id}
+                  onClick={() => navigate(`/messages/${message.id}`)}
                   className="w-full px-4 py-3.5 flex items-center gap-3 hover:bg-muted/30 active:bg-muted/50 transition-all rounded-xl text-left group"
                 >
                   {/* Avatar */}
@@ -343,6 +344,7 @@ const Messages = () => {
                   {groups.map((group) => (
                     <button
                       key={group.id}
+                      onClick={() => navigate(`/messages/g${group.id}`)}
                       className="w-full px-4 py-4 flex items-center gap-4 hover:bg-muted/30 active:bg-muted/50 transition-all rounded-xl text-left group"
                     >
                       <div className="w-14 h-14 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0 group-hover:from-primary/30 group-hover:to-primary/20 transition-all">

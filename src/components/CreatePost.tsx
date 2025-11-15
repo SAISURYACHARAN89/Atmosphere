@@ -71,11 +71,8 @@ const CreatePost = ({ onClose }: CreatePostProps) => {
 
   return (
     <>
-      {/* Backdrop for desktop/tablet */}
-      <div className="hidden md:block fixed inset-0 bg-black/50 z-50" onClick={onClose} />
-      
-      {/* Modal container */}
-      <div className="fixed inset-0 md:inset-auto md:top-1/2 md:left-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:w-full md:max-w-2xl md:h-[90vh] md:rounded-lg bg-background z-50 flex flex-col overflow-hidden">
+      {/* Full screen modal container */}
+      <div className="fixed inset-0 bg-background z-50 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
         <button onClick={step === "share" ? handleBack : onClose} className="p-2">
@@ -133,28 +130,30 @@ const CreatePost = ({ onClose }: CreatePostProps) => {
 
           {postType !== "thought" ? (
             <>
-              {/* Selected media preview */}
-              <div className="flex items-center justify-center border-b border-border shrink-0 bg-black">
-                {selectedMedia.length > 0 ? (
-                  <div className={`w-full ${postType === "reel" ? "aspect-[9/16]" : "aspect-[4/3]"} max-h-[60vh]`}>
-                    <img 
-                      src={selectedMedia[0]} 
-                      alt="Selected" 
-                      className="w-full h-full object-cover"
-                    />
-                    {selectedMedia.length > 1 && postType === "post" && (
-                      <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
-                        +{selectedMedia.length - 1}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-center text-muted-foreground py-20">
-                    <Image className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                    <p>Select {postType === "post" ? "photos or videos" : "a video"}</p>
-                  </div>
-                )}
-              </div>
+              {/* Selected media preview - only show for posts */}
+              {postType === "post" && (
+                <div className="flex items-center justify-center border-b border-border shrink-0 bg-black">
+                  {selectedMedia.length > 0 ? (
+                    <div className="w-full aspect-[4/3] max-h-[40vh]">
+                      <img 
+                        src={selectedMedia[0]} 
+                        alt="Selected" 
+                        className="w-full h-full object-cover"
+                      />
+                      {selectedMedia.length > 1 && (
+                        <div className="absolute top-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-sm">
+                          +{selectedMedia.length - 1}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground py-12">
+                      <Image className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                      <p>Select photos or videos</p>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Media gallery with fade effect */}
               <div className="flex-1 overflow-y-auto bg-background p-2 min-h-0 relative">
@@ -202,7 +201,7 @@ const CreatePost = ({ onClose }: CreatePostProps) => {
           {/* Media preview */}
           <div className="flex-1 bg-black flex items-center justify-center">
             {selectedMedia.length > 0 && (
-              <div className={`${postType === "reel" ? "aspect-[9/16]" : "aspect-[4/3]"} max-h-full`}>
+              <div className={`${postType === "reel" ? "aspect-[9/16] max-h-[70vh]" : "aspect-[4/3] max-h-[50vh]"}`}>
                 <img 
                   src={selectedMedia[0]} 
                   alt="Preview" 
@@ -239,7 +238,7 @@ const CreatePost = ({ onClose }: CreatePostProps) => {
           <div className="p-4 space-y-4">
             {/* Media preview */}
             {selectedMedia.length > 0 && postType !== "thought" && (
-              <div className={`rounded-lg overflow-hidden bg-black ${postType === "reel" ? "aspect-[9/16]" : "aspect-[4/3]"} max-w-md mx-auto`}>
+              <div className={`rounded-lg overflow-hidden bg-black ${postType === "reel" ? "aspect-[9/16] max-w-[200px]" : "aspect-[4/3] max-w-[240px]"} mx-auto`}>
                 <img 
                   src={selectedMedia[0]} 
                   alt="Final preview" 

@@ -154,9 +154,9 @@ const CompanyProfile = () => {
               <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5">
               
-                  <span className="text-foreground">Verified startup</span>
+                  <span className="text-muted-foreground">Verified startup</span>
               </div>
-              <div className="flex items-center gap-1.5 text-foreground">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5" />
                 <span>{company.location}</span>
               </div>
@@ -167,7 +167,7 @@ const CompanyProfile = () => {
             {/* Follow and Message Buttons */}
             <div className="flex gap-2 mb-2">
               <Button
-                className="flex-1 h-8 text-sm  font-semibold bg-cyan-500 hover:bg-cyan-600 text-white rounded-none"
+                className="flex-1 h-8 text-sm  font-semibold bg-cyan-500 hover:bg-cyan-600 text-white rounded-[6px]"
                 variant="default"
               >
                 Follow
@@ -175,7 +175,7 @@ const CompanyProfile = () => {
 
               <Button
                 variant="outline"
-                className="flex-1 h-8 text-sm font-semibold border-border rounded-none"
+                className="flex-1 h-8 text-sm font-semibold border-border rounded-[6px]"
               >
                 Message
               </Button>
@@ -283,22 +283,27 @@ const CompanyProfile = () => {
 
                 <Card className="border-border/50">
                   <div className="p-4 space-y-3">
+                    <div className="flex items-center justify-start">
                     <h3 className="font-semibold text-sm">What's {company.name}</h3>
-                    <p className="text-sm text-foreground/90 leading-relaxed">{company.description}</p>
-                  </div>
-                  <div className="px-4 pb-4 flex items-center justify-between">
-                    <button
-                      onClick={() => setPitchRequested(true)}
-                      className={`py-1.5 px-3  text-xs font-medium transition-colors
+                      <div className="px-4 pb-4 flex items-center justify-between">
+                        <button
+                          onClick={() => setPitchRequested(true)}
+                          className={`py-1 px-1.5 rounded-[6px] translate-y-2.5 text-[9px] font-sm transition-colors
                         ${pitchRequested
-                          ? "bg-primary/20 text-green border-primary"
-                          : "border border-grey text-white hover:bg-primary/10"}`}
-                      disabled={pitchRequested}
-                    >
-                      {pitchRequested ? "Requested" : "Request Pitch Deck"}
-                    </button>
-                  </div>
+                              ? "bg-primary/20 text-green border-primary"
+                              : "border border-grey text-white hover:bg-primary/10"}`}
+                          disabled={pitchRequested}
+                        >
+                          {pitchRequested ? "Requested" : "Request Pitch Deck"}
+                        </button>
+                      </div>
 
+                    </div>
+                    <p className="text-sm text-foreground/90 leading-relaxed">{company.description}</p>
+                    
+                    
+                  </div>
+                  
                   <div className="p-4 space-y-3">
                     <h3 className="font-semibold text-sm">Company Details</h3>
                     <div className="space-y-2 text-sm">
@@ -406,7 +411,7 @@ const CompanyProfile = () => {
 
                       {/* Round Progress Bar */}
                       <div className="mt-2">
-                        <div className="h-7  bg-card border border-border overflow-hidden">
+                        <div className="h-7  bg-card rounded-[6px] border border-border overflow-hidden">
                           <div
                             className="h-full bg-[#878787] transition-all"
                             style={{ width: "15%" }} // ← adjust dynamically if needed

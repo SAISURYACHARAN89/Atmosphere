@@ -194,7 +194,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
           <Button
             variant="secondary"
             size="sm"
-            className="h-7 px-2.5 rounded-none bg-muted hover:bg-muted/80"
+            className="h-7 px-2.5 rounded-[6px] bg-muted hover:bg-muted/80"
             onClick={(e) => {
               e.stopPropagation();
               setFollowing(!following);
@@ -490,18 +490,18 @@ const StartupPost = ({ company }: StartupPostProps) => {
 
       {/* SMALL INFO BOXES */}
       <div className="px-4 pb-3">
-        <div className="flex gap-2">
-          <div className="px-4 py-2 rounded-none border border-border bg-card">
+        <div className="flex justify-between gap-2">
+          <div className="px-4 py-2 rounded-[6px] border border-border bg-card">
             <p className="text-xs font-medium text-foreground">
-              {company.revenueGenerating ? "Revenue generating" : "Pre-revenue"}
+              {company.revenueGenerating ? "Rvnu generating" : "Pre-rvnu"}
             </p>
           </div>
 
-          <div className="px-4 py-2 rounded-none border border-border bg-card">
-            <p className="text-xs font-medium text-foreground">Funding rounds : 2</p>
+          <div className="px-4 py-2 rounded-[6px] border border-border bg-card">
+            <p className="text-xs font-medium text-foreground">Rounds : 2</p>
           </div>
-          <div className="px-4 py-2 rounded-none border border-border bg-card">
-            <p className="text-xs font-medium text-foreground">Age : 2 years</p>
+          <div className="px-4 py-2 rounded-[6px] border border-border bg-card">
+            <p className="text-xs font-medium text-foreground">Age : 2 yr</p>
           </div>
         </div>
       </div>
@@ -519,7 +519,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
           </div>
 
           <div className="relative">
-            <div className="h-8 rounded-none bg-card border border-border overflow-hidden">
+            <div className="h-8 rounded-[6px] bg-card border border-border overflow-hidden">
               <div
                 className="h-full bg-gradient-to-r from-muted-foreground/80 to-muted-foreground/80 transition-all"
                 style={{ width: "15%" }}

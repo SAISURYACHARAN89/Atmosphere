@@ -365,7 +365,7 @@ const Search = () => {
 
         {/* ---------------- DEFAULT FEED (UPDATED GRID) ---------------- */}
         {!searchQuery && !showSuggestions && (
-          <div className="grid grid-cols-3 gap-0.5 mt-6">
+          <div className="grid grid-cols-3 gap-0.1 mt-6">
             {forYouContent.map((c, index) => {
               const cycleIndex = index % 10;
               let spanClass = "aspect-square"; // Default square

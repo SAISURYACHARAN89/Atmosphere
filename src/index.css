@@ -9,8 +9,10 @@
 @layer base {
   :root {
     /* Premium Background System */
-    --background: 0 0% 0%;
-    --background-subtle: 0 0% 2%;
+    --background: 200 100% 1%;
+    --background-subtle: 200 100% 1%;
+    /* --background: 180%, 11%, 6%; *
+    /* --background-subtle: 180%, 110%, 6%; */
     --foreground: 0 0% 95%;
     
     /* Elevated Card System with depth */

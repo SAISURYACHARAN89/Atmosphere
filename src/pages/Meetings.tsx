@@ -21,19 +21,23 @@ const industryTags = [
 const dummyMeetings = [
   {
     id: 1, host: "Rahul Mehta", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul", title: "Drone tech startups pitch meetings...",
-    industries: ["EV", "CleanTech"], category: "pitch", eligible: true, participants: 31, startTime: "12:00", endTime: "12:45", isVerified: true
+    industries: ["EV", "CleanTech"], category: "pitch", eligible: true, participants: 31, startTime: "12:00", endTime: "12:45", isVerified: true,
+    description: "Join us for an exciting pitch session featuring innovative drone technology startups in the EV and CleanTech space. Network with industry leaders and discover cutting-edge solutions."
   },
   {
     id: 2, host: "Priya Sharma", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya", title: "HealthTech Innovation Summit",
-    industries: ["HealthTech"], category: "networking", eligible: true, participants: 18, startTime: "11:00", endTime: "11:45", isVerified: true
+    industries: ["HealthTech"], category: "networking", eligible: true, participants: 18, startTime: "11:00", endTime: "11:45", isVerified: true,
+    description: "Connect with healthcare innovators and explore the latest trends in digital health, telemedicine, and medical AI technologies."
   },
   {
     id: 3, host: "Arjun Patel", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun", title: "EV Market Disruption",
-    industries: ["EV", "CleanTech"], category: "pitch", eligible: true, participants: 31, startTime: "12:00", endTime: "12:45", isVerified: true
+    industries: ["EV", "CleanTech"], category: "pitch", eligible: true, participants: 31, startTime: "12:00", endTime: "12:45", isVerified: true,
+    description: "Discover how electric vehicles are transforming the automotive industry. Hear from startups revolutionizing sustainable transportation."
   },
   {
     id: 4, host: "Neha Singh", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Neha", title: "Blockchain for Enterprise",
-    industries: ["Blockchain", "Fintech"], category: "networking", eligible: false, participants: 12, startTime: "13:00", endTime: "13:45", isVerified: false
+    industries: ["Blockchain", "Fintech"], category: "networking", eligible: false, participants: 12, startTime: "13:00", endTime: "13:45", isVerified: false,
+    description: "Explore enterprise blockchain solutions and network with fintech professionals working on decentralized finance applications."
   },
 ];
 
@@ -56,6 +60,8 @@ function MeetingCard({
   showRemove,
   onRemove,
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const getClockLabel = () => {
     const [sh, sm] = meeting.startTime.split(":").map(Number);
     const [eh, em] = meeting.endTime.split(":").map(Number);
@@ -85,7 +91,7 @@ function MeetingCard({
 
       {/* REMOVE BUTTON (ONLY ON MY MEETINGS) */}
       {showRemove && (
-        <button onClick={onRemove} className="absolute top-2 right-1 w-4 h-4 flex items-center justify-center rounded-full">
+        <button onClick={onRemove} className="absolute right-2 translate-y-20 w-4 h-4 flex items-center justify-center rounded-full">
           <X className="w-4 h-4 text-muted-foreground" />
         </button>
       )}
@@ -114,63 +120,38 @@ function MeetingCard({
         </div>
 
         {/* JOIN BUTTON (BIG ROUND PILL) */}
-        <div className="flex flex-col items-center gap-2">
-        <button
-          onClick={onJoin}
-          disabled={disabled}
-          className="
+        <div className="flex flex-col items-center gap-1">
+          <button
+            onClick={onJoin}
+            disabled={disabled}
+            className="
             bg-[#2C2C2C]
             px-5
             py-1.5
             rounded-full
             text-xs
             font-semibold
+            ml-5
             text-white
             shrink-0
           "
-        >
-          {joinLabel}
-        </button>
-        <span
-          className="
-            px-2
-            py-[2px]
-            mt-2
-            bg-blue-600/5
-            text-gray-400
-            text-[11px]
-            rounded-md
-          "
-        >
-          {meeting.category === "pitch" ? "Pitch" : "Networking"}
-        </span>
-      </div>
+          >
+            {joinLabel}
+          </button>
+          
+        </div>
       </div>
 
       {/* ROW 2 — INDUSTRIES + PITCH TAG */}
-      <div className="flex items-center mt-4 justify-between">
+      <div className="flex items-center mt-2 justify-start gap-3">
 
         {/* LEFT GROUP: Industry Tags, Eligible, and Clock/Time (Tight Grouping) */}
         {/* Using gap-3 to separate the block of tags from the clock information */}
         <div className="flex items-center gap-3">
-
+            
           {/* Sub-Group 1: Tags and Eligible (Tight Gap) */}
           <div className="flex items-center gap-1.5 flex-wrap">
-            {meeting.industries.slice(0, 2).map((tag, idx) => (
-              <span
-                key={idx}
-                className="
-                        px-2
-                        py-[2px]
-                        bg-white/10
-                        text-white/80
-                        text-[10px]
-                        rounded-md
-                    "
-              >
-                {tag}
-              </span>
-            ))}
+            
             {meeting.eligible && (
               <span
                 className="
@@ -188,29 +169,44 @@ function MeetingCard({
           </div>
 
           {/* Sub-Group 2: Clock and Time (Immediately beside the tags) */}
-          <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
-            <Clock className="w-3.5 h-3.5" />
-            {getClockLabel()}
+          <div className="flex items-center gap-1 text-[10px] text-muted-foreground whitespace-nowrap">
+            <Clock className="w-3.5 h-3.5 shrink-0" />
+            <span className="shrink-0">{getClockLabel()}</span>
           </div>
+
         </div>
 
         {/* RIGHT GROUP: Users/Participants and Pitch Tag (Far Right End) */}
         {/* Using gap-3 to separate the two right-end elements */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center w-full">
 
-          {/* Users and Participants Count */}
-          <div className="flex items-center mr-5 gap-1 text-[10px] text-muted-foreground">
-          {/* <div className="flex items-center gap-1 text-[10px] text-muted-foreground"> */}
-
+          {/* LEFT — Users */}
+          <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
             <Users className="w-2.5 h-2.5" />
             {meeting.participants}
-          {/* </div> */}
           </div>
 
-         
+          {/* RIGHT — Pitch badge */}
+          <span
+            className="
+    px-2
+    py-[2px]
+    bg-blue-600/5
+    text-gray-400
+    text-[11px]
+    rounded-md
+    ml-auto
+    min-w-[70px]   /* MAKE BOTH EQUAL WIDTH */
+    text-center
+  "
+          >
+            {meeting.category === "pitch" ? "Pitch" : "Networking"}
+          </span>
+
         </div>
+
       </div>
-      
+
       {/* ROW 3 — TIME + PARTICIPANTS
       <div className="flex items-center justify-end text-xs text-muted-foreground">
         
@@ -227,6 +223,44 @@ function MeetingCard({
             <b>Estimated:</b> {estimatedSlot}
           </div>
           <div className="text-muted-foreground">Subject to change</div>
+        </div>
+      )}
+
+      {/* EXPANDABLE DESCRIPTION SECTION */}
+      {meeting.description && (
+        <div className="pt-3">
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className="flex items-center justify-between w-full text-left"
+          >
+            {/* <span className="text-xs font-medium text-foreground">View more</span> */}
+            <ChevronDown className={`w-4 h-4 text-muted-foreground transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+          </button>
+
+          {isExpanded && (
+            <div>
+
+              {meeting.industries.slice(0, 2).map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="
+                        px-2
+                        py-[2px]
+                        bg-white/10
+                        text-white/80
+                        text-[10px]
+                        rounded-md
+                    "
+                >
+                  {tag}
+                </span>
+              ))}
+            
+            <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+              {meeting.description}
+            </p>
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -348,6 +382,14 @@ const Meetings = () => {
                 <div>
                   <Label className="text-xs">Title</Label>
                   <Input className="mt-1 h-9 bg-background" placeholder="Meeting title" />
+                </div>
+
+                <div>
+                  <Label className="text-xs">Description (Optional)</Label>
+                  <textarea
+                    className="mt-1 w-full min-h-[80px] bg-background border border-border rounded-md px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                    placeholder="Add a description for your meeting..."
+                  />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -497,7 +539,7 @@ const Meetings = () => {
 
             <button
               onClick={handleToggleSearch}
-              className="flex items-center justify-center w-10 h-10  transition-colors text-muted-foreground hover:text-foreground"
+              className="flex items-center justify-center w-10 h-10 transition-colors text-muted-foreground hover:text-foreground"
             >
               {showSearchBar ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
             </button>
@@ -519,7 +561,7 @@ const Meetings = () => {
             <div className="space-y-2.5">
               {myMeetingsList.map(m => {
                 return (
-                  <MeetingCard key={m.id} meeting={m} joinLabel="In Queue"
+                  <MeetingCard key={m.id} meeting={m} joinLabel="Queued"
                     isInQueue={true} disabled={true}
                     showRemove={true} onRemove={() => handleRemove(m.id)}
                     onJoin={handleGoToVideo} />

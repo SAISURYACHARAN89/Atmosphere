@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { verifyEmail } from "@/lib/api/auth";
 
 const SignupConfirm = () => {
   const navigate = useNavigate();
@@ -23,9 +24,10 @@ const SignupConfirm = () => {
 
     setLoading(true);
 
-    const userId = localStorage.getItem("signupUserId");
-    const username = localStorage.getItem("signupUsername");
-    const email = localStorage.getItem("signupEmail");
+    const authInfo = localStorage.getItem("authInfo");
+    const parsedAuthInfo = JSON.parse(authInfo || "{}");
+
+    const { id: userId, email, username } = parsedAuthInfo;
 
     if (!userId || !username || !email) {
       toast({
@@ -37,33 +39,36 @@ const SignupConfirm = () => {
       return;
     }
 
-    // Create profile
-    const { error: profileError } = await supabase.from("profiles").insert({
-      id: userId,
-      username: username,
-      email: email,
-      full_name: "",
-    });
+   try {
+    setLoading(true);
 
-    if (profileError) {
-      toast({
-        title: "Error",
-        description: "Failed to create profile. Please try again.",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
+    const res = await verifyEmail(code, email);
+
+    if (!res?.success) {
+      throw new Error(
+        res?.error || "Failed to verify code."
+      );
     }
-
-    localStorage.setItem("newAccount", "true");
-    setLoading(false);
 
     toast({
       title: "Success",
       description: "Account created successfully!",
     });
 
-    navigate("/profile");
+    localStorage.setItem("newAccount", "true");
+    // navigate("/profile");
+  } catch (error) {
+    toast({
+      title: "Error",
+      description:
+        error instanceof Error
+          ? error.message
+          : "Failed to verify code.",
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
   };
 
   return (

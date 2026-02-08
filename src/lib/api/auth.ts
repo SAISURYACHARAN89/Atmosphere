@@ -2,7 +2,7 @@
  * Authentication API functions (Web)
  */
 
-import { ZLoginResponse, ZUserSchema } from "@/types/auth";
+import { ZLoginResponse, ZRegisterResponse, ZUserSchema, ZVerifyEmail } from "@/types/auth";
 import axiosClient from "./axiosClient";
 import { AUTH_ENDPOINTS, USER_ENDPOINTS } from "./endpoints";
 import Cookies from "js-cookie";
@@ -30,7 +30,7 @@ export async function login(email: string, password: string) {
 /**
  * Register
  */
-export async function register({
+export async function registerUser({
   email,
   username,
   password,
@@ -43,13 +43,14 @@ export async function register({
   displayName?: string;
   accountType?: string;
 }) {
-  return axiosClient.post(AUTH_ENDPOINTS.REGISTER, {
+  const res= axiosClient.post(AUTH_ENDPOINTS.REGISTER, {
     email,
     username,
     password,
     displayName,
     accountType,
   });
+  return  res as ZRegisterResponse;
 }
 
 /**
@@ -85,7 +86,8 @@ export async function resetPassword(
  * Verify email
  */
 export async function verifyEmail(code: string, email?: string) {
-  return axiosClient.post(AUTH_ENDPOINTS.VERIFY_EMAIL, { code, email });
+  const res=await axiosClient.post(AUTH_ENDPOINTS.VERIFY_EMAIL, { code, email });
+  return res as ZVerifyEmail;
 }
 
 /**

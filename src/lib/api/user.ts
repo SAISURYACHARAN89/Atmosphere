@@ -1,3 +1,4 @@
+import {  ZCheckUsernameResponse } from "@/types/auth";
 import axiosClient from "./axiosClient";
 import { USER_ENDPOINTS } from "./endpoints";
 import { ZGetProfileResponse } from "@/types/Profile";
@@ -33,8 +34,10 @@ async function updateProfile(payload: unknown) {
   return axiosClient.put(USER_ENDPOINTS.PROFILE, payload);
 }
 
-async function checkUsernameAvailability(username: string) {
-  return axiosClient.get(USER_ENDPOINTS.CHECK_USERNAME(username));
+async function checkIsUserNameAvailable(username: string) {
+  const res = await axiosClient.get(USER_ENDPOINTS.CHECK_USERNAME(username));
+
+  return res as ZCheckUsernameResponse;
 }
 
 async function getUserByIdentifier(identifier: string) {
@@ -117,7 +120,7 @@ async function searchUsers(
 export {
   fetchAndStoreUser,
   updateProfile,
-  checkUsernameAvailability,
+  checkIsUserNameAvailable,
   getUserByIdentifier,
   recordProfileVisit,
   getStartupProfile,

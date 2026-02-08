@@ -23,12 +23,30 @@ export const zUserSchema = z.object({
   links: z.record(z.any()),
 });
 
-export type ZUserSchema = z.infer<typeof zUserSchema>;
-
-
 export const zLoginResponse = z.object({
   token: z.string().uuid(),
   user: zUserSchema,
 });
 
+export const zCheckUsernameResponseSchema = z.object({
+  available: z.boolean(),
+});
+
+export const zRegisterResponse = z.object({
+  token: z.string(),
+  message: z.string(),
+  user: zUserSchema,
+});
+
+export const zVerifyEmailError = z.object({
+  success: z.boolean(),
+  error: z.string().optional(),
+});
+
 export type ZLoginResponse = z.infer<typeof zLoginResponse>;
+export type ZUserSchema = z.infer<typeof zUserSchema>;
+export type ZCheckUsernameResponse = z.infer<
+  typeof zCheckUsernameResponseSchema
+>;
+export type ZRegisterResponse = z.infer<typeof zRegisterResponse>;
+export type ZVerifyEmail = z.infer<typeof zVerifyEmailError>;

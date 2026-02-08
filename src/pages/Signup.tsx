@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Check } from "lucide-react";
+import { checkIsUserNameAvailable } from "@/lib/api/user";
+import { registerUser } from "@/lib/api/auth";
 
 const Signup = () => {
   const navigate = useNavigate();
@@ -21,16 +22,16 @@ const Signup = () => {
       setUsernameAvailable(false);
       return;
     }
+    try {
+      setCheckingUsername(true);
 
-    setCheckingUsername(true);
-    const { data: existingUser } = await supabase
-      .from("profiles")
-      .select("username")
-      .eq("username", value)
-      .maybeSingle();
-
-    setUsernameAvailable(!existingUser);
-    setCheckingUsername(false);
+      const res = await checkIsUserNameAvailable(value);
+      setUsernameAvailable(!!res?.available);
+    } catch (error) {
+      setUsernameAvailable(false);
+    } finally {
+      setCheckingUsername(false);
+    }
   };
 
   const handleUsernameChange = (value: string) => {
@@ -70,35 +71,31 @@ const Signup = () => {
       return;
     }
 
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const { data: authData, error: signUpError } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/`,
-        data: {
-          username: username,
-        },
-      },
-    });
+      const res = await registerUser({
+        email,
+        username,
+        password,
+      });
 
-    if (signUpError) {
+      if (!res?.message) {
+        throw new Error("Unexpected response");
+      }
+      localStorage.setItem("authInfo", JSON.stringify(res?.user));
+
+      navigate("/signup-confirm");
+    } catch (error) {
       toast({
-        title: "Signup Failed",
-        description: signUpError.message,
+        title: "Registration Failed",
+        description:
+          error instanceof Error ? error.message : "Something went wrong",
         variant: "destructive",
       });
+    } finally {
       setLoading(false);
-      return;
     }
-
-    localStorage.setItem("signupUserId", authData.user?.id || "");
-    localStorage.setItem("signupEmail", email);
-    localStorage.setItem("signupUsername", username);
-    
-    setLoading(false);
-    navigate("/signup-confirm");
   };
 
   return (

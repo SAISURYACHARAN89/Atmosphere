@@ -3,19 +3,31 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
+import { useLogin } from "@/hooks/auth/useLogin";
+import { toast } from "@/components/ui/sonner";
+import { Loader2 } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { mutate: loginUser, isPending } = useLogin();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Dummy login - just navigate to home
-    localStorage.setItem("userId", "dummy-user");
-    localStorage.setItem("userName", "User");
-    localStorage.setItem("userMode", "investor");
-    navigate("/");
+
+    loginUser(
+      { email, password },
+      {
+        onSuccess: () => {
+          navigate("/");
+        },
+        onError: (err: Error) => {
+          console.log("Login error:", err);
+          toast.error(err.message);
+        },
+      },
+    );
   };
 
   return (
@@ -49,7 +61,11 @@ const Login = () => {
               type="submit"
               className="w-full h-8 text-sm font-semibold mt-4"
             >
-              Log in
+              {isPending ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                "Log in"
+              )}
             </Button>
           </form>
 
@@ -62,11 +78,7 @@ const Login = () => {
           </div>
 
           <button className="w-full flex items-center justify-center gap-2 text-sm font-semibold text-primary">
-            <svg
-              className="w-4 h-4"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M9.198 21.5h4v-8.01h3.604l.396-3.98h-4V7.5a1 1 0 0 1 1-1h3v-4h-3a5 5 0 0 0-5 5v2.01h-2l-.396 3.98h2.396v8.01Z" />
             </svg>
             Log in with Facebook

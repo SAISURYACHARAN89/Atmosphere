@@ -8,20 +8,26 @@ import { ZGetProfileResponse } from "@/types/Profile";
 async function fetchAndStoreUser() {
   const storedUser = localStorage.getItem("user");
 
-  if (storedUser) {
-    return JSON.parse(storedUser);
+  try {
+    const data: ZGetProfileResponse = await axiosClient.get(
+      USER_ENDPOINTS.PROFILE
+    );
+
+    if (data?.user) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+      return data.user;
+    }
+
+    throw new Error("No user in response");
+  } catch (err) {
+    if (storedUser) {
+      return JSON.parse(storedUser);
+    }
+
+    throw err;
   }
-
-  const data: ZGetProfileResponse = await axiosClient.get(
-    USER_ENDPOINTS.PROFILE
-  );
-
-  if (data?.user) {
-    localStorage.setItem("user", JSON.stringify(data.user));
-  }
-
-  return data?.user;
 }
+
 
 async function updateProfile(payload: any) {
   return axiosClient.put(USER_ENDPOINTS.PROFILE, payload);

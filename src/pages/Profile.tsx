@@ -17,6 +17,7 @@ import { GrDocumentVerified } from "react-icons/gr";
 import { useGetProfile } from "@/hooks/profile/useGetProfile";
 import { ZUserSchema } from "@/types/auth";
 import { formatUserData } from "@/utils/formatUserData";
+import { useMyPosts } from "@/hooks/posts/useGetUserPosts";
 
 
 // -----------------------------------------------------------
@@ -39,6 +40,8 @@ interface Investment {
 const Profile = () => {
   const navigate = useNavigate();
   const { data: profileData } = useGetProfile();
+  const { data: myPostsData } = useMyPosts();
+  console.log("Profile Data:", myPostsData);
   const isNewAccount = localStorage.getItem("newAccount") === "true";
   const profileSetupComplete =
     localStorage.getItem("profileSetupComplete") === "true";
@@ -56,8 +59,8 @@ const Profile = () => {
   // -------------------- SELECT WHICH DATA TO USE ----------------------
   const investorData =
     isNewAccount && !profileSetupComplete
-      ? formatUserData(profileData || {})
-      : formatUserData(profileData || {});
+      ? formatUserData(profileData || {}, myPostsData?.count)
+      : formatUserData(profileData || {}, myPostsData?.count);
 
   // -------------------- INVESTMENTS (EXISTING KEPT SAME) --------------------
   const [investments] = useState<Investment[]>(

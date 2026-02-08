@@ -2,7 +2,7 @@
 
 import { ZUserSchema } from "@/types/auth";
 
-export function formatUserData(user: ZUserSchema) {
+export function formatUserData(user: ZUserSchema, postCount: number) {
   return {
     name: user?.username || "",
     username: `@${user?.username}`,
@@ -14,7 +14,7 @@ export function formatUserData(user: ZUserSchema) {
       following: user.followingCount ?? 0,
       postsSaved: 0,
       profileViews: 0,
-      posts: 0,
+      posts: postCount || 0,
     },
   };
 }

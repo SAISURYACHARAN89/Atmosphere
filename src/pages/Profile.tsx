@@ -18,6 +18,7 @@ import { useGetProfile } from "@/hooks/profile/useGetProfile";
 import { ZUserSchema } from "@/types/auth";
 import { formatUserData } from "@/utils/formatUserData";
 import { useMyPosts } from "@/hooks/posts/useGetUserPosts";
+import { useAppStore } from "@/store/useAppStore";
 
 
 // -----------------------------------------------------------
@@ -39,7 +40,7 @@ interface Investment {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { data: profileData } = useGetProfile();
+  const profileData = useAppStore((s) => s.user);
   const { data: myPostsData } = useMyPosts();
   const isNewAccount = localStorage.getItem("newAccount") === "true";
   const profileSetupComplete =

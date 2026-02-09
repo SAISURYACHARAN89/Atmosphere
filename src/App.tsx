@@ -51,6 +51,7 @@ import Videocontain from "./pages/Videocontain";
 import StartupInvestor from "./pages/StartupInvestor";
 import StartupPortfolio from "./pages/StartupPortfolio";
 import DiditKycFrame from "./pages/Kyc";
+import AppContext from "./components/AppContext";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -59,6 +60,7 @@ const App = () => {
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <AppContext />
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />

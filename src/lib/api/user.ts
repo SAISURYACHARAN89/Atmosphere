@@ -92,15 +92,17 @@ async function checkFollowing(targetId: string) {
 }
 
 async function getFollowersList(userId: string, limit = 20, skip = 0) {
-  return axiosClient.get(USER_ENDPOINTS.FOLLOWERS(userId), {
+  const res = await axiosClient.get(USER_ENDPOINTS.FOLLOWERS(userId), {
     params: { limit, skip },
   });
+  return res?.followers || [];
 }
 
 async function getFollowingList(userId: string, limit = 20, skip = 0) {
-  return axiosClient.get(USER_ENDPOINTS.FOLLOWING(userId), {
+  const res = await axiosClient.get(USER_ENDPOINTS.FOLLOWING(userId), {
     params: { limit, skip },
   });
+  return res?.following || [];
 }
 
 async function searchUsers(

@@ -1,27 +1,29 @@
+import { ZSettingsUser } from "@/types/Profile";
 import axiosClient from "./axiosClient";
 import { SETTINGS_ENDPOINTS } from "./endpoints";
 
-export async function getSettings() {
-  return axiosClient.get(SETTINGS_ENDPOINTS.SETTINGS);
+interface SettingsApiRes {
+  settings: ZSettingsUser;
 }
 
-export async function updateSettings(payload: {
+async function getSettings() {
+  const res: SettingsApiRes = await axiosClient.get(SETTINGS_ENDPOINTS.SETTINGS);
+  return res?.settings as ZSettingsUser;
+}
+
+async function updateSettings(payload: {
   displayName?: string;
   username?: string;
   phone?: string;
 }) {
-  return axiosClient.put(
-    SETTINGS_ENDPOINTS.SETTINGS,
-    payload
-  );
+  return axiosClient.put(SETTINGS_ENDPOINTS.SETTINGS, payload);
 }
 
-export async function changePassword(
-  currentPassword: string,
-  newPassword: string
-) {
+async function changePassword(currentPassword: string, newPassword: string) {
   return axiosClient.put(SETTINGS_ENDPOINTS.PASSWORD, {
     currentPassword,
     newPassword,
   });
 }
+
+export { getSettings, updateSettings, changePassword };

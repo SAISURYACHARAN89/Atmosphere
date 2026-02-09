@@ -8,16 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { VerificationFlow } from "@/components/VerificationFlow";
 import { useGetProfile } from "@/hooks/profile/useGetProfile";
+import { useAppStore } from "@/store/useAppStore";
+import { useGetSettings } from "@/hooks/settings/useGetSettings";
 
 const Settings = () => {
   const navigate = useNavigate();
-
-  const {data: userData}= useGetProfile();
-  console.log(userData)
+  const {data: settingsData} = useGetSettings();
   
   // Account Information Drawers
   const [nameDrawerOpen, setNameDrawerOpen] = useState(false);
@@ -139,6 +139,15 @@ const Settings = () => {
       {showArrow && <ChevronRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />}
     </button>
   );
+
+  useEffect(() => {
+    const { displayName, email, phone, username } = settingsData || {};
+    
+    setName(displayName || "");
+    setEmail(email || "");
+    setPhone(phone || "");
+    setUsername(username || "");
+  }, [settingsData]);
 
   return (
     <div className="min-h-screen bg-background">

@@ -6,14 +6,15 @@ import StartupPost from "@/components/StartupPost";
 // import Stories from "@/components/Stories";
 import { Separator } from "@/components/ui/separator";
 import Cookies from "js-cookie";
+import {  useGetStartupPosts } from "@/hooks/home/useGetStartupPosts";
 
 const mockStartups = [
   {
     id: "airbound-co",
     name: "Airbound.co",
     tagline: "Revolutionary aerospace delivery platform",
-    brief: "We're building the future of last-mile delivery using autonomous drones. Our AI-powered logistics network reduces delivery costs by 60% while cutting carbon emissions in urban areas.",
-    logo: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=100&h=100&fit=crop",
+    description: "We're building the future of last-mile delivery using autonomous drones. Our AI-powered logistics network reduces delivery costs by 60% while cutting carbon emissions in urban areas.",
+    profileImage: "https://images.unsplash.com/photo-1473968512647-3e447244af8f?w=100&h=100&fit=crop",
     revenueGenerating: true,
     fundsRaised: "$2M",
     currentInvestors: ["Y Combinator", "Sequoia", "a16z"],
@@ -127,14 +128,16 @@ const mockStartups = [
 
 const Index = () => {
   const navigate = useNavigate();
+  const {data: homePosts, isPending} = useGetStartupPosts();
 
   useEffect(() => {
-  const token = Cookies.get("token");
+    const token = Cookies.get("token");
+  
+    if (!token) {
+      navigate("/login");
+    }
+  }, [navigate]);
 
-  if (!token) {
-    navigate("/login");
-  }
-}, [navigate]);
 
   return (
     <div className="min-h-screen bg-background-subtle">
@@ -153,16 +156,39 @@ const Index = () => {
           </div> */}
 
           {/* Startup Posts */}
-          {mockStartups.map((startup, index) => (
-            <div key={index}>
-              <div className="animate-fade-in-up" style={{ animationDelay: `${index * 100}ms` }}>
-                <StartupPost company={startup} />
-              </div>
-              {index < mockStartups.length - 1 && (
-                <Separator className="my-6" />
-              )}
-            </div>
-          ))}
+          {isPending ? (
+            <>
+              {mockStartups.map((startup, index) => (
+                <div key={index}>
+                  <div
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <StartupPost company={startup} />
+                  </div>
+                  {index < mockStartups.length - 1 && (
+                    <Separator className="my-6" />
+                  )}
+                </div>
+              ))}
+            </>
+          ) : (
+            <>
+              {homePosts.map((startup, index) => (
+                <div key={startup.id}>
+                  <div
+                    className="animate-fade-in-up"
+                    style={{ animationDelay: `${index * 100}ms` }}
+                  >
+                    <StartupPost company={startup} />
+                  </div>
+                  {index < mockStartups.length - 1 && (
+                    <Separator className="my-6" />
+                  )}
+                </div>
+              ))}
+            </>
+          )}
         </div>
       </main>
 

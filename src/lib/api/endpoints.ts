@@ -184,3 +184,28 @@ export const UPLOAD_ENDPOINTS = {
   VIDEO: "/api/upload/video",
 };
 
+/* ================= Startup ================= */
+
+export const STARTUP_ENDPOINTS = {
+  POSTS: "/api/startup-details",
+  HOTTEST: "/api/startup-details/hottest",
+  PROFILE: "/api/startup/profile",
+
+  // Likes
+  LIKE: (id: string) =>
+    `/api/startup-likes/startup/${encodeURIComponent(id)}`,
+  LIKE_CHECK: (id: string) =>
+    `/api/startup-likes/startup/${encodeURIComponent(id)}/check`,
+
+  // Crowns
+  CROWN: (id: string) =>
+    `/api/startup-crowns/startup/${encodeURIComponent(id)}`,
+
+  // Comments
+  COMMENTS: (id: string) =>
+    `/api/startup-comments/${encodeURIComponent(id)}/comments`,
+  COMMENT_REPLIES: (id: string) =>
+    `/api/startup-comments/comment/${encodeURIComponent(id)}/replies`,
+  COMMENT_DELETE: (id: string) =>
+    `/api/startup-comments/comment/${encodeURIComponent(id)}`,
+};

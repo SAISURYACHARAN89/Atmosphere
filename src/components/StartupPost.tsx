@@ -29,8 +29,8 @@ interface StartupPostProps {
     id: string;
     name: string;
     tagline: string;
-    brief: string;
-    logo: string;
+    description: string;
+    profileImage: string;
     revenueGenerating: boolean;
     fundsRaised: string;
     currentInvestors: string[];
@@ -83,7 +83,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
       time: "1h",
       avatar: "/avatars/p2.jpg",
       text: "Super excited for this startup!",
-      image: company.images[0],
+      image: company.images?.[0],
     },
     {
       id: 3,
@@ -172,7 +172,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
           }
         >
           <Avatar className="h-9 w-9 border-2 border-border">
-            <AvatarImage src={company.logo} alt={company.name} />
+            <AvatarImage src={company?.profileImage} alt={company.name} />
             <AvatarFallback className="bg-muted text-foreground">
               {company.name[0]}
             </AvatarFallback>
@@ -180,12 +180,13 @@ const StartupPost = ({ company }: StartupPostProps) => {
 
           <div>
             <div className="flex items-center gap-1.5">
-              <h3 className="font-semibold text-sm">{company.name.toLowerCase().replace('.', '')}</h3>
+              <h3 className="font-semibold text-sm">
+                {company.name.toLowerCase().replace(".", "")}
+              </h3>
             </div>
             <p className="text-[10px] text-muted-foreground mt-0.5">
               Verified startup
             </p>
-
           </div>
         </div>
 
@@ -200,7 +201,9 @@ const StartupPost = ({ company }: StartupPostProps) => {
               setFollowing(!following);
             }}
           >
-            <span className="text-xs font-medium">{following ? "Following" : "Follow"}</span>
+            <span className="text-xs font-medium">
+              {following ? "Following" : "Follow"}
+            </span>
           </Button>
           <Button
             variant="ghost"
@@ -229,10 +232,25 @@ const StartupPost = ({ company }: StartupPostProps) => {
             </div>
           )}
 
-          <img
-            src={company.images[currentImageIndex]}
-            className="w-full aspect-[16/9] object-cover"
-          />
+          {company.video ? (
+            <video
+              src={company.video}
+              className="w-full aspect-[16/9] object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ) : (
+            <img
+              src={
+                company.images?.[currentImageIndex] ||
+                company?.profileImage ||
+                ""
+              }
+              className="w-full aspect-[16/9] object-cover"
+            />
+          )}
         </div>
 
         {/* SLIDE INDICATORS BELOW IMAGE (outside container) */}
@@ -256,7 +274,6 @@ const StartupPost = ({ company }: StartupPostProps) => {
       {/* ACTIONS */}
       <div className="px-4 pb-3">
         <div className="flex items-center gap-5">
-
           {/* LIKE */}
           <Button
             variant="ghost"
@@ -268,12 +285,12 @@ const StartupPost = ({ company }: StartupPostProps) => {
             }}
           >
             <Heart
-              className={`!h-6 !w-6 transition-all ${liked
+              className={`!h-6 !w-6 transition-all ${
+                liked
                   ? "fill-current text-red-500"
                   : "text-foreground hover:text-red-500"
-                }`}
+              }`}
             />
-
 
             <span className="text-[17px] font-medium">{likes}</span>
           </Button>
@@ -289,12 +306,12 @@ const StartupPost = ({ company }: StartupPostProps) => {
             }}
           >
             <Crown
-              className={`!h-6 !w-6 transition-all ${crowned
+              className={`!h-6 !w-6 transition-all ${
+                crowned
                   ? "fill-current text-yellow-500"
                   : "text-foreground hover:text-yellow-500"
-                }`}
+              }`}
             />
-
 
             <span className="text-[17px] font-medium">{crowns}</span>
           </Button>
@@ -308,12 +325,9 @@ const StartupPost = ({ company }: StartupPostProps) => {
                 className="h-auto p-0 flex items-center gap-1.5"
                 onClick={(e) => e.stopPropagation()}
               >
-                <MessageCircle
-                  className="!h-6 !w-6 text-foreground hover:text-accent transition-colors"
-                />
+                <MessageCircle className="!h-6 !w-6 text-foreground hover:text-accent transition-colors" />
                 <span className="text-[17px] font-medium">{comments}</span>
               </Button>
-
             </DrawerTrigger>
 
             <DrawerContent
@@ -326,13 +340,15 @@ const StartupPost = ({ company }: StartupPostProps) => {
               lg:max-w-[560px]
             "
             >
-
               <DrawerHeader className="px-4 py-3">
                 <DrawerTitle>Comments</DrawerTitle>
               </DrawerHeader>
 
               {/* Comment List */}
-              <div ref={commentsTopRef} className="max-h-[70vh] overflow-y-auto px-4 pb-6 space-y-6">
+              <div
+                ref={commentsTopRef}
+                className="max-h-[70vh] overflow-y-auto px-4 pb-6 space-y-6"
+              >
                 {commentList.map((c) => (
                   <div key={c.id} className="flex items-start gap-3">
                     <Avatar className="h-10 w-10">
@@ -388,9 +404,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
 
               {/* COMMENT INPUT */}
               <DrawerFooter className="bg-background border-t p-3">
-
                 <div className="w-full flex items-center gap-2">
-
                   {/* + icon */}
                   <button
                     onClick={() => commentFileRef.current?.click()}
@@ -424,12 +438,8 @@ const StartupPost = ({ company }: StartupPostProps) => {
                   >
                     <Send className="w-5 h-5 text-primary" />
                   </button>
-
                 </div>
-
               </DrawerFooter>
-
-
             </DrawerContent>
           </Drawer>
 
@@ -440,12 +450,9 @@ const StartupPost = ({ company }: StartupPostProps) => {
             className="h-auto p-0 flex items-center gap-1.5"
             onClick={(e) => e.stopPropagation()}
           >
-            <Send
-              className="!h-6 !w-6 text-foreground hover:text-accent transition-colors"
-            />
+            <Send className="!h-6 !w-6 text-foreground hover:text-accent transition-colors" />
             <span className="text-[17px] font-medium">{sends}</span>
           </Button>
-
 
           <div className="flex-1" />
 
@@ -460,12 +467,11 @@ const StartupPost = ({ company }: StartupPostProps) => {
             }}
           >
             <Bookmark
-              className={`!h-6 !w-6 transition-all ${saved ? "fill-foreground" : "text-foreground"
-                }`}
+              className={`!h-6 !w-6 transition-all ${
+                saved ? "fill-foreground" : "text-foreground"
+              }`}
             />
           </Button>
-
-
         </div>
       </div>
 
@@ -475,7 +481,7 @@ const StartupPost = ({ company }: StartupPostProps) => {
           WHAT'S {company.name.toUpperCase()}
         </h4>
         <p className="text-sm text-foreground/90 leading-relaxed line-clamp-2">
-          {company.brief}
+          {company.description}
         </p>
       </div>
 
@@ -483,10 +489,9 @@ const StartupPost = ({ company }: StartupPostProps) => {
       <div className="px-4 pb-3">
         <h4 className="text-xs font-semibold uppercase mb-1.5">
           <span className="text-muted-foreground">STAGE :</span>{" "}
-          <span className="text-foreground font-semibold">MVP launched</span>
+          <span className="text-foreground font-semibold">{company.stage}</span>
         </h4>
       </div>
-
 
       {/* SMALL INFO BOXES */}
       <div className="px-4 pb-3">
@@ -506,13 +511,13 @@ const StartupPost = ({ company }: StartupPostProps) => {
         </div>
       </div>
 
-
-
       {/* ROUND STATUS */}
       {company.lookingToDilute && company.dilutionAmount ? (
         <div className="px-4 pb-4">
           <div className="flex items-baseline gap-2 mb-2">
-            <span className="text-xs text-muted-foreground">Current round :</span>
+            <span className="text-xs text-muted-foreground">
+              Current round :
+            </span>
             <span className="text-sm font-semibold text-foreground">
               Series A
             </span>
@@ -531,20 +536,20 @@ const StartupPost = ({ company }: StartupPostProps) => {
               <span className="text-xs font text-foreground">
                 {company.dilutionAmount}
               </span>
-                </div>
+            </div>
             {/* <div className="flex justify-center relative">
               <span className="text-xs font-semibold text-muted-foreground translate-y-3">
                 Know more
               </span>
             </div> */}
-
-
           </div>
         </div>
       ) : (
         <div className="px-4 pb-4">
           <div className="flex items-baseline gap-2">
-            <span className="text-xs text-muted-foreground">Current round :</span>
+            <span className="text-xs text-muted-foreground">
+              Current round :
+            </span>
             <span className="text-sm font-medium text-foreground">
               Not raising
             </span>

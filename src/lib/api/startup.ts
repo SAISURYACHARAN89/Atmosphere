@@ -1,4 +1,4 @@
-import { ZComment, ZStartup } from "@/types/startups";
+import { ZComment, ZStartup, ZTopStartup } from "@/types/startups";
 import axiosClient from "./axiosClient";
 import { STARTUP_ENDPOINTS } from "./endpoints";
 import { ZGetCommentsRes } from "@/types/misc";
@@ -23,7 +23,8 @@ export async function fetchHottestStartups(limit = 10, week?: number) {
     params.week = week;
   }
 
-  return axiosClient.get(STARTUP_ENDPOINTS.HOTTEST, { params });
+  const res: any = await axiosClient.get(STARTUP_ENDPOINTS.HOTTEST, { params });
+  return (res?.startups as ZTopStartup[]) || [];
 }
 
 /* ---------------- Likes ---------------- */

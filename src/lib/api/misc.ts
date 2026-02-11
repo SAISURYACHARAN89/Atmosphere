@@ -1,3 +1,4 @@
+import { ZEvent, ZGrant } from "@/types/misc";
 import axiosClient from "./axiosClient";
 import {
   MISC_ENDPOINTS,
@@ -57,14 +58,16 @@ export async function searchEntities(
 
 // Fetch grants
 export async function fetchGrants(limit = 20, skip = 0) {
-  return axiosClient.get(MISC_ENDPOINTS.GRANTS, {
+  const res: ZGrant[] = await axiosClient.get(MISC_ENDPOINTS.GRANTS, {
     params: { limit, skip },
   });
+  return res;
 }
 
 // Fetch events
 export async function fetchEvents(limit = 20, skip = 0) {
-  return axiosClient.get(MISC_ENDPOINTS.EVENTS, {
+  const res:ZEvent[] = await axiosClient.get(MISC_ENDPOINTS.EVENTS, {
     params: { limit, skip },
   });
+  return res;
 }

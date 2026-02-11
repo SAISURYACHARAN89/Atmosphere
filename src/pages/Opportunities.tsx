@@ -40,6 +40,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useGetGrants } from "@/hooks/misc/useGetGrants";
+import { formatDate, getTimeAgo } from "@/utils/misc";
+import { useGetEvents } from "@/hooks/misc/useGetEvents";
 
 interface Grant {
   id: string;
@@ -125,258 +128,6 @@ const locations = [
   "Dubai, UAE",
   "Tokyo, Japan",
   "New York",
-];
-
-const grantsData: Grant[] = [
-  {
-    id: "1",
-    name: "Tech Innovation Grant 2024",
-    organization: "National Science Foundation",
-    sector: "Verified Startup",
-    location: "USA",
-    amount: "$50,000 - $250,000",
-    deadline: "Dec 31, 2024",
-    type: "grant",
-    description: "Supporting innovative tech startups in AI, blockchain, and IoT sectors.",
-    url: "#",
-  },
-  {
-    id: "2",
-    name: "Green Energy Accelerator",
-    organization: "CleanTech Ventures",
-    sector: "",
-    location: "Global",
-    amount: "$100,000 + Mentorship",
-    deadline: "Jan 15, 2025",
-    type: "accelerator",
-    description: "3-month program for renewable energy startups with funding and mentorship.",
-    url: "#",
-  },
-  {
-    id: "3",
-    name: "HealthTech Incubator",
-    organization: "MedStart Hub",
-    sector: "",
-    location: "Europe",
-    amount: "$75,000",
-    deadline: "Nov 30, 2024",
-    type: "incubator",
-    description: "Supporting healthcare innovation with focus on telemedicine and digital health.",
-    url: "#",
-  },
-  {
-    id: "4",
-    name: "FinTech Growth Fund",
-    organization: "Finance Innovation Lab",
-    sector: "Verified Startup",
-    location: "Asia",
-    amount: "$200,000 - $500,000",
-    deadline: "Dec 15, 2024",
-    type: "grant",
-    description: "Funding for fintech startups revolutionizing payment systems and banking.",
-    url: "#",
-  },
-  {
-    id: "5",
-    name: "EdTech Accelerator Program",
-    organization: "Learn Ventures",
-    sector: "",
-    location: "USA",
-    amount: "$150,000",
-    deadline: "Jan 31, 2025",
-    type: "accelerator",
-    description: "12-week intensive program for education technology startups.",
-    url: "#",
-  },
-  {
-    id: "6",
-    name: "AgriTech Innovation Grant",
-    organization: "FarmFuture Foundation",
-    sector: "",
-    location: "Global",
-    amount: "$80,000 - $300,000",
-    deadline: "Feb 28, 2025",
-    type: "grant",
-    description: "Supporting sustainable agriculture and food tech innovations.",
-    url: "#",
-  },
-  {
-    id: "7",
-    name: "AI Research Incubator",
-    organization: "DeepMind Labs",
-    sector: "Verified Startup",
-    location: "UK",
-    amount: "$120,000 + Resources",
-    deadline: "Dec 20, 2024",
-    type: "incubator",
-    description: "Focus on artificial intelligence and machine learning applications.",
-    url: "#",
-  },
-  {
-    id: "8",
-    name: "Retail Innovation Fund",
-    organization: "Commerce Accelerators",
-    sector: "",
-    location: "USA",
-    amount: "$90,000",
-    deadline: "Jan 10, 2025",
-    type: "accelerator",
-    description: "Supporting e-commerce and retail technology innovations.",
-    url: "#",
-  },
-  {
-    id: "9",
-    name: "Manufacturing Excellence Grant",
-    organization: "Industrial Innovation Fund",
-    sector: "Manufacturing",
-    location: "Germany",
-    amount: "$180,000",
-    deadline: "Jan 20, 2025",
-    type: "grant",
-    description: "Supporting advanced manufacturing and Industry 4.0 innovations.",
-    url: "#",
-  },
-  {
-    id: "10",
-    name: "Blockchain Innovation Hub",
-    organization: "Crypto Ventures",
-    sector: "Blockchain",
-    location: "Singapore",
-    amount: "$200,000 + Equity",
-    deadline: "Feb 10, 2025",
-    type: "incubator",
-    description: "6-month program for blockchain and Web3 startups.",
-    url: "#",
-  },
-];
-
-const eventsData: Event[] = [
-  {
-    id: "e1",
-    name: "AI & Machine Learning Summit 2024",
-    organizer: "Tech Innovators Network",
-    sector: "Verified Startup",
-    location: "San Francisco, USA",
-    date: "Dec 15-17, 2024",
-    type: "physical",
-    description:
-      "Three-day summit featuring leading AI researchers, industry experts, and networking opportunities.",
-    attendees: "2000+ attendees",
-    url: "#",
-  },
-  {
-    id: "e2",
-    name: "Global Climate Tech Conference",
-    organizer: "Green Future Foundation",
-    sector: "",
-    location: "Online",
-    date: "Jan 8-10, 2025",
-    type: "virtual",
-    description:
-      "Virtual conference connecting climate tech startups with investors and industry leaders.",
-    attendees: "5000+ attendees",
-    url: "#",
-  },
-  {
-    id: "e3",
-    name: "HealthTech Innovation E-Summit",
-    organizer: "MedTech Global",
-    sector: "",
-    location: "London",
-    date: "Jan 22-23, 2025",
-    type: "e-summit",
-    description:
-      "E-summit showcasing breakthrough healthcare technologies and digital health solutions.",
-    attendees: "3500+ attendees",
-    url: "#",
-  },
-  {
-    id: "e4",
-    name: "FinTech Leaders Conference",
-    organizer: "Financial Innovation Hub",
-    sector: "Verified Startup",
-    location: "Singapore",
-    date: "Feb 5-6, 2025",
-    type: "conference",
-    description:
-      "Premier conference for fintech innovators, regulators, and financial institutions.",
-    attendees: "1500+ attendees",
-    url: "#",
-  },
-  {
-    id: "e5",
-    name: "EdTech Workshop Series",
-    organizer: "Education First",
-    sector: "EdTech",
-    location: "Berlin, Germany",
-    date: "Feb 12-14, 2025",
-    type: "workshop",
-    description: "Interactive workshops on implementing educational technology in institutions.",
-    attendees: "500+ attendees",
-    url: "#",
-  },
-  {
-    id: "e6",
-    name: "AgriTech Innovation Expo",
-    organizer: "Farm Future Alliance",
-    sector: "AgriTech",
-    location: "Amsterdam, Netherlands",
-    date: "Mar 1-3, 2025",
-    type: "physical",
-    description:
-      "Exhibition and conference featuring sustainable agriculture and food technology innovations.",
-    attendees: "2500+ attendees",
-    url: "#",
-  },
-  {
-    id: "e7",
-    name: "Blockchain & Web3 Networking Meet",
-    organizer: "Crypto Innovators",
-    sector: "Blockchain",
-    location: "Dubai, UAE",
-    date: "Mar 10, 2025",
-    type: "networking",
-    description: "Exclusive networking event for blockchain entrepreneurs and investors.",
-    attendees: "800+ attendees",
-    url: "#",
-  },
-  {
-    id: "e8",
-    name: "Manufacturing 4.0 Conference",
-    organizer: "Industrial Tech Forum",
-    sector: "Manufacturing",
-    location: "Tokyo, Japan",
-    date: "Mar 18-20, 2025",
-    type: "conference",
-    description: "Conference on advanced manufacturing, robotics, and Industry 4.0 technologies.",
-    attendees: "1800+ attendees",
-    url: "#",
-  },
-  {
-    id: "e9",
-    name: "E-Commerce Growth Summit",
-    organizer: "Digital Commerce Alliance",
-    sector: "E-commerce",
-    location: "Online",
-    date: "Apr 5-6, 2025",
-    type: "virtual",
-    description: "Virtual summit covering e-commerce strategies, trends, and growth tactics.",
-    attendees: "4000+ attendees",
-    url: "#",
-  },
-  {
-    id: "e10",
-    name: "Cybersecurity Leaders Forum",
-    organizer: "Security First Network",
-    sector: "Cybersecurity",
-    location: "New York",
-    date: "Apr 15-16, 2025",
-    type: "hybrid",
-    description:
-      "Forum addressing latest cybersecurity challenges and solutions for businesses.",
-    attendees: "2200+ attendees",
-    url: "#",
-  },
 ];
 
 const startupRolePostings: StartupRolePosting[] = [
@@ -745,7 +496,11 @@ const Opportunities: React.FC = () => {
   const [teamRemoteOpen, setTeamRemoteOpen] = useState(false);
   const [teamEmploymentOpen, setTeamEmploymentOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("team");
-  
+
+  const {grants: grantsData, isLoading:isGrantsLoading} = useGetGrants();
+  const {events: eventsData, isLoading:isEventsLoading} = useGetEvents();
+
+  console.log("Events Data:", eventsData);
   const [showTeamFilters, setShowTeamFilters] = useState(false);
   const [expandedPostingId, setExpandedPostingId] = useState<string | null>(null);
 
@@ -765,13 +520,12 @@ const Opportunities: React.FC = () => {
     customQuestions: ["", "", ""],
   });
 
-  const filteredGrants = grantsData.filter((grant) => {
+  const filteredGrants = !isGrantsLoading && grantsData ? grantsData.filter((grant) => {
     const sectorMatch = grantSector === "All Sectors" || grant.sector === grantSector;
     const typeMatch = grantType === "all" || grant.type === grantType;
     return sectorMatch && typeMatch;
-  });
-
-  const filteredEvents = eventsData.filter((event) => {
+  }) : [];
+  const filteredEvents = !isEventsLoading && eventsData ? eventsData.filter((event) => {
     const sectorMatch = eventSector === "All Sectors" || event.sector === eventSector;
     const typeMatch = eventType === "all" || event.type === eventType;
     const locationMatch =
@@ -779,7 +533,7 @@ const Opportunities: React.FC = () => {
       event.location.includes(eventLocation) ||
       eventLocation.includes(event.location);
     return sectorMatch && typeMatch && locationMatch;
-  });
+  }): []
 
   const handleCreatePosting = () => {
     const posting: StartupRolePosting = {
@@ -948,7 +702,7 @@ const Opportunities: React.FC = () => {
             {/* Grants List */}
             <div className="space-y-3">
               {filteredGrants.map((grant) => (
-                <div key={grant.id} className="bg-background border border-border rounded-lg p-4 hover:border-primary/50 transition-all">
+                <div key={grant._id} className="bg-background border border-border rounded-lg p-4 hover:border-primary/50 transition-all">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1">
                       <h3 className="font-semibold text-sm text-foreground">{grant.name}</h3>
@@ -966,16 +720,18 @@ const Opportunities: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      <span>{grant.deadline}</span>
+                      <span>{formatDate(grant.deadline)}</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div className="font-semibold text-sm text-foreground">{grant.amount}</div>
-                    <Button variant="default" size="sm" className="h-7 text-xs gap-1">
+                    <a href={grant?.url} target="_blank" rel="noopener noreferrer">
+                    <Button variant="default"  size="sm" className="h-7 text-xs gap-1" >
                       Apply
                       <ExternalLink className="w-3 h-3" />
                     </Button>
+                    </a>
                   </div>
                 </div>
               ))}
@@ -1102,7 +858,7 @@ const Opportunities: React.FC = () => {
                       <h3 className="font-semibold text-sm text-foreground">{event.name}</h3>
                       <p className="text-xs text-muted-foreground mt-0.5">{event.organizer}</p>
                     </div>
-                    <Badge variant={getEventTypeBadge(event.type)} className="text-[10px] px-2 py-0.5 flex-shrink-0">{event.type}</Badge>
+                    <Badge variant={getEventTypeBadge(event.type)} className="text-[10px] px-2 py-0.5 flex-shrink-0">Event</Badge>
                   </div>
 
                   <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{event.description}</p>
@@ -1114,19 +870,21 @@ const Opportunities: React.FC = () => {
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
-                      <span>{event.date}</span>
+                      <span>{formatDate(event.date)}</span>
                     </div>
-                    <div className="flex items-center gap-1">
+                    {/* <div className="flex items-center gap-1">
                       <Users className="w-3 h-3" />
                       <span>{event.attendees}</span>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="flex items-center justify-end">
+                    <a href={event.url} target="_blank" rel="noopener noreferrer">
                     <Button variant="default" size="sm" className="h-7 text-xs gap-1">
                       Register
                       <ExternalLink className="w-3 h-3" />
                     </Button>
+                    </a>
                   </div>
                 </div>
               ))}

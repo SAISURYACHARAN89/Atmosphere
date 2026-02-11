@@ -1,11 +1,18 @@
+import { ZReel } from "@/types/reels";
 import axiosClient from "./axiosClient";
 import { REEL_ENDPOINTS, SAVED_ENDPOINTS, UPLOAD_ENDPOINTS } from "./endpoints";
+import { ZGetCommentsRes } from "@/types/misc";
+
+interface ReelResponse {
+  reels: ZReel[];
+}
 
 // Fetch reels
 export async function fetchReels(limit = 20, skip = 0) {
-  return axiosClient.get(REEL_ENDPOINTS.LIST, {
+  const res: ReelResponse = await axiosClient.get(REEL_ENDPOINTS.LIST, {
     params: { limit, skip },
   });
+  return res;
 }
 
 // Create reel
@@ -42,9 +49,10 @@ export async function unlikeReel(reelId: string) {
 
 // Reel comments
 export async function getReelComments(reelId: string, limit = 50, skip = 0) {
-  return axiosClient.get(REEL_ENDPOINTS.COMMENTS(reelId), {
+  const res: ZGetCommentsRes=await axiosClient.get(REEL_ENDPOINTS.COMMENTS(reelId), {
     params: { limit, skip },
   });
+  return res;
 }
 
 // Add comment

@@ -54,12 +54,11 @@ const StartupPost = ({ company }: { company: ZStartup }) => {
   // const [crowns, setCrowns] = useState(19);
   // const [crowned, setCrowned] = useState(false);
 
-  const { data:commentData, isLoading: isCommentsLoading } = useQuery({
+  const { data:commentData, isPending: isCommentsLoading } = useQuery({
     queryKey: ["startupComments", company.id],
     queryFn: () => getStartupComments(company.id),
-    enabled: isCommentsOpen, // ✅ only fetch when open
+    enabled: isCommentsOpen,
   });
-
   const commentList = commentData?.comments || [];
 
   // COMMENT HOOKS
@@ -590,6 +589,6 @@ const StartupPost = ({ company }: { company: ZStartup }) => {
       )}
     </Card>
   );
-};;;
+};
 
-  export default StartupPost;
+export default StartupPost;

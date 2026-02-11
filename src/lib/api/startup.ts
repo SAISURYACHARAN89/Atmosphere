@@ -1,6 +1,7 @@
 import { ZComment, ZStartup } from "@/types/startups";
 import axiosClient from "./axiosClient";
 import { STARTUP_ENDPOINTS } from "./endpoints";
+import { ZGetCommentsRes } from "@/types/misc";
 
 interface FetchStartupResponse {
   startups: ZStartup[];
@@ -76,12 +77,8 @@ export async function addStartupComment(
   );
 }
 
-
-interface GetStartupCommentsRes{
-  comments: ZComment[];
-} 
 export async function getStartupComments(startupId: string) {
-  const res: GetStartupCommentsRes = await  axiosClient.get(
+  const res: ZGetCommentsRes = await  axiosClient.get(
     STARTUP_ENDPOINTS.COMMENTS(startupId)
   );
   return res;

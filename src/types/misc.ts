@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ZComment } from "./startups";
 
 export const zChangePasswordResponse = z.object({
   success: z.boolean().optional(),
@@ -7,3 +8,8 @@ export const zChangePasswordResponse = z.object({
 });
 
 export type ZChangePasswordResponse = z.infer<typeof zChangePasswordResponse>;
+
+
+export interface ZGetCommentsRes{
+  comments: ZComment[];
+} 

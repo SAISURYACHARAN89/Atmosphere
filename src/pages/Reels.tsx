@@ -20,7 +20,7 @@ const ReelsList = () => {
         <ChevronLeft size={32} />
       </button>
 
-      <div className="h-full w-full overflow-y-scroll snap-y snap-mandatory pb-16">
+      <div className="h-full w-full overflow-y-scroll max-w-2xl mx-auto snap-y snap-mandatory pb-16">
         {reels.map((reel, index) => (
           <ReelCard key={reel._id} reel={reel} index={index} />
         ))}

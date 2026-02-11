@@ -131,7 +131,6 @@ const Search = () => {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const { data:exploreData, isPending } = useExplorePosts();
-console.log("Explore Posts Data:", exploreData);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [inputValue, setInputValue] = useState("");

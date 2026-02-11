@@ -18,6 +18,8 @@ import { useLikeReel } from "@/hooks/reels/useLikeReel";
 import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addReelComment, getReelComments } from "@/lib/api/reels";
 import { toast } from "./sonner";
+import { Button } from "./button";
+import { useSaveReel } from "@/hooks/reels/useSaveReel";
 
 /* ------------------ Types ------------------ */
 
@@ -43,10 +45,10 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel }) => {
 
   const [liked, setLiked] = useState(reel.isLiked);
   const [likesCount, setLikesCount] = useState(reel.likesCount);
-
+  const [saved, setSaved] = useState(reel.isSaved);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [commentId, setCommentId] = useState<string | null>(null);
-
+  const { toggleSave } = useSaveReel(reel._id, reel.savedId);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [newComment, setNewComment] = useState("");
 
@@ -76,6 +78,19 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel }) => {
       // rollback
       setLiked(prevLiked);
       setLikesCount(prevLikes);
+    }
+  };
+    /* ---------------- Save Reel ---------------- */
+  const handleSave = async () => {
+    const prevSaved = saved;
+    setSaved((prev) => !prev);
+    setLikesCount((prev) => (prevSaved ? prev - 1 : prev + 1));
+
+    try {
+      await toggleSave(prevSaved);
+    } catch {
+      // rollback
+      setSaved(prevSaved);
     }
   };
 
@@ -147,8 +162,18 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel }) => {
           </button>
 
           <Share2 size={32} className="text-white" />
-
-          <Bookmark size={32} className="text-white" />
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-auto p-0"
+            onClick={handleSave}
+          >
+            <Bookmark
+              className={`!h-6 !w-6 transition-all ${
+                saved ? "fill-foreground" : "text-foreground"
+              }`}
+            />
+          </Button>
         </div>
 
         {/* Author Info */}
@@ -192,12 +217,17 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel }) => {
                 {commentList.map((c) => (
                   <div key={c._id} className="flex gap-3">
                     <Avatar className="h-9 w-9">
-                      <AvatarImage src={c.author?.avatarUrl} alt={c.author?.username} />
+                      <AvatarImage
+                        src={c.author?.avatarUrl}
+                        alt={c.author?.username}
+                      />
                       <AvatarFallback>{c.author.username?.[0]}</AvatarFallback>
                     </Avatar>
 
                     <div className="flex-1">
-                      <p className="font-semibold text-sm">{c?.author?.username}</p>
+                      <p className="font-semibold text-sm">
+                        {c?.author?.username}
+                      </p>
                       <p className="text-sm">{c.text}</p>
 
                       <button

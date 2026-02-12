@@ -41,7 +41,6 @@ const Launch = () => {
 
   const { startups: topStartups, isLoading: startupsLoading } =
     useHottestStartups(7, 7);
-  console.log("Top Startups:", topStartups);
 
   useEffect(() => {
     if (filterDay === "today") {

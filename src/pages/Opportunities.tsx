@@ -12,6 +12,7 @@ import {
   Briefcase,
   Mail,
   Plus,
+  Loader2,
 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import { Badge } from "@/components/ui/badge";
@@ -43,6 +44,10 @@ import {
 import { useGetGrants } from "@/hooks/misc/useGetGrants";
 import { formatDate, getTimeAgo } from "@/utils/misc";
 import { useGetEvents } from "@/hooks/misc/useGetEvents";
+import { useGetJobs } from "@/hooks/jobs/useGetJobs";
+import { ZCreateJobPayload, ZEvent, ZJob } from "@/types/misc";
+import { useCreateJob } from "@/hooks/jobs/useCreateJob";
+import { toast } from "sonner";
 
 interface Grant {
   id: string;
@@ -130,145 +135,6 @@ const locations = [
   "New York",
 ];
 
-const startupRolePostings: StartupRolePosting[] = [
-  {
-    id: "1",
-    startupName: "NeuralTech AI",
-    roleTitle: "Co-Founder & CTO",
-    sector: "Verified Startup",
-    location: "San Francisco, USA",
-    isRemote: true,
-    employmentType: "Full-time",
-    compensation: "Equity (15-20%) + Competitive Salary",
-    description:
-      "Building next-generation AI solutions for enterprise automation. Seeking technical leader to drive product development and scale engineering team.",
-    requirements:
-      "10+ years in software engineering, proven track record in AI/ML, startup experience preferred, strong leadership skills",
-    applicantsCount: 24,
-    companyType: "Artificial Intelligence",
-    customQuestions: ["What's your experience with AI/ML?", "Tell us about your leadership style", "Why do you want to join us?"],
-  },
-  {
-    id: "2",
-    startupName: "GreenWave Energy",
-    roleTitle: "Head of Marketing",
-    sector: "",
-    location: "Berlin, Germany",
-    isRemote: false,
-    employmentType: "Full-time",
-    compensation: "Equity (3-5%) + €80k-100k",
-    description:
-      "Revolutionary renewable energy platform seeking marketing leader to drive B2B growth and brand positioning in European markets.",
-    requirements:
-      "5+ years B2B marketing experience, climate tech interest, growth hacking expertise, fluent English and German",
-    applicantsCount: 12,
-    companyType: "Renewable Energy",
-    customQuestions: ["What's your marketing strategy for B2B?", "How do you measure campaign success?", "Describe a successful project."],
-  },
-  {
-    id: "3",
-    startupName: "HealthSync",
-    roleTitle: "Product Designer (Co-Founder Level)",
-    sector: "Healthcare",
-    location: "London, UK",
-    isRemote: true,
-    employmentType: "Part-time",
-    compensation: "Equity (8-12%) + Part-time Salary",
-    description:
-      "Digital health platform connecting patients with specialists. Looking for designer to shape product vision and create exceptional user experiences.",
-    requirements:
-      "Healthcare or medtech design experience, user research skills, design systems expertise, passion for improving patient care",
-    applicantsCount: 8,
-    companyType: "HealthTech",
-    customQuestions: ["What design tools do you use?", "How do you approach user research?", "Describe your design process."],
-  },
-  {
-    id: "4",
-    startupName: "DroneFleet Pro",
-    roleTitle: "Operations Lead",
-    sector: "Robotics",
-    location: "Singapore",
-    isRemote: false,
-    employmentType: "Full-time",
-    compensation: "Equity (5-8%) + SGD 90k-120k",
-    description:
-      "Commercial drone delivery startup scaling operations across Asia. Need experienced operations leader to build efficient logistics systems.",
-    requirements:
-      "Logistics or supply chain experience, startup mindset, data-driven approach, willing to travel across Asia",
-    applicantsCount: 15,
-    companyType: "Robotics",
-    customQuestions: ["Describe your experience in logistics.", "How do you optimize supply chain processes?", "What challenges have you overcome?"],
-  },
-  {
-    id: "5",
-    startupName: "FinFlow",
-    roleTitle: "Co-Founder & CFO",
-    sector: "FinTech",
-    location: "New York, USA",
-    isRemote: true,
-    employmentType: "Full-time",
-    compensation: "Equity (18-25%) + Base Salary",
-    description:
-      "Next-gen payment infrastructure for emerging markets. Seeking financial leader to manage fundraising, financial strategy, and investor relations.",
-    requirements:
-      "Investment banking or VC background, fintech experience, proven fundraising track record, financial modeling expertise",
-    applicantsCount: 32,
-    companyType: "FinTech",
-    customQuestions: ["What is your experience with fundraising?", "How do you approach financial modeling?", "Describe a successful financial strategy."],
-  },
-  {
-    id: "6",
-    startupName: "EduLearn",
-    roleTitle: "Chief Technology Officer",
-    sector: "EdTech",
-    location: "Austin, USA",
-    isRemote: true,
-    employmentType: "Full-time",
-    compensation: "Equity (10-15%) + $140k-180k",
-    description:
-      "AI-powered personalized learning platform for K-12 education. Looking for technical co-founder to lead engineering and product development.",
-    requirements:
-      "Full-stack expertise, EdTech passion, experience with AI/ML, team building skills, scalability focus",
-    applicantsCount: 18,
-    companyType: "EdTech",
-    customQuestions: ["What is your vision for AI in education?", "How do you ensure scalability in tech products?", "Describe your experience with K-12 education systems."],
-  },
-  {
-    id: "7",
-    startupName: "AgriGrow",
-    roleTitle: "Business Development Lead",
-    sector: "AgriTech",
-    location: "Amsterdam, Netherlands",
-    isRemote: false,
-    employmentType: "Part-time",
-    compensation: "Equity (4-6%) + Part-time Salary",
-    description:
-      "Sustainable farming technology startup seeking BD leader to establish partnerships with farms and distributors across Europe.",
-    requirements:
-      "Agriculture industry knowledge, strong network in agritech, partnership development experience, sustainability focus",
-    applicantsCount: 7,
-    companyType: "AgriTech",
-    customQuestions: ["What is your experience in business development?", "How do you approach partnership building?", "Describe a successful project in AgriTech."],
-  },
-  {
-    id: "8",
-    startupName: "CyberShield",
-    roleTitle: "Co-Founder & Chief Security Officer",
-    sector: "Cybersecurity",
-    location: "Tel Aviv, Israel",
-    isRemote: true,
-    employmentType: "Full-time",
-    compensation: "Equity (20-25%) + Competitive Package",
-    description:
-      "Enterprise cybersecurity platform protecting critical infrastructure. Seeking security expert to lead product vision and threat research.",
-    requirements:
-      "Deep cybersecurity expertise, ethical hacking background, enterprise security experience, thought leadership",
-    applicantsCount: 21,
-    companyType: "Cybersecurity",
-    customQuestions: ["What are the latest trends in cybersecurity?", "How do you handle security breaches?", "Describe your experience with threat research."],
-  },
-];
-
 const grantTypes = ["all", "grant", "incubator", "accelerator"];
 const eventTypes = [
   "all",
@@ -316,7 +182,7 @@ const getEventTypeBadge = (type: string) => {
    RoleCard Component
    --------------------------- */
 type RoleCardProps = {
-  posting: StartupRolePosting;
+  posting: ZJob;
   isMyAd?: boolean;
   expanded?: boolean;
   onExpand?: () => void;
@@ -327,9 +193,9 @@ const RoleCard: React.FC<RoleCardProps> = ({ posting, isMyAd = false, expanded =
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [applied, setApplied] = useState(false);
-  const [count, setCount] = useState(posting.applicantsCount);
+  const [count, setCount] = useState(posting?.applicantCount || 0);
   const [questionAnswers, setQuestionAnswers] = useState<string[]>(
-    posting.customQuestions.map(() => "")
+    posting?.customQuestions?.map(() => "") || []
   );
 
   const handleSubmit = () => {
@@ -347,7 +213,7 @@ const RoleCard: React.FC<RoleCardProps> = ({ posting, isMyAd = false, expanded =
     setCount((prev) => prev + 1);
   };
 
-  const tags = ["AI", "B2B", "SaaS", "Startup"];
+  const tags = posting.requirements.split(",").map((s) => s.trim());
 
   return (
     <div className="bg-background border border-border rounded-xl p-4 hover:border-primary/50 transition-all">
@@ -361,17 +227,17 @@ const RoleCard: React.FC<RoleCardProps> = ({ posting, isMyAd = false, expanded =
             <p className="font-semibold text-sm text-foreground truncate">{posting.startupName}</p>
             {isMyAd && <Badge variant="secondary" className="text-[8px] px-1.5 py-0.5 flex-shrink-0">My Ad</Badge>}
           </div>
-          <p className="text-xs text-muted-foreground mt-0.5">{posting.companyType}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{posting.sector}</p>
         </div>
       </div>
 
       {/* Role & Details */}
       <div className="mb-3 space-y-2">
-        <p className="font-semibold text-sm text-foreground line-clamp-2">{posting.roleTitle}</p>
+        <p className="font-semibold text-sm text-foreground line-clamp-2">{posting.title}</p>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <MapPin className="w-3 h-3" />
-            <span>{posting.location}</span>
+            <span>{posting.locationType}</span>
           </div>
           <span className={posting.isRemote ? "text-primary" : ""}>{posting.isRemote ? "Remote" : "On-site"}</span>
         </div>
@@ -382,7 +248,7 @@ const RoleCard: React.FC<RoleCardProps> = ({ posting, isMyAd = false, expanded =
         <p className={`text-xs text-muted-foreground ${showFullDescription ? "" : "line-clamp-2"}`}>
           {posting.description}
         </p>
-        {posting.description.length > 100 && (
+        {posting?.description?.length > 100 && (
           <button
             onClick={() => setShowFullDescription(!showFullDescription)}
             className="text-xs text-primary hover:text-primary/80 mt-1 font-medium"
@@ -472,6 +338,20 @@ const RoleCard: React.FC<RoleCardProps> = ({ posting, isMyAd = false, expanded =
   );
 };
 
+
+export const initialJobPosting = {
+  startupName: "",
+  roleTitle: "",
+  sector: "Artificial Intelligence",
+  location: "",
+  isRemote: false,
+  employmentType: "Full-time" as "Full-time" | "Part-time",
+  compensation: "",
+  description: "",
+  requirements: "",
+  customQuestions: ["", "", ""],
+};
+
 /* ---------------------------
    Main Opportunities component
    --------------------------- */
@@ -499,26 +379,16 @@ const Opportunities: React.FC = () => {
 
   const {grants: grantsData, isLoading:isGrantsLoading} = useGetGrants();
   const {events: eventsData, isLoading:isEventsLoading} = useGetEvents();
+  const {jobs: jobsData, isLoading:isJobsLoading} = useGetJobs();
+  const {mutateAsync: createJob, isPending:isCreatingJob} = useCreateJob();
 
-  console.log("Events Data:", eventsData);
   const [showTeamFilters, setShowTeamFilters] = useState(false);
   const [expandedPostingId, setExpandedPostingId] = useState<string | null>(null);
 
   // User created job postings
   const [userPostings, setUserPostings] = useState<StartupRolePosting[]>([]);
   const [createAdOpen, setCreateAdOpen] = useState(false);
-  const [newPosting, setNewPosting] = useState({
-    startupName: "",
-    roleTitle: "",
-    sector: "Artificial Intelligence",
-    location: "",
-    isRemote: false,
-    employmentType: "Full-time" as "Full-time" | "Part-time",
-    compensation: "",
-    description: "",
-    requirements: "",
-    customQuestions: ["", "", ""],
-  });
+  const [newPosting, setNewPosting] = useState(initialJobPosting);
 
   const filteredGrants = !isGrantsLoading && grantsData ? grantsData.filter((grant) => {
     const sectorMatch = grantSector === "All Sectors" || grant.sector === grantSector;
@@ -535,40 +405,41 @@ const Opportunities: React.FC = () => {
     return sectorMatch && typeMatch && locationMatch;
   }): []
 
-  const handleCreatePosting = () => {
-    const posting: StartupRolePosting = {
-      id: `user-${Date.now()}`,
+const handleCreatePosting = async () => {
+  try {
+    const posting: ZCreateJobPayload = {
       startupName: newPosting.startupName,
-      roleTitle: newPosting.roleTitle,
+      title: newPosting.roleTitle,
       sector: newPosting.sector,
-      location: newPosting.location,
+      locationType: newPosting.location,
       isRemote: newPosting.isRemote,
       employmentType: newPosting.employmentType,
       compensation: newPosting.compensation,
       description: newPosting.description,
       requirements: newPosting.requirements,
-      applicantsCount: 0,
-      customQuestions: newPosting.customQuestions.filter(q => q.trim() !== ""),
+      customQuestions: newPosting.customQuestions.filter(
+        (q) => q.trim() !== ""
+      ),
     };
-    setUserPostings([posting, ...userPostings]);
+
+    const res = await createJob(posting);
+
+    setNewPosting(initialJobPosting);
     setCreateAdOpen(false);
-    setNewPosting({
-      startupName: "",
-      roleTitle: "",
-      sector: "Artificial Intelligence",
-      location: "",
-      isRemote: false,
-      employmentType: "Full-time",
-      compensation: "",
-      description: "",
-      requirements: "",
-      customQuestions: ["", "", ""],
-    });
-  };
 
-  const allRolePostings = [...userPostings, ...startupRolePostings];
+  } catch (error) {
+    const message =error?.message ||
+      "Something Went Wrong";
 
-  const filteredRolePostings = allRolePostings.filter((posting) => {
+    toast.error(message);
+  }
+};
+
+  // const allRolePostings = [...userPostings, ...jobsData];
+  const allRolePostings = isJobsLoading ? [] : jobsData?.jobs;
+
+
+  const filteredRolePostings = isJobsLoading ? [] : allRolePostings.filter((posting) => {
     const sectorMatch = teamSector === "All Sectors" || posting.sector === teamSector;
     const locationMatch =
       teamLocation === "All Locations" ||
@@ -587,24 +458,32 @@ const Opportunities: React.FC = () => {
     <div className="min-h-screen bg-background pb-20">
       <div className="max-w-2xl md:max-w-5xl mx-auto px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-
-
           <TabsList className="grid w-full grid-cols-3 mb-6 h-12 bg-muted/50 rounded-2xl p-1">
-            <TabsTrigger value="grants" className="text-sm font-medium rounded-xl data-[state=active]:bg-background">
+            <TabsTrigger
+              value="grants"
+              className="text-sm font-medium rounded-xl data-[state=active]:bg-background"
+            >
               Grants
             </TabsTrigger>
-            <TabsTrigger value="events" className="text-sm font-medium rounded-xl data-[state=active]:bg-background">
+            <TabsTrigger
+              value="events"
+              className="text-sm font-medium rounded-xl data-[state=active]:bg-background"
+            >
               Events
             </TabsTrigger>
-            <TabsTrigger value="team" className="text-sm font-medium rounded-xl data-[state=active]:bg-background">
-              Team
+            <TabsTrigger
+              value="team"
+              className="text-sm font-medium rounded-xl data-[state=active]:bg-background"
+            >
+              Jobs
             </TabsTrigger>
             {/* <TabsTrigger value="myteams" className="text-sm font-medium rounded-xl data-[state=active]:bg-background">My Teams</TabsTrigger> */}
-
           </TabsList>
           <TabsContent value="myteams" className="space-y-4">
             <div className="text-sm text-muted-foreground py-2">
-              {userPostings.length} {userPostings.length === 1 ? "position" : "positions"} posted by you
+              {userPostings.length}{" "}
+              {userPostings.length === 1 ? "position" : "positions"} posted by
+              you
             </div>
 
             <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
@@ -628,28 +507,50 @@ const Opportunities: React.FC = () => {
               <div className="text-sm text-muted-foreground">
                 Total grants: {filteredGrants.length}
               </div>
-              <Dialog open={grantTypeOpen || grantSectorOpen} onOpenChange={(open) => {
-                if (!open) {
-                  setGrantTypeOpen(false);
-                  setGrantSectorOpen(false);
-                } else {
-                  setGrantTypeOpen(true);
-                }
-              }}>
+              <Dialog
+                open={grantTypeOpen || grantSectorOpen}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    setGrantTypeOpen(false);
+                    setGrantSectorOpen(false);
+                  } else {
+                    setGrantTypeOpen(true);
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <button className="p-1.5 hover:bg-muted rounded-lg transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                      />
                     </svg>
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[300px] w-72 p-0">
                   <div className="space-y-0">
-                    <Collapsible open={grantTypeOpen} onOpenChange={setGrantTypeOpen} defaultOpen>
+                    <Collapsible
+                      open={grantTypeOpen}
+                      onOpenChange={setGrantTypeOpen}
+                      defaultOpen
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                           <span className="text-sm font-medium">Type</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", grantTypeOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              grantTypeOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -660,21 +561,33 @@ const Opportunities: React.FC = () => {
                               onClick={() => setGrantType(type)}
                               className={cn(
                                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                                grantType === type ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                grantType === type
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80",
                               )}
                             >
-                              {type === "all" ? "All" : type.charAt(0).toUpperCase() + type.slice(1)}
+                              {type === "all"
+                                ? "All"
+                                : type.charAt(0).toUpperCase() + type.slice(1)}
                             </button>
                           ))}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
 
-                    <Collapsible open={grantSectorOpen} onOpenChange={setGrantSectorOpen}>
+                    <Collapsible
+                      open={grantSectorOpen}
+                      onOpenChange={setGrantSectorOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors border-t border-border">
                           <span className="text-sm font-medium">Sector</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", grantSectorOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              grantSectorOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -685,7 +598,9 @@ const Opportunities: React.FC = () => {
                               onClick={() => setGrantSector(sector)}
                               className={cn(
                                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                                grantSector === sector ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                grantSector === sector
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80",
                               )}
                             >
                               {sector}
@@ -702,16 +617,30 @@ const Opportunities: React.FC = () => {
             {/* Grants List */}
             <div className="space-y-3">
               {filteredGrants.map((grant) => (
-                <div key={grant._id} className="bg-background border border-border rounded-lg p-4 hover:border-primary/50 transition-all">
+                <div
+                  key={grant._id}
+                  className="bg-background border border-border rounded-lg p-4 hover:border-primary/50 transition-all"
+                >
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-sm text-foreground">{grant.name}</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">{grant.organization}</p>
+                      <h3 className="font-semibold text-sm text-foreground">
+                        {grant.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {grant.organization}
+                      </p>
                     </div>
-                    <Badge variant={getGrantTypeBadge(grant.type)} className="text-[10px] px-2 py-0.5 flex-shrink-0">{grant.type}</Badge>
+                    <Badge
+                      variant={getGrantTypeBadge(grant.type)}
+                      className="text-[10px] px-2 py-0.5 flex-shrink-0"
+                    >
+                      {grant.type}
+                    </Badge>
                   </div>
 
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{grant.description}</p>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                    {grant.description}
+                  </p>
 
                   <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-3 pb-3 border-b border-border">
                     <div className="flex items-center gap-1">
@@ -725,12 +654,22 @@ const Opportunities: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <div className="font-semibold text-sm text-foreground">{grant.amount}</div>
-                    <a href={grant?.url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="default"  size="sm" className="h-7 text-xs gap-1" >
-                      Apply
-                      <ExternalLink className="w-3 h-3" />
-                    </Button>
+                    <div className="font-semibold text-sm text-foreground">
+                      {grant.amount}
+                    </div>
+                    <a
+                      href={grant?.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="h-7 text-xs gap-1"
+                      >
+                        Apply
+                        <ExternalLink className="w-3 h-3" />
+                      </Button>
                     </a>
                   </div>
                 </div>
@@ -752,29 +691,51 @@ const Opportunities: React.FC = () => {
               <div className="text-sm text-muted-foreground">
                 Total events: {filteredEvents.length}
               </div>
-              <Dialog open={eventTypeOpen || eventSectorOpen || eventLocationOpen} onOpenChange={(open) => {
-                if (!open) {
-                  setEventTypeOpen(false);
-                  setEventSectorOpen(false);
-                  setEventLocationOpen(false);
-                } else {
-                  setEventTypeOpen(true);
-                }
-              }}>
+              <Dialog
+                open={eventTypeOpen || eventSectorOpen || eventLocationOpen}
+                onOpenChange={(open) => {
+                  if (!open) {
+                    setEventTypeOpen(false);
+                    setEventSectorOpen(false);
+                    setEventLocationOpen(false);
+                  } else {
+                    setEventTypeOpen(true);
+                  }
+                }}
+              >
                 <DialogTrigger asChild>
                   <button className="p-1.5 hover:bg-muted rounded-lg transition-colors">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"
+                      />
                     </svg>
                   </button>
                 </DialogTrigger>
                 <DialogContent className="max-h-[350px] w-72 p-0">
                   <div className="space-y-0">
-                    <Collapsible open={eventTypeOpen} onOpenChange={setEventTypeOpen} defaultOpen>
+                    <Collapsible
+                      open={eventTypeOpen}
+                      onOpenChange={setEventTypeOpen}
+                      defaultOpen
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">
                           <span className="text-sm font-medium">Type</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", eventTypeOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              eventTypeOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -785,21 +746,33 @@ const Opportunities: React.FC = () => {
                               onClick={() => setEventType(type)}
                               className={cn(
                                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                                eventType === type ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                eventType === type
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80",
                               )}
                             >
-                              {type === "all" ? "All" : type.charAt(0).toUpperCase() + type.slice(1)}
+                              {type === "all"
+                                ? "All"
+                                : type.charAt(0).toUpperCase() + type.slice(1)}
                             </button>
                           ))}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
 
-                    <Collapsible open={eventSectorOpen} onOpenChange={setEventSectorOpen}>
+                    <Collapsible
+                      open={eventSectorOpen}
+                      onOpenChange={setEventSectorOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors border-t border-border">
                           <span className="text-sm font-medium">Sector</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", eventSectorOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              eventSectorOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -810,7 +783,9 @@ const Opportunities: React.FC = () => {
                               onClick={() => setEventSector(sector)}
                               className={cn(
                                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                                eventSector === sector ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                eventSector === sector
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80",
                               )}
                             >
                               {sector}
@@ -820,11 +795,19 @@ const Opportunities: React.FC = () => {
                       </CollapsibleContent>
                     </Collapsible>
 
-                    <Collapsible open={eventLocationOpen} onOpenChange={setEventLocationOpen}>
+                    <Collapsible
+                      open={eventLocationOpen}
+                      onOpenChange={setEventLocationOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors border-t border-border">
                           <span className="text-sm font-medium">Location</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", eventLocationOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              eventLocationOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
@@ -835,7 +818,9 @@ const Opportunities: React.FC = () => {
                               onClick={() => setEventLocation(location)}
                               className={cn(
                                 "px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-                                eventLocation === location ? "bg-primary text-primary-foreground" : "bg-muted hover:bg-muted/80"
+                                eventLocation === location
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-muted hover:bg-muted/80",
                               )}
                             >
                               {location}
@@ -852,16 +837,30 @@ const Opportunities: React.FC = () => {
             {/* Events List */}
             <div className="space-y-3">
               {filteredEvents.map((event) => (
-                <div key={event.id} className="bg-background border border-border rounded-lg p-4 hover:border-primary/50 transition-all">
+                <div
+                  key={event.id}
+                  className="bg-background border border-border rounded-lg p-4 hover:border-primary/50 transition-all"
+                >
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-sm text-foreground">{event.name}</h3>
-                      <p className="text-xs text-muted-foreground mt-0.5">{event.organizer}</p>
+                      <h3 className="font-semibold text-sm text-foreground">
+                        {event.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        {event.organizer}
+                      </p>
                     </div>
-                    <Badge variant={getEventTypeBadge(event.type)} className="text-[10px] px-2 py-0.5 flex-shrink-0">Event</Badge>
+                    <Badge
+                      variant={getEventTypeBadge(event.type)}
+                      className="text-[10px] px-2 py-0.5 flex-shrink-0"
+                    >
+                      Event
+                    </Badge>
                   </div>
 
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{event.description}</p>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">
+                    {event.description}
+                  </p>
 
                   <div className="flex flex-wrap gap-3 text-xs text-muted-foreground mb-3 pb-3 border-b border-border">
                     <div className="flex items-center gap-1">
@@ -879,11 +878,19 @@ const Opportunities: React.FC = () => {
                   </div>
 
                   <div className="flex items-center justify-end">
-                    <a href={event.url} target="_blank" rel="noopener noreferrer">
-                    <Button variant="default" size="sm" className="h-7 text-xs gap-1">
-                      Register
-                      <ExternalLink className="w-3 h-3" />
-                    </Button>
+                    <a
+                      href={event.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button
+                        variant="default"
+                        size="sm"
+                        className="h-7 text-xs gap-1"
+                      >
+                        Register
+                        <ExternalLink className="w-3 h-3" />
+                      </Button>
                     </a>
                   </div>
                 </div>
@@ -915,7 +922,7 @@ const Opportunities: React.FC = () => {
                   className="flex-1"
                   onClick={() => setActiveTab("myteams")}
                 >
-                  My Teams
+                  My Jobs
                 </Button>
               </div>
               <DialogContent className="max-h-[90vh] overflow-y-auto">
@@ -928,7 +935,12 @@ const Opportunities: React.FC = () => {
                     <Input
                       id="startupName"
                       value={newPosting.startupName}
-                      onChange={(e) => setNewPosting({ ...newPosting, startupName: e.target.value })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          startupName: e.target.value,
+                        })
+                      }
                       placeholder="Enter your startup name"
                     />
                   </div>
@@ -937,22 +949,34 @@ const Opportunities: React.FC = () => {
                     <Input
                       id="roleTitle"
                       value={newPosting.roleTitle}
-                      onChange={(e) => setNewPosting({ ...newPosting, roleTitle: e.target.value })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          roleTitle: e.target.value,
+                        })
+                      }
                       placeholder="e.g., Co-Founder & CTO"
                     />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="sector">Sector</Label>
-                    <Select value={newPosting.sector} onValueChange={(value) => setNewPosting({ ...newPosting, sector: value })}>
+                    <Select
+                      value={newPosting.sector}
+                      onValueChange={(value) =>
+                        setNewPosting({ ...newPosting, sector: value })
+                      }
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {sectors.filter((s) => s !== "All Sectors").map((sector) => (
-                          <SelectItem key={sector} value={sector}>
-                            {sector}
-                          </SelectItem>
-                        ))}
+                        {sectors
+                          .filter((s) => s !== "All Sectors")
+                          .map((sector) => (
+                            <SelectItem key={sector} value={sector}>
+                              {sector}
+                            </SelectItem>
+                          ))}
                       </SelectContent>
                     </Select>
                   </div>
@@ -961,7 +985,12 @@ const Opportunities: React.FC = () => {
                     <Input
                       id="location"
                       value={newPosting.location}
-                      onChange={(e) => setNewPosting({ ...newPosting, location: e.target.value })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          location: e.target.value,
+                        })
+                      }
                       placeholder="e.g., San Francisco, USA"
                     />
                   </div>
@@ -969,7 +998,9 @@ const Opportunities: React.FC = () => {
                     <Label htmlFor="employmentType">Employment Type</Label>
                     <Select
                       value={newPosting.employmentType}
-                      onValueChange={(value: "Full-time" | "Part-time") => setNewPosting({ ...newPosting, employmentType: value })}
+                      onValueChange={(value: "Full-time" | "Part-time") =>
+                        setNewPosting({ ...newPosting, employmentType: value })
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -985,7 +1016,12 @@ const Opportunities: React.FC = () => {
                       type="checkbox"
                       id="isRemote"
                       checked={newPosting.isRemote}
-                      onChange={(e) => setNewPosting({ ...newPosting, isRemote: e.target.checked })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          isRemote: e.target.checked,
+                        })
+                      }
                       className="rounded"
                     />
                     <Label htmlFor="isRemote">Remote Position</Label>
@@ -995,7 +1031,12 @@ const Opportunities: React.FC = () => {
                     <Input
                       id="compensation"
                       value={newPosting.compensation}
-                      onChange={(e) => setNewPosting({ ...newPosting, compensation: e.target.value })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          compensation: e.target.value,
+                        })
+                      }
                       placeholder="e.g., Equity (15-20%) + Competitive Salary"
                     />
                   </div>
@@ -1004,7 +1045,12 @@ const Opportunities: React.FC = () => {
                     <Textarea
                       id="description"
                       value={newPosting.description}
-                      onChange={(e) => setNewPosting({ ...newPosting, description: e.target.value })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          description: e.target.value,
+                        })
+                      }
                       placeholder="Describe the role and your startup"
                       rows={4}
                     />
@@ -1014,7 +1060,12 @@ const Opportunities: React.FC = () => {
                     <Textarea
                       id="requirements"
                       value={newPosting.requirements}
-                      onChange={(e) => setNewPosting({ ...newPosting, requirements: e.target.value })}
+                      onChange={(e) =>
+                        setNewPosting({
+                          ...newPosting,
+                          requirements: e.target.value,
+                        })
+                      }
                       placeholder="What are you looking for?"
                       rows={3}
                     />
@@ -1022,32 +1073,45 @@ const Opportunities: React.FC = () => {
 
                   {/* Custom Questions Section */}
                   <div className="space-y-3 pt-4 border-t border-border">
-                    <Label className="text-sm font-medium">Custom Questions (Optional, max 3)</Label>
+                    <Label className="text-sm font-medium">
+                      Custom Questions (Optional, max 3)
+                    </Label>
                     <p className="text-xs text-muted-foreground">
                       Add up to 3 questions for applicants to answer
                     </p>
 
                     {[0, 1, 2].map((index) => (
                       <div key={index} className="space-y-2">
-                        <Label htmlFor={`question-${index}`} className="text-xs">
+                        <Label
+                          htmlFor={`question-${index}`}
+                          className="text-xs"
+                        >
                           Question {index + 1}
                         </Label>
                         <Input
                           id={`question-${index}`}
                           value={newPosting.customQuestions[index]}
                           onChange={(e) => {
-                            const newQuestions = [...newPosting.customQuestions];
+                            const newQuestions = [
+                              ...newPosting.customQuestions,
+                            ];
                             newQuestions[index] = e.target.value;
-                            setNewPosting({ ...newPosting, customQuestions: newQuestions });
+                            setNewPosting({
+                              ...newPosting,
+                              customQuestions: newQuestions,
+                            });
                           }}
                           placeholder={`Enter question ${index + 1} (optional)`}
                         />
                       </div>
                     ))}
                   </div>
-
                   <Button onClick={handleCreatePosting} className="w-full">
-                    Create Posting
+                    {isCreatingJob ? (
+                      <Loader2 className="h-5 w-5 animate-spin mx-auto mt-10" />
+                    ) : (
+                      "Create Posting"
+                    )}
                   </Button>
                 </div>
               </DialogContent>
@@ -1055,23 +1119,33 @@ const Opportunities: React.FC = () => {
 
             <div className="space-y-3">
               {/* FILTER TRIGGER */}
-              
 
               {/* FILTER SHEET */}
               <Dialog open={showTeamFilters} onOpenChange={setShowTeamFilters}>
                 <DialogContent className="max-h-[85vh] overflow-y-auto rounded-2xl bg-card border-border p-4">
                   <DialogHeader>
-                    <DialogTitle className="text-lg font-semibold">Filters</DialogTitle>
+                    <DialogTitle className="text-lg font-semibold">
+                      Filters
+                    </DialogTitle>
                   </DialogHeader>
 
                   <div className="space-y-3 pt-3">
-
                     {/* SECTOR */}
-                    <Collapsible open={teamSectorOpen} onOpenChange={setTeamSectorOpen}>
+                    <Collapsible
+                      open={teamSectorOpen}
+                      onOpenChange={setTeamSectorOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
-                          <span className="text-sm font-medium">Sector: {teamSector}</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", teamSectorOpen && "rotate-180")} />
+                          <span className="text-sm font-medium">
+                            Sector: {teamSector}
+                          </span>
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              teamSectorOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
 
@@ -1088,7 +1162,7 @@ const Opportunities: React.FC = () => {
                                 "px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left",
                                 teamSector === sector
                                   ? "bg-primary text-primary-foreground"
-                                  : "bg-card hover:bg-muted border border-border"
+                                  : "bg-card hover:bg-muted border border-border",
                               )}
                             >
                               {sector}
@@ -1099,11 +1173,21 @@ const Opportunities: React.FC = () => {
                     </Collapsible>
 
                     {/* LOCATION */}
-                    <Collapsible open={teamLocationOpen} onOpenChange={setTeamLocationOpen}>
+                    <Collapsible
+                      open={teamLocationOpen}
+                      onOpenChange={setTeamLocationOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
-                          <span className="text-sm font-medium">Location: {teamLocation}</span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", teamLocationOpen && "rotate-180")} />
+                          <span className="text-sm font-medium">
+                            Location: {teamLocation}
+                          </span>
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              teamLocationOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
 
@@ -1120,7 +1204,7 @@ const Opportunities: React.FC = () => {
                                 "px-3 py-2 rounded-lg text-xs font-medium transition-colors text-left",
                                 teamLocation === location
                                   ? "bg-primary text-primary-foreground"
-                                  : "bg-card hover:bg-muted border border-border"
+                                  : "bg-card hover:bg-muted border border-border",
                               )}
                             >
                               {location}
@@ -1131,13 +1215,26 @@ const Opportunities: React.FC = () => {
                     </Collapsible>
 
                     {/* WORK MODE */}
-                    <Collapsible open={teamRemoteOpen} onOpenChange={setTeamRemoteOpen}>
+                    <Collapsible
+                      open={teamRemoteOpen}
+                      onOpenChange={setTeamRemoteOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
                           <span className="text-sm font-medium">
-                            Work Mode: {teamRemote === "all" ? "All" : teamRemote === "remote" ? "Remote" : "On-site"}
+                            Work Mode:{" "}
+                            {teamRemote === "all"
+                              ? "All"
+                              : teamRemote === "remote"
+                                ? "Remote"
+                                : "On-site"}
                           </span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", teamRemoteOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              teamRemoteOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
 
@@ -1154,10 +1251,14 @@ const Opportunities: React.FC = () => {
                                 "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize",
                                 teamRemote === option
                                   ? "bg-primary text-primary-foreground"
-                                  : "bg-card hover:bg-muted border border-border"
+                                  : "bg-card hover:bg-muted border border-border",
                               )}
                             >
-                              {option === "all" ? "All" : option === "remote" ? "Remote" : "On-site"}
+                              {option === "all"
+                                ? "All"
+                                : option === "remote"
+                                  ? "Remote"
+                                  : "On-site"}
                             </button>
                           ))}
                         </div>
@@ -1165,13 +1266,24 @@ const Opportunities: React.FC = () => {
                     </Collapsible>
 
                     {/* EMPLOYMENT TYPE */}
-                    <Collapsible open={teamEmploymentOpen} onOpenChange={setTeamEmploymentOpen}>
+                    <Collapsible
+                      open={teamEmploymentOpen}
+                      onOpenChange={setTeamEmploymentOpen}
+                    >
                       <CollapsibleTrigger className="w-full">
                         <div className="flex items-center justify-between p-3 bg-card rounded-lg border border-border hover:bg-muted/50 transition-colors">
                           <span className="text-sm font-medium">
-                            Type: {teamEmploymentType === "all" ? "All" : teamEmploymentType}
+                            Type:{" "}
+                            {teamEmploymentType === "all"
+                              ? "All"
+                              : teamEmploymentType}
                           </span>
-                          <ChevronDown className={cn("w-4 h-4 transition-transform", teamEmploymentOpen && "rotate-180")} />
+                          <ChevronDown
+                            className={cn(
+                              "w-4 h-4 transition-transform",
+                              teamEmploymentOpen && "rotate-180",
+                            )}
+                          />
                         </div>
                       </CollapsibleTrigger>
 
@@ -1188,7 +1300,7 @@ const Opportunities: React.FC = () => {
                                 "flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-colors",
                                 teamEmploymentType === option
                                   ? "bg-primary text-primary-foreground"
-                                  : "bg-card hover:bg-muted border border-border"
+                                  : "bg-card hover:bg-muted border border-border",
                               )}
                             >
                               {option === "all" ? "All" : option}
@@ -1203,30 +1315,30 @@ const Opportunities: React.FC = () => {
                       teamLocation !== "All Locations" ||
                       teamRemote !== "all" ||
                       teamEmploymentType !== "all") && (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => {
-                            setTeamSector("All Sectors");
-                            setTeamLocation("All Locations");
-                            setTeamRemote("all");
-                            setTeamEmploymentType("all");
-                          }}
-                          className="w-full gap-2"
-                        >
-                          <X className="w-3 h-3" />
-                          Clear all filters
-                        </Button>
-                      )}
-
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setTeamSector("All Sectors");
+                          setTeamLocation("All Locations");
+                          setTeamRemote("all");
+                          setTeamEmploymentType("all");
+                        }}
+                        className="w-full gap-2"
+                      >
+                        <X className="w-3 h-3" />
+                        Clear all filters
+                      </Button>
+                    )}
                   </div>
                 </DialogContent>
               </Dialog>
-
             </div>
 
             <div className="flex items-center justify-between gap-2 text-sm text-muted-foreground py-2">
-              {filteredRolePostings.length } {filteredRolePostings.length === 1 ? "position" : "positions"} available
+              {filteredRolePostings.length}{" "}
+              {filteredRolePostings.length === 1 ? "position" : "positions"}{" "}
+              available
               <div
                 className="flex items-center gap-2 text-sm font-medium text-muted-foreground cursor-pointer"
                 onClick={() => setShowTeamFilters(true)}
@@ -1236,22 +1348,32 @@ const Opportunities: React.FC = () => {
             </div>
 
             <div className="space-y-4 md:grid md:grid-cols-2 md:gap-4 md:space-y-0">
-              {filteredRolePostings.map((posting) => {
-                const isMyAd = posting.id.startsWith("user-");
-                const isExpanded = expandedPostingId === posting.id;
-                return (
-                  <RoleCard
-                    key={posting.id}
-                    posting={posting}
-                    isMyAd={isMyAd}
-                    expanded={isExpanded}
-                    onExpand={() => setExpandedPostingId(isExpanded ? null : posting.id)}
-                  />
-                );
-              })}
+              {isJobsLoading ? (
+                <div className="h-20 w-full justify-center items-center">
+                  <Loader2 className="h-5 w-5 animate-spin mx-auto mt-10" />
+                </div>
+              ) : (
+                <>
+                  {filteredRolePostings.map((posting) => {
+                    // const isMyAd = posting?.id?.startsWith("user-");
+                    const isExpanded = expandedPostingId === posting._id;
+                    return (
+                      <RoleCard
+                        key={posting._id}
+                        posting={posting}
+                        isMyAd={false}
+                        expanded={isExpanded}
+                        onExpand={() =>
+                          setExpandedPostingId(isExpanded ? null : posting._id)
+                        }
+                      />
+                    );
+                  })}
+                </>
+              )}
             </div>
 
-            {filteredRolePostings.length === 0 && (
+            {!isJobsLoading && filteredRolePostings.length === 0 && (
               <div className="text-center py-12 text-muted-foreground">
                 <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-50" />
                 <p>No positions found with current filters</p>

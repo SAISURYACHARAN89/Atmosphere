@@ -1,10 +1,13 @@
+
+import { ZJobsResponse } from "@/types/misc";
 import axiosClient from "./axiosClient";
 import { JOB_ENDPOINTS } from "./endpoints";
 
 export async function fetchJobs(limit = 20, skip = 0) {
-  return axiosClient.get(JOB_ENDPOINTS.LIST, {
+  const res: ZJobsResponse = await axiosClient.get(JOB_ENDPOINTS.LIST, {
     params: { limit, skip },
   });
+  return res;
 }
 
 export async function getJob(jobId: string) {

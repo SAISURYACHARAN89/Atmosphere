@@ -53,3 +53,84 @@ export type ZEvent = z.infer<typeof zEventSchema>;
 
 /* ---------- Types ---------- */
 export type ZGrant = z.infer<typeof zGrantSchema>;
+
+
+
+/* ---------- Poster ---------- */
+export const zJobPosterSchema = z.object({
+  _id: z.string(),
+  username: z.string(),
+  displayName: z.string(),
+  roles: z.array(z.string()),
+  verified: z.boolean(),
+  fullName: z.string(),
+  avatarUrl: z.string().url().nullable().optional(),
+}).nullable();
+
+/* ---------- Job ---------- */
+export const zJobSchema = z.object({
+  _id: z.string(),
+
+  poster: zJobPosterSchema.optional(),
+
+  title: z.string(),
+  startupName: z.string().optional(),
+  sector: z.string(),
+  locationType: z.string(),
+
+  employmentType: z.string(),
+  isRemote: z.boolean().optional(),
+
+  compensation: z.string().optional(),
+  description: z.string().optional(),
+  requirements: z.string().optional(),
+
+  customQuestions: z.array(z.string()),
+
+  applicationUrl: z.string().optional(),
+
+  isVerifiedByAdmin: z.boolean().optional(),
+  status: z.string().optional(),
+
+  chatGroupId: z.string().optional(),
+
+  applicantCount: z.number(),
+
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+
+  __v: z.number(),
+});
+
+/* ---------- Jobs Response ---------- */
+export const zJobsResponseSchema = z.object({
+  jobs: z.array(zJobSchema),
+  count: z.number(),
+  total: z.number(),
+});
+
+
+export const zCreateJobPayload = z.object({
+  title: z.string().min(1),
+
+  startupName: z.string().optional(),
+  sector: z.string().optional(),
+  locationType: z.string().optional(),
+
+  employmentType: z.string().optional(),
+  isRemote: z.boolean().optional(),
+
+  compensation: z.string().optional(),
+  description: z.string().optional(),
+
+  requirements: z.string().min(1),
+
+  customQuestions: z.array(z.string()).optional(),
+
+  applicationUrl: z.string().optional(),
+});
+
+export type ZCreateJobPayload = z.infer<typeof zCreateJobPayload>;
+export type ZJobPoster = z.infer<typeof zJobPosterSchema>;
+export type ZJob = z.infer<typeof zJobSchema>;
+export type ZJobsResponse = z.infer<typeof zJobsResponseSchema>;

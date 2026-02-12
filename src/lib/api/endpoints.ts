@@ -209,3 +209,46 @@ export const STARTUP_ENDPOINTS = {
   COMMENT_DELETE: (id: string) =>
     `/api/startup-comments/comment/${encodeURIComponent(id)}`,
 };
+
+/* ================= Trade API endpoints ================= */
+export const TRADE_ENDPOINTS = {
+  MARKETS: "/api/trade/markets",
+  PORTFOLIO: "/api/trade/portfolio",
+  ORDER: "/api/trade/order",
+
+  TRADES: "/api/trade/trades",
+  MY_TRADES: "/api/trade/trades/my",
+  TRADES_BY_USER: (userId: string) =>
+    `/api/trade/trades/user/${encodeURIComponent(userId)}`,
+  TRADE: (tradeId: string) =>
+    `/api/trade/trades/${encodeURIComponent(tradeId)}`,
+  UPDATE_TRADE: (id: string) => `/api/trade/trades/${id}`,
+  DELETE_TRADE: (id: string) => `/api/trade/trades/${id}`,
+  VIEW_TRADE: (id: string) => `/api/trade/trades/${id}/view`,
+  SAVE_TRADE: (id: string) => `/api/trade/trades/${id}/save`,
+  SAVED_TRADES: "/api/trade/trades/saved",
+
+  INVESTORS: "/api/investor-details",
+  INVESTOR_DETAILS: (userId: string) =>
+    `/api/investor-details/${encodeURIComponent(userId)}`,
+};
+
+
+/* ================= meetings ================= */
+export const MEETING_ENDPOINTS = {
+  BASE: "/api/meetings",
+
+  LIST(filter: "my-meetings" | "all", force?: boolean) {
+    let url = `${this.BASE}?filter=${filter}`;
+    if (force) url += `&_ts=${Date.now()}`;
+    return url;
+  },
+
+  MEETING(meetingId: string) {
+    return `${this.BASE}/${encodeURIComponent(meetingId)}`;
+  },
+
+  ADD_PARTICIPANT(meetingId: string) {
+    return `${this.BASE}/${encodeURIComponent(meetingId)}/add-participant`;
+  },
+};

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ChevronDown, Clock, Users, Plus, Video, X, Search, BadgeCheck } from "lucide-react";
+import { ChevronDown, Clock, Users, Plus, Video, X, Search, BadgeCheck, Loader2 } from "lucide-react";
 import BottomNav from "@/components/BottomNav";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,6 +8,12 @@ import { Slider } from "@/components/ui/slider";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import { useGetMyFollowers } from "@/hooks/profile/useGetMyFollowers";
+import { useGetMeetings } from "@/hooks/meeting/useGetMeetings";
+import { useCreateMeeting } from "@/hooks/meeting/useCreateMeeting";
+import { toast } from "sonner";
+import { set } from "date-fns";
+import useDebounce from "@/hooks/useDebounce";
 
 type MeetingType = "public" | "followers" | "private";
 type CategoryType = "pitch" | "networking";
@@ -18,36 +24,19 @@ const industryTags = [
   "MarTech", "RetailTech", "TravelTech", "Logistics", "Cybersecurity", "Gaming", "Media", "SpaceTech"
 ];
 
-const dummyMeetings = [
-  {
-    id: 1, host: "Rahul Mehta", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Rahul", title: "Drone tech startups pitch meetings...",
-    industries: ["EV", "CleanTech"], category: "pitch", eligible: true, participants: 31, startTime: "12:00", endTime: "12:45", isVerified: true,
-    description: "Join us for an exciting pitch session featuring innovative drone technology startups in the EV and CleanTech space. Network with industry leaders and discover cutting-edge solutions."
-  },
-  {
-    id: 2, host: "Priya Sharma", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Priya", title: "HealthTech Innovation Summit",
-    industries: ["HealthTech"], category: "networking", eligible: true, participants: 18, startTime: "11:00", endTime: "11:45", isVerified: true,
-    description: "Connect with healthcare innovators and explore the latest trends in digital health, telemedicine, and medical AI technologies."
-  },
-  {
-    id: 3, host: "Arjun Patel", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arjun", title: "EV Market Disruption",
-    industries: ["EV", "CleanTech"], category: "pitch", eligible: true, participants: 31, startTime: "12:00", endTime: "12:45", isVerified: true,
-    description: "Discover how electric vehicles are transforming the automotive industry. Hear from startups revolutionizing sustainable transportation."
-  },
-  {
-    id: 4, host: "Neha Singh", hostAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Neha", title: "Blockchain for Enterprise",
-    industries: ["Blockchain", "Fintech"], category: "networking", eligible: false, participants: 12, startTime: "13:00", endTime: "13:45", isVerified: false,
-    description: "Explore enterprise blockchain solutions and network with fintech professionals working on decentralized finance applications."
-  },
-];
-
 // ➤ FORMAT TIME TO AM/PM
-function formatAMPM(time: string) {
-  const [h, m] = time.split(":").map(Number);
+function formatAMPM(isoTime: string) {
+  const date = new Date(isoTime);
+
+  const h = date.getHours();
+  const m = date.getMinutes();
+
   const period = h >= 12 ? "PM" : "AM";
   const hour = h % 12 === 0 ? 12 : h % 12;
+
   return `${hour}:${m.toString().padStart(2, "0")} ${period}`;
 }
+
 
 function MeetingCard({
   meeting,
@@ -61,18 +50,17 @@ function MeetingCard({
   onRemove,
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  console.log(meeting)
 
   const getClockLabel = () => {
-    const [sh, sm] = meeting.startTime.split(":").map(Number);
-    const [eh, em] = meeting.endTime.split(":").map(Number);
+  const start = new Date(meeting.startTime);
+  const end = new Date(meeting.endTime);
+  const now = new Date();
 
-    const now = new Date();
-    const start = new Date(now); start.setHours(sh, sm, 0, 0);
-    const end = new Date(now); end.setHours(eh, em, 0, 0);
+  if (now >= start && now <= end) return "Ongoing";
 
-    if (now >= start && now <= end) return "Ongoing";
-    return `Starts at ${formatAMPM(meeting.startTime)}`;
-  };
+  return `Starts at ${formatAMPM(meeting.startTime)}`;
+};
 
   return (
     <div
@@ -101,8 +89,8 @@ function MeetingCard({
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <Avatar className="w-10 h-10 border border-white/10">
-            <AvatarImage src={meeting.hostAvatar} />
-            <AvatarFallback>{meeting.host[0]}</AvatarFallback>
+            <AvatarImage src={meeting.organizer.avatarUrl} />
+            <AvatarFallback>{meeting.organizer.username.substring(0, 2).toUpperCase()}</AvatarFallback>
           </Avatar>
 
           <div>
@@ -111,7 +99,7 @@ function MeetingCard({
             </p>
 
             <div className="flex items-center gap-1 mt-0.5">
-              <p className="text-xs text-muted-foreground">by {meeting.host}</p>
+              <p className="text-xs text-muted-foreground">by {meeting.organizer.username}</p>
               {meeting.isVerified && (
                 <BadgeCheck className="w-3.5 h-3.5 text-primary" />
               )}
@@ -183,7 +171,7 @@ function MeetingCard({
           {/* LEFT — Users */}
           <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
             <Users className="w-2.5 h-2.5" />
-            {meeting.participants}
+            {meeting?.participantsCount || 0}
           </div>
 
           {/* RIGHT — Pitch badge */}
@@ -240,7 +228,7 @@ function MeetingCard({
           {isExpanded && (
             <div>
 
-              {meeting.industries.slice(0, 2).map((tag, idx) => (
+              {meeting?.industries?.slice(0, 3).map((tag, idx) => (
                 <span
                   key={idx}
                   className="
@@ -277,6 +265,26 @@ function NoMeetings() {
   );
 }
 
+const initalData={
+  title: "",
+  description: "",
+  scheduledAt: "",
+  startTime: "",
+  endTime: "",
+  duration: 60,
+  location: "",
+  participants: [],
+
+  meetingType: "public",
+  category: "pitch",
+  pitchDuration: 5,
+  participantType: "all",
+  verifiedOnly: "no",
+
+  industries: [] as string[],
+  maxParticipants: 50,
+}
+
 // Custom Tab Button Component with Animated Underline
 const TabButton = ({ label, isActive, onClick }: { label: string, isActive: boolean, onClick: () => void }) => (
   <button
@@ -297,23 +305,57 @@ const TabButton = ({ label, isActive, onClick }: { label: string, isActive: bool
 const Meetings = () => {
   const navigate = useNavigate();
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [activeTab, setActiveTab] = useState<"public" | "my-meetings">("public");
+  const {data: meetingsData, isPending: isMeetingPending} = useGetMeetings( activeTab === "public" ? "all":  "my-meetings" );
 
   const [launchExpanded, setLaunchExpanded] = useState(false);
-  const [meetingType, setMeetingType] = useState<MeetingType>("public");
-  const [category, setCategory] = useState<CategoryType | null>(null);
-  const [pitchDuration, setPitchDuration] = useState(10);
-  const [audience, setAudience] = useState<"all" | "verified">("all");
-  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  const { mutate: createMeetingMutation, isPending: isCreateMeetingPending } = useCreateMeeting();
 
-  // State for search functionality
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearchBar, setShowSearchBar] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<"public" | "my">("public");
+  const [meetingPayload, setMeetingPayload] = useState(initalData);
+
   const [myMeetings, setMyMeetings] = useState<number[]>([]);
   const [inQueue, setInQueue] = useState<number[]>([]);
-  const [verifiedOnly, setVerifiedOnly] = useState<"yes" | "no">("no");
 
+  const debouncedQuery = useDebounce(searchQuery, 400);
+
+  const handleLaunchMeeting = () => {
+    try {
+      if (!meetingPayload.title) {
+        toast.error("Meeting title is required");
+        return;
+      }
+
+      if (!meetingPayload.startTime || !meetingPayload.endTime) {
+        toast.error("Please select date and time");
+        return;
+      }
+
+      const start = new Date(meetingPayload.startTime);
+      const end = new Date(meetingPayload.endTime);
+
+      const diffMs = end.getTime() - start.getTime();
+      if (diffMs <= 0) {
+        toast.error("End time must be after start time");
+        return;
+      }
+
+      const duration = Math.ceil(diffMs / 60000);
+
+      const payload = {
+        ...meetingPayload,
+        duration,
+      };
+      createMeetingMutation(payload);
+      setMeetingPayload(initalData);
+      setLaunchExpanded(false);
+    } catch (err) {
+      console.error("Launch meeting failed:", err);
+      toast.error("Failed to launch meeting");
+    }
+  };
   // Focus search bar when it appears
   useEffect(() => {
     if (showSearchBar && searchInputRef.current) {
@@ -322,30 +364,73 @@ const Meetings = () => {
   }, [showSearchBar]);
 
   const toggleIndustry = (industry: string) => {
-    setSelectedIndustries(prev =>
-      prev.includes(industry) ? prev.filter(i => i !== industry) : [...prev, industry].slice(0, 3)
+    const prev = meetingPayload.industries;
+    updateMeeting(
+      "industries",
+      prev.includes(industry)
+        ? prev.filter((i) => i !== industry)
+        : [...prev, industry].slice(0, 3),
     );
   };
 
-  const filteredMeetings = dummyMeetings.filter(m => {
-    const s = searchQuery.toLowerCase();
-    return m.title.toLowerCase().includes(s) || m.host.toLowerCase().includes(s);
-  });
+  const filteredMeetings = isMeetingPending
+    ? []
+    : meetingsData.filter((m) => {
+        const s = debouncedQuery.toLowerCase();
+        return (
+          m.title.toLowerCase().includes(s) ||
+          m.organizer.username.toLowerCase().includes(s)
+        );
+      });
 
-  const publicMeetings = filteredMeetings.filter(m => !myMeetings.includes(m.id));
-  const myMeetingsList = dummyMeetings.filter(m => myMeetings.includes(m.id));
+  const updateMeeting = (key: string, value: any) => {
+    setMeetingPayload((prev) => ({ ...prev, [key]: value }));
+  };
 
   const handleJoin = (id: number) => {
     if (!myMeetings.includes(id)) {
-      setMyMeetings(prev => [...prev, id]);
-      setInQueue(prev => [...prev, id]);
+      setMyMeetings((prev) => [...prev, id]);
+      setInQueue((prev) => [...prev, id]);
     }
-    setActiveTab("my");
+    setActiveTab("my-meetings");
   };
 
+const handleDateTimeChange = (
+  type: "date" | "time",
+  value: string
+) => {
+  if (!value) return; 
+
+  const current = meetingPayload.startTime
+    ? new Date(meetingPayload.startTime)
+    : new Date();
+
+  if (type === "date") {
+    const [y, m, d] = value.split("-").map(Number);
+    if (!y || !m || !d) return;
+
+    current.setFullYear(y, m - 1, d);
+  } else {
+    const [h, min] = value.split(":").map(Number);
+    if (h === undefined || min === undefined) return;
+
+    current.setHours(h, min);
+  }
+
+  const end = new Date(current.getTime() + 60 * 60000);
+
+  setMeetingPayload((prev) => ({
+    ...prev,
+    scheduledAt: current.toISOString(),
+    startTime: current.toISOString(),
+    endTime: end.toISOString(),
+  }));
+};
+
+
   const handleRemove = (id: number) => {
-    setMyMeetings(prev => prev.filter(x => x !== id));
-    setInQueue(prev => prev.filter(x => x !== id));
+    setMyMeetings((prev) => prev.filter((x) => x !== id));
+    setInQueue((prev) => prev.filter((x) => x !== id));
   };
 
   const handleToggleSearch = () => {
@@ -362,127 +447,171 @@ const Meetings = () => {
     <div className="min-h-screen bg-background pb-16">
       <main className="max-w-2xl mx-auto">
         <div className="p-4 space-y-4">
-
           {/* Launch Meeting (Existing) */}
           <div>
-            <button onClick={() => setLaunchExpanded(!launchExpanded)}
-              className="w-full flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl">
+            <button
+              onClick={() => setLaunchExpanded(!launchExpanded)}
+              className="w-full flex items-center justify-between px-5 py-3.5 bg-gradient-to-r from-primary/10 to-primary/5 border border-primary/20 rounded-xl"
+            >
               <div className="flex items-center gap-2.5">
                 <div className="w-9 h-9 rounded-lg bg-primary/20 flex items-center justify-center">
                   <Plus className="w-5 h-5 text-primary" />
                 </div>
                 <span className="font-semibold">Launch meeting</span>
               </div>
-              <ChevronDown className={`w-5 h-5 transition-transform ${launchExpanded ? "rotate-180" : ""}`} />
+              <ChevronDown
+                className={`w-5 h-5 transition-transform ${launchExpanded ? "rotate-180" : ""}`}
+              />
             </button>
 
             {launchExpanded && (
-              <div className="mt-3 p-4 bg-muted/30 border border-border rounded-xl space-y-3">
-                {/* ... (Launch Meeting Controls remain the same) ... */}
+              <div className="mt-3 p-4 bg-muted/30 border border-borde  r rounded-xl space-y-3">
                 <div>
                   <Label className="text-xs">Title</Label>
-                  <Input className="mt-1 h-9 bg-background" placeholder="Meeting title" />
+                  <Input
+                    className="mt-1 h-9 bg-background"
+                    placeholder="Meeting title"
+                    value={meetingPayload.title}
+                    onChange={(e) => updateMeeting("title", e.target.value)}
+                  />
                 </div>
 
                 <div>
                   <Label className="text-xs">Description (Optional)</Label>
                   <textarea
                     className="mt-1 w-full min-h-[80px] bg-background border border-border rounded-md px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Add a description for your meeting..."
+                    placeholder="Add a description..."
+                    value={meetingPayload.description}
+                    onChange={(e) =>
+                      updateMeeting("description", e.target.value)
+                    }
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
                   <div>
                     <Label className="text-xs">Date</Label>
-                    <Input type="date" className="mt-1 h-9 bg-background" />
+                    <Input
+                      type="date"
+                      className="mt-1 h-9 bg-background"
+                      onChange={(e) =>
+                        handleDateTimeChange("date", e?.target?.value)
+                      }
+                    />
                   </div>
+
                   <div>
                     <Label className="text-xs">Time</Label>
-                    <Input type="time" className="mt-1 h-9 bg-background" />
+                    <Input
+                      type="time"
+                      className="mt-1 h-9 bg-background"
+                      onChange={(e) =>
+                        handleDateTimeChange("time", e.target.value)
+                      }
+                    />
                   </div>
                 </div>
 
-                {/* Meeting Type */}
                 <div>
                   <Label className="text-xs">Type</Label>
                   <div className="grid grid-cols-2 gap-10 mt-1">
-                    <Button size="sm" variant={meetingType === "public" ? "default" : "outline"}
-                      onClick={() => setMeetingType("public")}>Public</Button>
+                    <Button
+                      size="sm"
+                      variant={
+                        meetingPayload.meetingType === "public"
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() => updateMeeting("meetingType", "public")}
+                    >
+                      Public
+                    </Button>
 
-                    <Button size="sm" variant={meetingType === "private" ? "default" : "outline"}
-                      onClick={() => setMeetingType("private")}>Private</Button>
+                    <Button
+                      size="sm"
+                      variant={
+                        meetingPayload.meetingType === "private"
+                          ? "default"
+                          : "outline"
+                      }
+                      onClick={() => updateMeeting("meetingType", "private")}
+                    >
+                      Private
+                    </Button>
                   </div>
                 </div>
 
-                {/* Category */}
-                {meetingType === "public" && (
+                {meetingPayload?.meetingType === "public" && (
                   <div>
                     <Label className="text-xs">Category</Label>
                     <div className="grid grid-cols-2 gap-10 mt-1">
-                      <Button size="sm" variant={category === "pitch" ? "default" : "outline"}
-                        onClick={() => setCategory("pitch")}>Pitch Meeting</Button>
+                      <Button
+                        size="sm"
+                        variant={
+                          meetingPayload?.category === "pitch"
+                            ? "default"
+                            : "outline"
+                        }
+                        onClick={() => updateMeeting("category", "pitch")}
+                      >
+                        Pitch Meeting
+                      </Button>
 
-                      <Button size="sm" variant={category === "networking" ? "default" : "outline"}
-                        onClick={() => setCategory("networking")}>Networking</Button>
+                      <Button
+                        size="sm"
+                        variant={
+                          meetingPayload?.category === "networking"
+                            ? "default"
+                            : "outline"
+                        }
+                        onClick={() => updateMeeting("category", "networking")}
+                      >
+                        Networking
+                      </Button>
                     </div>
                   </div>
                 )}
 
-                {/* Pitch settings */}
-                {meetingType === "public" && category === "pitch" && (
-                  <div className="space-y-3">
-
+                {meetingPayload?.meetingType === "public" &&
+                  meetingPayload?.category === "pitch" && (
                     <div>
                       <div className="flex justify-between mb-1">
                         <Label className="text-xs">Time per pitch</Label>
-                        <span className="text-xs">{pitchDuration} min</span>
+                        <span className="text-xs">
+                          {meetingPayload.pitchDuration || 10} min
+                        </span>
                       </div>
-                      <Slider min={1} max={60} step={1}
-                        value={[pitchDuration]}
-                        onValueChange={val => setPitchDuration(val[0])} />
+
+                      <Slider
+                        min={1}
+                        max={60}
+                        step={1}
+                        value={[meetingPayload.pitchDuration || 10]}
+                        onValueChange={(val) =>
+                          updateMeeting("pitchDuration", val[0])
+                        }
+                      />
                     </div>
+                  )}
 
-                    <div>
-                      <Label className="text-xs">Participants</Label>
-                      <select
-                        value={audience}
-                        onChange={(e) => setAudience(e.target.value as "all" | "verified")}
-                        className="w-full mt-1 h-9 bg-background border border-border rounded-md px-2 text-sm"
-                      >
-                        <option value="all">All</option>
-                        <option value="verified">Startups</option>
-                        <option value="verified">Investors</option>
-                      </select>
-                    </div>
-
-                    <div className="flex items-center gap-2 mt-2">
-                      <Label className="text-xs">Verified Only</Label>
-                      <label className="flex items-center cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={verifiedOnly === "yes"}
-                          onChange={(e) => setVerifiedOnly(e.target.checked ? "yes" : "no")}
-                          className="w-4 h-4"
-                        />
-                      </label>
-                    </div>
-
-                  </div>
-                )}
-
-                {/* Industries */}
                 <div>
                   <Label className="text-xs">Industries (max 3)</Label>
                   <ScrollArea className="h-20 mt-1 border rounded-md p-2 bg-background">
                     <div className="flex flex-wrap gap-1.5">
-                      {industryTags.map(tag => (
-                        <button key={tag} onClick={() => toggleIndustry(tag)}
-                          disabled={!selectedIndustries.includes(tag) && selectedIndustries.length >= 3}
-                          className={`px-2 py-1 text-xs rounded-md ${selectedIndustries.includes(tag)
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-muted text-muted-foreground"
-                            }`}>
+                      {industryTags.map((tag) => (
+                        <button
+                          key={tag}
+                          onClick={() => toggleIndustry(tag)}
+                          disabled={
+                            !meetingPayload.industries.includes(tag) &&
+                            meetingPayload.industries.length >= 3
+                          }
+                          className={`px-2 py-1 text-xs rounded-md ${
+                            meetingPayload.industries.includes(tag)
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                        >
                           {tag}
                         </button>
                       ))}
@@ -493,12 +622,33 @@ const Meetings = () => {
                 <div>
                   <div className="flex justify-between mb-1">
                     <Label className="text-xs">Max participants</Label>
-                    <span className="text-xs">50</span>
+                    <span className="text-xs">
+                      {meetingPayload.maxParticipants}
+                    </span>
                   </div>
-                  <Slider min={5} max={100} step={5} defaultValue={[50]} />
+
+                  <Slider
+                    min={5}
+                    max={100}
+                    step={5}
+                    value={[meetingPayload.maxParticipants]}
+                    onValueChange={(val) =>
+                      updateMeeting("maxParticipants", val[0])
+                    }
+                  />
                 </div>
 
-                <Button className="w-full h-9">Launch Meeting</Button>
+                <Button
+                  className="w-full h-9"
+                  onClick={handleLaunchMeeting}
+                  disabled={isCreateMeetingPending}
+                >
+                  {isCreateMeetingPending ? (
+                    <Loader2 className="h-5 w-5 animate-spin mx-auto" />
+                  ) : (
+                    "Launch Meeting"
+                  )}
+                </Button>
               </div>
             )}
           </div>
@@ -532,8 +682,8 @@ const Meetings = () => {
               />
               <TabButton
                 label="My meetings"
-                isActive={activeTab === "my"}
-                onClick={() => setActiveTab("my")}
+                isActive={activeTab === "my-meetings"}
+                onClick={() => setActiveTab("my-meetings")}
               />
             </div>
 
@@ -541,36 +691,68 @@ const Meetings = () => {
               onClick={handleToggleSearch}
               className="flex items-center justify-center w-10 h-10 transition-colors text-muted-foreground hover:text-foreground"
             >
-              {showSearchBar ? <X className="w-5 h-5" /> : <Search className="w-5 h-5" />}
+              {showSearchBar ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Search className="w-5 h-5" />
+              )}
             </button>
           </div>
 
           {/* Public List */}
           {activeTab === "public" && (
             <div className="space-y-2.5">
-              {publicMeetings.map(m => (
-                <MeetingCard key={m.id} meeting={m} onJoin={() => handleJoin(m.id)}
-                  joinLabel="Join" disabled={false} isInQueue={false} showRemove={false} />
-              ))}
-              {publicMeetings.length === 0 && <NoMeetings />}
+              {isMeetingPending ? (
+                <div className="text-center py-12">
+                  <Loader2 className="w-12 h-12 mx-auto text-muted-foreground/50 animate-spin" />
+                </div>
+              ) : (
+                <>
+                  {filteredMeetings.map((m) => (
+                    <MeetingCard
+                      key={m._id}
+                      meeting={m}
+                      onJoin={() => handleJoin(m._id)}
+                      joinLabel="Join"
+                      disabled={false}
+                      isInQueue={false}
+                      showRemove={false}
+                    />
+                  ))}
+                </>
+              )}
+              {!isMeetingPending &&filteredMeetings.length === 0 && <NoMeetings />}
             </div>
           )}
 
           {/* My Meetings */}
-          {activeTab === "my" && (
+          {activeTab === "my-meetings" && (
             <div className="space-y-2.5">
-              {myMeetingsList.map(m => {
-                return (
-                  <MeetingCard key={m.id} meeting={m} joinLabel="Queued"
-                    isInQueue={true} disabled={true}
-                    showRemove={true} onRemove={() => handleRemove(m.id)}
-                    onJoin={handleGoToVideo} />
-                );
-              })}
-              {myMeetingsList.length === 0 && <NoMeetings />}
+              {isMeetingPending ? (
+                <div className="text-center py-12">
+                  <Loader2 className="w-12 h-12 mx-auto text-muted-foreground/50 animate-spin" />
+                </div>
+              ) : (
+                <>
+                  {filteredMeetings?.map((m) => {
+                    return (
+                      <MeetingCard
+                        key={m._id}
+                        meeting={m}
+                        joinLabel="Queued"
+                        isInQueue={true}
+                        disabled={true}
+                        showRemove={true}
+                        onRemove={() => handleRemove(m._id)}
+                        onJoin={handleGoToVideo}
+                      />
+                    );
+                  })}
+                </>
+              )}
+              {!isMeetingPending && filteredMeetings.length === 0 && <NoMeetings />}
             </div>
           )}
-
         </div>
       </main>
 

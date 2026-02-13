@@ -250,6 +250,7 @@ const StartupPost = ({ company }: { company: ZStartup }) => {
               className="w-full aspect-[16/9] object-cover"
               autoPlay
               loop
+              controls
               muted
               playsInline
             />

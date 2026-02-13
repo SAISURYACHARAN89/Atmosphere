@@ -1,18 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, User, AtSign, BarChart3, Bookmark, Activity, Settings as SettingsIcon, MessageSquare, Lock, Briefcase, Crown, HelpCircle, Info, ChevronRight, Mail, Phone as PhoneIcon, KeyRound, Play, ShoppingBag, FileText, X, Filter, Shield, Building, Loader2 } from "lucide-react";
+import { ArrowLeft, User, AtSign, BarChart3, Bookmark, MessageSquare, Briefcase, Crown, HelpCircle, Info, ChevronRight, Mail, Phone as PhoneIcon, KeyRound, X, Filter, Shield, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from "@/components/ui/drawer";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { VerificationFlow } from "@/components/VerificationFlow";
-import { useGetProfile } from "@/hooks/profile/useGetProfile";
-import { useAppStore } from "@/store/useAppStore";
 import { useGetSettings } from "@/hooks/settings/useGetSettings";
 import { useUpdateSettings } from "@/hooks/settings/useUpdateSettings";
 import { useChangePassword } from "@/hooks/settings/useChangePassword";
@@ -270,31 +267,31 @@ const handleSavePassword = async () => {
               Content
             </h2>
             <div className="bg-card rounded-xl border border-border/50 overflow-hidden">
-              <SettingItem
+              {/* <SettingItem
                 icon={BarChart3}
                 title="Professional Dashboard"
                 subtitle="View analytics and insights"
                 onClick={() => navigate("/dashboard")}
-              />
-              <Separator />
+              /> 
+              <Separator />*/}
               <SettingItem
                 icon={Bookmark}
                 title="Saved Content"
                 subtitle="Access your saved posts and startups"
                 onClick={() => navigate("/saved-content")}
               />
-              <Separator />
+              {/* <Separator />
               <SettingItem
                 icon={SettingsIcon}
                 title="Content Preference"
                 subtitle="Customize your feed"
                 onClick={() => setPreferencesDrawerOpen(true)}
-              />
+              /> */}
             </div>
           </div>
 
           {/* Privacy Section */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3">
               Privacy
             </h2>
@@ -313,7 +310,7 @@ const handleSavePassword = async () => {
                 onClick={() => setConnectDrawerOpen(true)}
               />
             </div>
-          </div>
+          </div> */}
 
           {/* Account Section */}
           <div className="space-y-2">

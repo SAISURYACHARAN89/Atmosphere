@@ -118,7 +118,7 @@ async function searchUsers(
     params,
   });
 
-  return data.users ?? [];
+  return data ?? [];
 }
 
 export {

@@ -33,6 +33,7 @@ import { useSavePost } from "@/hooks/posts/useSavePost";
 import { useStartupComment } from "@/hooks/posts/useStartupComment";
 import { toast } from "sonner";
 import { useQuery } from "@tanstack/react-query";
+import Video from "./ui/Video";
 
 const StartupPost = ({ company }: { company: ZStartup }) => {
   const navigate = useNavigate();
@@ -245,14 +246,8 @@ const StartupPost = ({ company }: { company: ZStartup }) => {
           )}
 
           {company.video ? (
-            <video
+            <Video
               src={company.video}
-              className="w-full aspect-[16/9] object-cover"
-              autoPlay
-              loop
-              controls
-              muted
-              playsInline
             />
           ) : (
             <img

@@ -20,6 +20,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { useChats } from "@/hooks/chat/useGetChats";
 
 type TabType = "all" | "groups";
 
@@ -54,6 +55,9 @@ const Messages = () => {
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
 
+  const { data: chatsData, isLoading: isChatsLoading } = useChats(activeTab === "groups" ? "group" : 'private');
+  const messages: Message[] = chatsData?.chats || [];
+
   const handleBackClick = () => {
     const previousMode = localStorage.getItem('messagesPreviousMode') || 'left';
     if (previousMode === 'right') {
@@ -62,51 +66,6 @@ const Messages = () => {
       navigate('/');
     }
   };
-
-  const messages: Message[] = [
-  {
-    id: 1,
-    name: "Aditya chowdary",
-    preview: "Hey mr rajesh, would love to talk to you about...",
-    type: "Investors",
-  },
-  {
-    id: 2,
-    name: "Ramesh paul",
-    preview: "Hey mr rajesh, would love to talk to you about...",
-    type: "Ad Replies",
-  },
-  {
-    id: 3,
-    name: "Priya Sharma",
-    preview: "Looking forward to our meeting tomorrow...",
-    type: "Startup's",
-  },
-  {
-    id: 4,
-    name: "Vikram Singh",
-    preview: "The pitch deck looks great! Just a few suggestions...",
-    type: "Investors",
-  },
-  {
-    id: 5,
-    name: "Ananya Desai",
-    preview: "Can we schedule a call this week?",
-    type: "All",
-  },
-  {
-    id: 6,
-    name: "Karthik Reddy",
-    preview: "Thanks for the introduction! Would love to connect...",
-    type: "Ad Replies",
-  },
-  {
-    id: 7,
-    name: "Neha Gupta",
-    preview: "Your startup idea is really innovative...",
-    type: "Startup's",
-  },
-];
 
   // IMAGE UPLOAD STATE
   const [groupImage, setGroupImage] = useState<string | null>(null);
@@ -165,26 +124,6 @@ const handleCropSave = async () => {
   setShowCropper(false);
 };
 
-  const groups: Group[] = [
-    {
-      id: 1,
-      name: "Startup Founders Network",
-      members: 156,
-      lastMessage: "New funding opportunities available",
-    },
-    {
-      id: 2,
-      name: "Tech Investors Hub",
-      members: 89,
-      lastMessage: "Monthly meetup scheduled for next week",
-    },
-    {
-      id: 3,
-      name: "AI & ML Enthusiasts",
-      members: 234,
-      lastMessage: "Check out this new research paper",
-    },
-  ];
 
   const searchSuggestions: Group[] = [
     { id: 4, name: "AI Startups", members: 445, lastMessage: "" },
@@ -209,10 +148,11 @@ const handleCropSave = async () => {
     // Handle join group logic
     setSelectedGroup(null);
   };
-  const filteredMessages =
-  filter === "All"
-    ? messages
-    : messages.filter((msg) => msg.type === filter);
+  const filteredMessages = !isChatsLoading
+    ? []
+    : filter === "All"
+      ? messages
+      : messages.filter((msg) => msg.type === filter);
 
 
   return (
@@ -303,7 +243,7 @@ const handleCropSave = async () => {
           {activeTab === "all" ? (
             // All Mail View
             <div className="px-4 space-y-1">
-              {filteredMessages.map((message) => (
+              {filteredMessages?.map((message) => (
                 <button 
                   key={message.id}
                   onClick={() => navigate(`/messages/${message.id}`)}
@@ -509,7 +449,7 @@ const handleCropSave = async () => {
               ) : (
                 // Groups List
                 <div className="space-y-2">
-                  {groups.map((group) => (
+                  {messages.map((group) => (
                     <button
                       key={group.id}
                       onClick={() => navigate(`/messages/g${group.id}`)}

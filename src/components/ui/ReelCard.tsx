@@ -20,6 +20,7 @@ import { addReelComment, getReelComments } from "@/lib/api/reels";
 import { toast } from "./sonner";
 import { Button } from "./button";
 import { useSaveReel } from "@/hooks/reels/useSaveReel";
+import Video from "./Video";
 
 /* ------------------ Types ------------------ */
 
@@ -132,16 +133,12 @@ const ReelCard: React.FC<ReelCardProps> = ({ reel }) => {
 
   return (
     <div className="relative h-screen w-full snap-start flex items-center justify-center">
-      <div className="relative w-full h-full md:aspect-[9/16]">
-        <video
+      <div className="relative w-full h-full md:aspect-[9/16] cursor-pointer">
+        <Video
           src={reel.videoUrl}
-          autoPlay
-          loop
-          playsInline
-          className="w-full h-full object-cover"
+          isReel={true}
         />
-
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-black/60 pointer-events-none" />
 
         {/* Right Controls */}
         <div className="absolute right-3 bottom-20 flex flex-col gap-6 z-10">

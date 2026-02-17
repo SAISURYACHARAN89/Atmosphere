@@ -667,7 +667,7 @@ const Profile = () => {
 
       {/* ----------------- FOLLOWERS / FOLLOWING MODAL ----------------- */}
       {showUserList && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex flex-col">
+        <div className="fixed inset-0 max-w-2xl mx-auto bg-black/50 z-50 flex flex-col">
           <div className="bg-background px-4 pt-4 pb-3 border-b flex items-center justify-between">
             <button onClick={() => setShowUserList(null)} className="p-2 -ml-2">
               <ChevronLeft className="h-6 w-6" />

@@ -1,11 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity, Modal, TextInput, ActivityIndicator, Alert, StyleSheet, FlatList } from 'react-native';
-import { Play, Video, Heart, Crown, MessageCircle, Send, Building2, Calendar, Globe, Users } from 'lucide-react-native';
-import CommentsOverlay from '../../components/CommentsOverlay';
-import ShareModal from '../../components/ShareModal';
+import { ThemeContext } from '../../contexts/ThemeContext';
+import { Play, Video, Building2, Calendar, Globe, Users, Activity } from 'lucide-react-native';
 import { getContentId, checkIsInvestor } from '../../components/startupPost/utils';
-import { likeStartup, unlikeStartup, crownStartup, uncrownStartup } from '../../lib/api';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -130,6 +128,7 @@ type Props = {
 };
 
 export default function StartupExpand({ rawProfileData, profileData, screenW, isActive }: Props) {
+    const { theme } = useContext(ThemeContext);
     // Use rawProfileData.details for full backend data (teamMembers, video, fundingRounds)
     const details = rawProfileData?.details || rawProfileData?.startupDetails || rawProfileData || profileData?.details || profileData || {};
 
@@ -389,84 +388,7 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
     // Deduplicate and join
     const investorsList = [...new Set(investors)].join(', ');
 
-    // Stats for the startup
-    // Prioritize raw details stats (from MongoDB model)
-    const stats = profileData?.stats || {};
-    const meta = details.meta || {};
-
-    const displayStats = {
-        likes: typeof details.likesCount === 'number' ? details.likesCount : (meta.likes || stats.likes || 0),
-        crowns: typeof meta.crowns === 'number' ? meta.crowns : (meta.crownsCount || stats.crowns || 0),
-        comments: typeof meta.commentsCount === 'number' ? meta.commentsCount : (stats.comments || 0),
-        shares: typeof details.sharesCount === 'number' ? details.sharesCount : (stats.shares || 0)
-    };
-
-    // Interactive state for stats (mirror StartupPost behaviour)
-    const [liked, setLiked] = React.useState<boolean>(Boolean(details.likedByCurrentUser || profileData?.likedByCurrentUser || false));
-    const [likesCount, setLikesCount] = React.useState<number>(displayStats.likes || 0);
-    const [crowned, setCrowned] = React.useState<boolean>(Boolean(details.crownedByCurrentUser || profileData?.crownedByCurrentUser || false));
-    const [crownsCount, setCrownsCount] = React.useState<number>(displayStats.crowns || 0);
-    const [commentsCount, setCommentsCount] = React.useState<number>(displayStats.comments || 0);
-    const [sharesCount, setSharesCount] = React.useState<number>(displayStats.shares || 0);
-    const [commentsVisible, setCommentsVisible] = React.useState<boolean>(false);
-    const [shareVisible, setShareVisible] = React.useState<boolean>(false);
-
-    const [likeLoading, setLikeLoading] = React.useState(false);
-    const [crownLoading, setCrownLoading] = React.useState(false);
-
     const contentId = getContentId(details || profileData || {});
-
-    const toggleLike = async () => {
-        if (likeLoading) return;
-        setLikeLoading(true);
-        const prev = liked;
-        setLiked(!prev);
-        setLikesCount(c => prev ? Math.max(0, c - 1) : c + 1);
-        try {
-            if (prev) await unlikeStartup(contentId);
-            else await likeStartup(contentId);
-        } catch (err) {
-            setLiked(prev);
-            setLikesCount(c => prev ? c + 1 : Math.max(0, c - 1));
-        } finally {
-            setLikeLoading(false);
-        }
-    };
-
-    const toggleCrown = async () => {
-        if (!isInvestor) {
-            Alert.alert('Investors Only', 'Only investors can crown startups.');
-            return;
-        }
-        if (crownLoading) return;
-        setCrownLoading(true);
-        const prev = crowned;
-        setCrowned(!prev);
-        setCrownsCount(c => !prev ? c + 1 : Math.max(0, c - 1));
-        try {
-            if (prev) await uncrownStartup(contentId);
-            else await crownStartup(contentId);
-        } catch (err) {
-            setCrowned(prev);
-            setCrownsCount(c => prev ? c + 1 : Math.max(0, c - 1));
-        } finally {
-            setCrownLoading(false);
-        }
-    };
-
-    const onCommentAdded = (newCount?: number) => {
-        if (typeof newCount === 'number') setCommentsCount(newCount);
-        else setCommentsCount(c => c + 1);
-    };
-
-    const onCommentDeleted = (newCount?: number) => {
-        if (typeof newCount === 'number') setCommentsCount(newCount);
-        else setCommentsCount(c => Math.max(0, c - 1));
-    };
-
-    const onShareComplete = (inc?: number) => {
-        setSharesCount(s => s + (typeof inc === 'number' ? inc : 1));
-    };
 
     const formatCurrency = (amount: number | string) => {
         const num = Number(amount) || 0;
@@ -477,76 +399,38 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
 
     return (
         <View style={{ width: '100%', padding: 0, paddingTop: 10 }}>
-            {/* 1. Video Section - matching paddingHorizontal with stats below */}
-            <View style={{ marginHorizontal: 16, height: 280, backgroundColor: '#000', marginBottom: 16, borderRadius: 12, overflow: 'hidden' }}>
-                {videoUrl ? (
+            {/* 1. Video Section */}
+            {videoUrl ? (
+                <View style={{ marginHorizontal: 16, height: 280, backgroundColor: theme.background, marginBottom: 16, borderRadius: 12, overflow: 'hidden' }}>
                     <StartupVideoPlayer videoUrl={videoUrl} isActive={isActive} />
-                ) : (
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#111' }}>
-                        <Play size={40} color="#333" />
-                        <Text style={{ color: '#444', marginTop: 8 }}>No company video available</Text>
-                    </View>
-                )}
-            </View>
+                </View>
+            ) : null}
 
             <View style={{ paddingHorizontal: 16 }}>
-                {/* 2. Stats Row (interactive) */}
-                <View style={cardStyles.card}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 12 }}>
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} onPress={toggleLike}>
-                            <Heart size={20} color={liked ? '#ef4444' : '#fff'} fill={liked ? '#ef4444' : 'none'} strokeWidth={1.7} />
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>{likesCount}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} onPress={toggleCrown}>
-                            <Crown size={20} color={crowned ? '#eab308' : '#fff'} fill={crowned ? '#eab308' : 'none'} strokeWidth={1.7} />
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>{crownsCount}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} onPress={() => setCommentsVisible(true)}>
-                            <MessageCircle size={20} color="#fff" />
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>{commentsCount}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }} onPress={() => setShareVisible(true)}>
-                            <Send size={20} color="#fff" />
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '600' }}>{sharesCount}</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-
-                {/* 3. What's [company] - Description Card */}
-                {about ? (
-                    <View style={cardStyles.card}>
-                        <Text style={{ color: '#fff', fontSize: 14, fontWeight: '700', marginBottom: 8 }}>What's {companyName || 'this startup'}</Text>
-                        <Text style={{ color: '#ccc', fontSize: 13, lineHeight: 19 }}>{about}</Text>
-                    </View>
-                ) : null}
-
-                {/* 4. Request Pitch Deck Button - Standalone */}
+                {/* Request Pitch Deck Button - Standalone */}
                 {!isOwner && (
                     <TouchableOpacity
                         onPress={handleRequestPitchDeck}
                         disabled={pitchRequested}
                         style={{
-                            backgroundColor: pitchRequested ? '#222' : '#0d0d0d',
+                            backgroundColor: pitchRequested ? theme.card : theme.background,
                             borderRadius: 12,
                             paddingVertical: 14,
                             alignItems: 'center',
                             borderWidth: 1,
-                            borderColor: '#1a1a1a',
+                            borderColor: theme.border,
                             marginBottom: 16,
                         }}
                     >
-                        <Text style={{ color: pitchRequested ? '#888' : '#fff', fontWeight: '600', fontSize: 14 }}>
+                        <Text style={{ color: pitchRequested ? theme.placeholder : theme.text, fontWeight: '600', fontSize: 14 }}>
                             {pitchRequested ? 'Requested' : 'Request Pitch Deck'}
                         </Text>
                     </TouchableOpacity>
                 )}
 
-                {/* 5. Company Details Card */}
-                <View style={cardStyles.card}>
-                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600', marginBottom: 12 }}>Company Details</Text>
+                {/* 4. Company Details Card */}
+                <View style={[cardStyles.card, { backgroundColor: theme.background, borderColor: theme.border }]}>
+                    <Text style={{ color: theme.text, fontSize: 16, fontWeight: '600', marginBottom: 12 }}>Company Details</Text>
                     <View style={{ gap: 12 }}>
                         {industry ? (
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
@@ -568,25 +452,32 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
                                 <Text style={{ color: '#ccc', fontSize: 13 }}>{website.replace(/^https?:\/\//, '')}</Text>
                             </View>
                         ) : null}
+
+                        {currentRound ? (
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                                <Activity size={15} color="#888" />
+                                <Text style={{ color: '#ccc', fontSize: 13 }}>{currentRound}</Text>
+                            </View>
+                        ) : null}
                     </View>
                 </View>
 
-                {/* 6. Team Section */}
-                <View style={[cardStyles.card, { paddingVertical: 20 }]}>
-                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600', marginBottom: 12, marginTop: 0 }}>Team</Text>
+                {/* 5. Team Section */}
+                <View style={[cardStyles.card, { paddingVertical: 20, backgroundColor: theme.background, borderColor: theme.border }]}>
+                    <Text style={{ color: theme.text, fontSize: 16, fontWeight: '600', marginBottom: 12, marginTop: 0 }}>Team</Text>
                     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                         <View style={{ flexDirection: 'row', gap: 16, paddingHorizontal: 4 }}>
                             {teamMembers.length > 0 ? (
                                 teamMembers.map((member: any, idx: number) => (
                                     <View key={idx} style={{ alignItems: 'center', width: 80 }}>
-                                        <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: '#222', alignItems: 'center', justifyContent: 'center', marginBottom: 8, borderWidth: 1, borderColor: '#333' }}>
+                                        <View style={{ width: 50, height: 50, borderRadius: 25, backgroundColor: theme.card, alignItems: 'center', justifyContent: 'center', marginBottom: 8, borderWidth: 1, borderColor: theme.border }}>
                                             {member.profileImage || member.avatar || member.avatarUrl ? (
                                                 <Image source={{ uri: member.profileImage || member.avatar || member.avatarUrl }} style={{ width: 50, height: 50, borderRadius: 25 }} />
                                             ) : (
-                                                <Text style={{ color: '#aaa', fontSize: 18 }}>{(member.name || member.username || 'U').charAt(0).toUpperCase()}</Text>
+                                                <Text style={{ color: theme.placeholder, fontSize: 18 }}>{(member.name || member.username || 'U').charAt(0).toUpperCase()}</Text>
                                             )}
                                         </View>
-                                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600', textAlign: 'center' }} numberOfLines={1}>{member.name || member.username}</Text>
+                                        <Text style={{ color: theme.text, fontSize: 12, fontWeight: '600', textAlign: 'center' }} numberOfLines={1}>{member.name || member.username}</Text>
                                         <Text style={{ color: '#888', fontSize: 10, textAlign: 'center', marginTop: 2 }} numberOfLines={1}>{member.role || 'Member'}</Text>
                                     </View>
                                 ))
@@ -613,40 +504,30 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
                 </View>
 
                 {/* 7. Financial Overview */}
-                <View style={cardStyles.card}>
-                    <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600', marginBottom: 12, marginTop: 0 }}>Financial Overview</Text>
+                <View style={[cardStyles.card, { backgroundColor: theme.background, borderColor: theme.border }]}>
+                    <Text style={{ color: theme.text, fontSize: 16, fontWeight: '600', marginBottom: 12, marginTop: 0 }}>Financial Overview</Text>
                     <View style={{ gap: 12 }}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#888', fontSize: 13 }}>Revenue Type</Text>
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500' }}>{revenueType}</Text>
+                            <Text style={{ color: theme.placeholder, fontSize: 13 }}>Revenue Type</Text>
+                            <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500' }}>{revenueType}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#888', fontSize: 13 }}>Rounds Raised</Text>
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500' }}>{roundsCount}</Text>
+                            <Text style={{ color: theme.placeholder, fontSize: 13 }}>Rounds Raised</Text>
+                            <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500' }}>{roundsCount}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#888', fontSize: 13 }}>Total Raised</Text>
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500' }}>{formatCurrency(totalRaisedAllRounds)}</Text>
+                            <Text style={{ color: theme.placeholder, fontSize: 13 }}>Total Raised</Text>
+                            <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500' }}>{formatCurrency(totalRaisedAllRounds)}</Text>
                         </View>
                         {investorsList ? (
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                <Text style={{ color: '#888', fontSize: 13 }}>Investors</Text>
-                                <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500', maxWidth: '60%', textAlign: 'right' }}>{investorsList}</Text>
+                                <Text style={{ color: theme.placeholder, fontSize: 13 }}>Investors</Text>
+                                <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500', maxWidth: '60%', textAlign: 'right' }}>{investorsList}</Text>
                             </View>
                         ) : null}
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                            <Text style={{ color: '#888', fontSize: 13 }}>Current Round</Text>
-                            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500' }}>{currentRound}</Text>
-                        </View>
-                    </View>
-
-                    <View style={{ marginTop: 20 }}>
-                        <View style={{ height: 32, backgroundColor: '#1a1a1a', borderRadius: 6, overflow: 'hidden', borderWidth: 1, borderColor: '#333' }}>
-                            <View style={{ width: `${fundingPercent}%`, height: '100%', backgroundColor: '#666' }} />
-                        </View>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 6 }}>
-                            <Text style={{ color: '#fff', fontSize: 12 }}>{formatCurrency(fundingRaised)} Filled</Text>
-                            <Text style={{ color: '#fff', fontSize: 12 }}>{formatCurrency(fundingNeeded)}</Text>
+                            <Text style={{ color: theme.placeholder, fontSize: 13 }}>Current Round</Text>
+                            <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500' }}>{currentRound}</Text>
                         </View>
                     </View>
                 </View>
@@ -656,10 +537,10 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
             {/* Team Member Modal */}
             <Modal visible={showTeamModal} transparent animationType="fade" onRequestClose={() => setShowTeamModal(false)}>
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center' }}>
-                    <View style={{ width: '85%', backgroundColor: '#1a1a1a', borderRadius: 16, padding: 20, borderWidth: 1, borderColor: '#333' }}>
-                        <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700', marginBottom: 16 }}>Add Team Member</Text>
+                    <View style={{ width: '85%', backgroundColor: theme.card, borderRadius: 16, padding: 20, borderWidth: 1, borderColor: theme.border }}>
+                        <Text style={{ color: theme.text, fontSize: 18, fontWeight: '700', marginBottom: 16 }}>Add Team Member</Text>
 
-                        <Text style={{ color: '#ccc', fontSize: 14, marginBottom: 8 }}>Name or Username</Text>
+                        <Text style={{ color: theme.textSecondary, fontSize: 14, marginBottom: 8 }}>Name or Username</Text>
                         <TextInput
                             value={searchQuery}
                             onChangeText={(text) => {
@@ -683,22 +564,22 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
                                 }
                             }}
                             placeholder="Search user..."
-                            placeholderTextColor="#666"
-                            style={{ backgroundColor: '#000', borderRadius: 8, padding: 12, color: '#fff', borderWidth: 1, borderColor: '#333', marginBottom: 16 }}
+                            placeholderTextColor={theme.placeholder}
+                            style={{ backgroundColor: theme.background, borderRadius: 8, padding: 12, color: theme.text, borderWidth: 1, borderColor: theme.border, marginBottom: 16 }}
                         />
 
                         {/* Search Results */}
                         {isSearching ? (
-                            <ActivityIndicator size="small" color="#fff" style={{ marginBottom: 16 }} />
+                            <ActivityIndicator size="small" color={theme.text} style={{ marginBottom: 16 }} />
                         ) : searchResults.length > 0 ? (
-                            <View style={{ maxHeight: 150, marginBottom: 16, backgroundColor: '#111', borderRadius: 8, overflow: 'hidden' }}>
+                            <View style={{ maxHeight: 150, marginBottom: 16, backgroundColor: theme.background, borderRadius: 8, overflow: 'hidden' }}>
                                 <FlatList
                                     data={searchResults}
                                     keyExtractor={(item) => item.id || item._id}
                                     nestedScrollEnabled
                                     renderItem={({ item }) => (
                                         <TouchableOpacity
-                                            style={{ flexDirection: 'row', alignItems: 'center', padding: 10, borderBottomWidth: 1, borderBottomColor: '#222' }}
+                                            style={{ flexDirection: 'row', alignItems: 'center', padding: 10, borderBottomWidth: 1, borderBottomColor: theme.border }}
                                             onPress={() => {
                                                 setNewMemberName(item.name || item.fullName || item.username);
                                                 setSearchQuery(item.name || item.fullName || item.username);
@@ -712,8 +593,8 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
                                                 style={{ width: 30, height: 30, borderRadius: 15, marginRight: 10 }}
                                             />
                                             <View>
-                                                <Text style={{ color: '#fff', fontWeight: '600' }}>{item.username}</Text>
-                                                <Text style={{ color: '#888', fontSize: 12 }}>{item.name || item.fullName}</Text>
+                                                <Text style={{ color: theme.text, fontWeight: '600' }}>{item.username}</Text>
+                                                <Text style={{ color: theme.placeholder, fontSize: 12 }}>{item.name || item.fullName}</Text>
                                             </View>
                                         </TouchableOpacity>
                                     )}
@@ -724,66 +605,46 @@ export default function StartupExpand({ rawProfileData, profileData, screenW, is
                         {/* Selected Name Display / Manual Override */}
                         {selectedUserId || newMemberName ? (
                             <View style={{ marginBottom: 16 }}>
-                                <Text style={{ color: '#ccc', fontSize: 12, marginBottom: 4 }}>Display Name</Text>
+                                <Text style={{ color: theme.textSecondary, fontSize: 12, marginBottom: 4 }}>Display Name</Text>
                                 <TextInput
                                     value={newMemberName}
                                     onChangeText={setNewMemberName}
-                                    style={{ backgroundColor: '#111', borderRadius: 8, padding: 12, color: '#fff' }}
+                                    style={{ backgroundColor: theme.background, borderRadius: 8, padding: 12, color: theme.text }}
                                 />
                             </View>
                         ) : null}
 
-                        <Text style={{ color: '#ccc', fontSize: 14, marginBottom: 8 }}>Role</Text>
+                        <Text style={{ color: theme.textSecondary, fontSize: 14, marginBottom: 8 }}>Role</Text>
                         <TextInput
                             value={newMemberRole}
                             onChangeText={setNewMemberRole}
                             placeholder="e.g. CTO, Lead Dev"
-                            placeholderTextColor="#666"
-                            style={{ backgroundColor: '#000', borderRadius: 8, padding: 12, color: '#fff', borderWidth: 1, borderColor: '#333', marginBottom: 24 }}
+                            placeholderTextColor={theme.placeholder}
+                            style={{ backgroundColor: theme.background, borderRadius: 8, padding: 12, color: theme.text, borderWidth: 1, borderColor: theme.border, marginBottom: 24 }}
                         />
 
                         <View style={{ flexDirection: 'row', gap: 12 }}>
                             <TouchableOpacity
                                 onPress={() => setShowTeamModal(false)}
-                                style={{ flex: 1, padding: 12, borderRadius: 8, backgroundColor: '#333', alignItems: 'center' }}
+                                style={{ flex: 1, padding: 12, borderRadius: 8, backgroundColor: theme.border, alignItems: 'center' }}
                             >
-                                <Text style={{ color: '#fff', fontWeight: '600' }}>Cancel</Text>
+                                <Text style={{ color: theme.text, fontWeight: '600' }}>Cancel</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={handleSaveTeamMember}
                                 disabled={savingMember}
-                                style={{ flex: 1, padding: 12, borderRadius: 8, backgroundColor: '#fff', alignItems: 'center' }}
+                                style={{ flex: 1, padding: 12, borderRadius: 8, backgroundColor: theme.text, alignItems: 'center' }}
                             >
                                 {savingMember ? (
-                                    <ActivityIndicator color="#000" size="small" />
+                                    <ActivityIndicator color={theme.background} size="small" />
                                 ) : (
-                                    <Text style={{ color: '#000', fontWeight: '700' }}>Add</Text>
+                                    <Text style={{ color: theme.background, fontWeight: '700' }}>Add</Text>
                                 )}
                             </TouchableOpacity>
                         </View>
                     </View>
                 </View>
             </Modal>
-            {/* Comments and Share modals for interactive stats */}
-            <CommentsOverlay
-                startupId={String(contentId)}
-                visible={commentsVisible}
-                onClose={() => setCommentsVisible(false)}
-                onCommentAdded={onCommentAdded}
-                onCommentDeleted={onCommentDeleted}
-                type="startup"
-            />
-
-            <ShareModal
-                contentId={String(contentId)}
-                type="startup"
-                contentTitle={companyName}
-                contentImage={details.profileImage || profileData?.profileImage}
-                contentOwner={companyName}
-                visible={shareVisible}
-                onClose={() => setShareVisible(false)}
-                onShareComplete={onShareComplete}
-            />
         </View >
     );
 };

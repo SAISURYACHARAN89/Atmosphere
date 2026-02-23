@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useContext } from 'react';
 import {
     View,
     Text,
@@ -18,6 +18,7 @@ import { Meeting } from './types';
 import { styles } from './Meetings.styles';
 import { MeetingCard, NoMeetings, CreateMeetingModal } from './components';
 import MeetingSkeleton from '../../components/skeletons/MeetingSkeleton';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 type MeetingsProps = {
     onJoinMeeting?: (meetingId: string) => void;
@@ -27,6 +28,7 @@ type MeetingsProps = {
  * Meetings screen - displays list of meetings with tabs, search, and create functionality
  */
 const Meetings = ({ onJoinMeeting }: MeetingsProps) => {
+    const { theme } = useContext(ThemeContext);
     const [activeTab, setActiveTab] = useState<'all' | 'my'>('all');
     const [meetings, setMeetings] = useState<Meeting[]>([]);
     const [myMeetings, setMyMeetings] = useState<string[]>([]);
@@ -145,19 +147,19 @@ const Meetings = ({ onJoinMeeting }: MeetingsProps) => {
     const displayList = filtered;
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {/* Launch Meeting Button */}
             <TouchableOpacity
-                style={styles.launchBtn}
+                style={[styles.launchBtn, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}
                 onPress={() => setShowCreateModal(true)}
             >
                 <View style={styles.launchBtnLeft}>
-                    <View style={styles.launchIconContainer}>
-                        <MaterialIcons name="add" size={20} color="#fff" />
+                    <View style={[styles.launchIconContainer, { backgroundColor: theme.inputBackground }]}>
+                        <MaterialIcons name="add" size={20} color={theme.text} />
                     </View>
-                    <Text style={styles.launchBtnText}>Launch meeting</Text>
+                    <Text style={[styles.launchBtnText, { color: theme.text }]}>Launch meeting</Text>
                 </View>
-                <MaterialIcons name="keyboard-arrow-down" size={24} color="#888" />
+                <MaterialIcons name="keyboard-arrow-down" size={24} color={theme.placeholder} />
             </TouchableOpacity>
 
             {/* Tabs + Search */}
@@ -167,22 +169,22 @@ const Meetings = ({ onJoinMeeting }: MeetingsProps) => {
                         style={styles.tabBtn}
                         onPress={() => setActiveTab('all')}
                     >
-                        <Text style={[styles.tabText, activeTab === 'all' && styles.tabTextActive]}>All</Text>
-                        {activeTab === 'all' && <View style={styles.tabUnderline} />}
+                        <Text style={[styles.tabText, { color: theme.placeholder }, activeTab === 'all' && { color: theme.text }]}>All</Text>
+                        {activeTab === 'all' && <View style={[styles.tabUnderline, { backgroundColor: theme.text }]} />}
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.tabBtn}
                         onPress={() => setActiveTab('my')}
                     >
-                        <Text style={[styles.tabText, activeTab === 'my' && styles.tabTextActive]}>My meetings</Text>
-                        {activeTab === 'my' && <View style={styles.tabUnderline} />}
+                        <Text style={[styles.tabText, { color: theme.placeholder }, activeTab === 'my' && { color: theme.text }]}>My meetings</Text>
+                        {activeTab === 'my' && <View style={[styles.tabUnderline, { backgroundColor: theme.text }]} />}
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={() => setShowSearchBar(s => !s)} style={styles.searchIconBtn}>
                     {showSearchBar ? (
-                        <MaterialIcons name="close" size={20} color="#888" />
+                        <MaterialIcons name="close" size={20} color={theme.placeholder} />
                     ) : (
-                        <Search size={20} color="#888" />
+                        <Search size={20} color={theme.placeholder} />
                     )}
                 </TouchableOpacity>
             </View>
@@ -194,12 +196,12 @@ const Meetings = ({ onJoinMeeting }: MeetingsProps) => {
                         placeholder="Search meetings by title or host..."
                         value={searchQuery}
                         onChangeText={setSearchQuery}
-                        style={styles.searchInput}
-                        placeholderTextColor="#666"
+                        style={[styles.searchInput, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
+                        placeholderTextColor={theme.placeholder}
                     />
                     {searchQuery.length > 0 && (
                         <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchBtn}>
-                            <MaterialIcons name="close" size={16} color="#888" />
+                            <MaterialIcons name="close" size={16} color={theme.placeholder} />
                         </TouchableOpacity>
                     )}
                 </View>

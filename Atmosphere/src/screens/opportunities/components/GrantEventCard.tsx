@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
     View,
     Text,
@@ -8,6 +8,7 @@ import {
     Linking,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 import { getBadgeColor, formatDate } from '../helpers';
 import styles from '../Opportunities.styles';
 
@@ -17,6 +18,7 @@ interface GrantEventCardProps {
 }
 
 function GrantEventCard({ item, type }: GrantEventCardProps) {
+    const { theme } = useContext(ThemeContext) as any;
     const [expanded, setExpanded] = useState(false);
     const [applied, setApplied] = useState(false);
     const [form, setForm] = useState({ name: '', email: '', notes: '' });
@@ -95,7 +97,7 @@ function GrantEventCard({ item, type }: GrantEventCardProps) {
 
             {/* Expanded Form Section */}
             {expanded ? (
-                <View style={[styles.expandedSection, { borderColor, backgroundColor: '#111' }]}>
+                <View style={[styles.expandedSection, { borderColor, backgroundColor: theme.cardBackground }]}>
                     {!applied ? (
                         <>
                             <Text style={[styles.formHeader, { color: textColor }]}>
@@ -182,12 +184,12 @@ function GrantEventCard({ item, type }: GrantEventCardProps) {
                                 Alert.alert('Info', 'No application link available');
                             }
                         }}
-                        style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: '#333', paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 }}
+                        style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: theme.inputBackground, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 }}
                     >
-                        <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>
+                        <Text style={{ color: theme.text, fontWeight: '600', fontSize: 14 }}>
                             {type === 'Grant' ? 'Apply' : 'Register'}
                         </Text>
-                        <MaterialIcons name="open-in-new" size={18} color="#fff" style={{ marginLeft: 6 }} />
+                        <MaterialIcons name="open-in-new" size={18} color={theme.text} style={{ marginLeft: 6 }} />
                     </TouchableOpacity>
                 </View>
             )}

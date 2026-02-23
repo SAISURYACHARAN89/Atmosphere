@@ -431,7 +431,7 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ onPostPress, onUserPress, o
                         <Text style={[styles.userName, { color: theme.text }]}>{displayName}</Text>
                     </View>
                     {verified && typeLabel ? (
-                        <Text style={{ color: '#878787', fontSize: 13, marginTop: 2 }}>Verified {typeLabel.toLowerCase()}</Text>
+                        <Text style={{ color: theme.placeholder, fontSize: 13, marginTop: 2 }}>Verified {typeLabel.toLowerCase()}</Text>
                     ) : typeLabel ? (
                         <Text style={[styles.userType, { color: theme.placeholder }]}>{typeLabel}</Text>
                     ) : null}
@@ -451,18 +451,18 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ onPostPress, onUserPress, o
         <View style={[styles.container, { backgroundColor: theme.background || '#000' }]}>
             {/* Search Bar */}
             <View style={styles.searchBarContainer}>
-                <View style={[styles.searchBar, { backgroundColor: '#1a1a1a', borderColor: '#333' }]}>
-                    <MaterialIcons name="search" size={22} color="#888" style={styles.searchIcon} />
+                <View style={[styles.searchBar, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                    <MaterialIcons name="search" size={22} color={theme.placeholder} style={styles.searchIcon} />
                     <TextInput
                         style={[styles.input, { color: theme.text }]}
                         placeholder="Search accounts, reels, posts..."
-                        placeholderTextColor="#666"
+                        placeholderTextColor={theme.placeholder}
                         value={query}
                         onChangeText={handleSearchTextChange}
                     />
                     {query.length > 0 && (
                         <TouchableOpacity onPress={clearSearch} style={styles.clearButton}>
-                            <MaterialIcons name="close" size={20} color="#888" />
+                            <MaterialIcons name="close" size={20} color={theme.placeholder} />
                         </TouchableOpacity>
                     )}
                 </View>
@@ -475,10 +475,10 @@ const SearchScreen: React.FC<SearchScreenProps> = ({ onPostPress, onUserPress, o
                         {(['accounts', 'posts'] as TabType[]).map((tab) => (
                             <TouchableOpacity
                                 key={tab}
-                                style={[styles.tab, activeTab === tab && styles.tabActive]}
+                                style={[styles.tab, activeTab === tab && [styles.tabActive, { borderBottomColor: theme.text }]]}
                                 onPress={() => handleTabChange(tab)}
                             >
-                                <Text style={[styles.tabText, { color: activeTab === tab ? '#fff' : theme.placeholder }]}>
+                                <Text style={[styles.tabText, { color: activeTab === tab ? theme.text : theme.placeholder }]}>
                                     {tab === 'accounts' ? 'Accounts' : 'Posts'}
                                 </Text>
                             </TouchableOpacity>

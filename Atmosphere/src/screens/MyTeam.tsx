@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import {
     View,
     Text,
@@ -13,6 +13,7 @@ import {
     KeyboardAvoidingView,
     Platform
 } from 'react-native';
+import { ThemeContext } from '../contexts/ThemeContext';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { searchUsers, fetchMyTeam, addToMyTeam, removeFromMyTeam } from '../lib/api';
 import { getImageSource } from '../lib/image';
@@ -34,6 +35,7 @@ interface MyTeamProps {
 }
 
 const MyTeam: React.FC<MyTeamProps> = ({ onBack }) => {
+    const { theme } = useContext(ThemeContext);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<User[]>([]);
     const [teamMembers, setTeamMembers] = useState<User[]>([]);
@@ -162,7 +164,7 @@ const MyTeam: React.FC<MyTeamProps> = ({ onBack }) => {
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={onBack} style={styles.backBtn}>
                     <MaterialIcons name="arrow-back" size={28} color="#fff" />

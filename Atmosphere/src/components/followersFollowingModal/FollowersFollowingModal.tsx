@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { View, Text, Modal, TouchableOpacity, FlatList, ActivityIndicator, Animated, ScrollView } from 'react-native';
 import { ArrowLeft } from 'lucide-react-native';
 import { getFollowersList, getFollowingList, followUser, unfollowUser, checkFollowing } from '../../lib/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 import { FollowersFollowingModalProps, User, TabType } from './types';
 import { styles, SCREEN_WIDTH, PAGE_SIZE } from './styles';
@@ -12,6 +13,7 @@ const FollowersFollowingModal: React.FC<FollowersFollowingModalProps> = ({
     visible, onClose, userId, username = '', initialTab = 'followers',
     followersCount = 0, followingCount = 0, onUserPress,
 }) => {
+    const { theme } = useContext(ThemeContext);
     const [activeTab, setActiveTab] = useState<TabType>(initialTab);
     const [followers, setFollowers] = useState<User[]>([]);
     const [following, setFollowing] = useState<User[]>([]);
@@ -139,16 +141,16 @@ const FollowersFollowingModal: React.FC<FollowersFollowingModalProps> = ({
 
     const handleUserPress = (userId: string) => { onClose(); onUserPress?.(userId); };
 
-    const renderFooter = (loading: boolean) => loading ? <View style={styles.footerLoader}><ActivityIndicator size="small" color="#fff" /></View> : <View style={{ height: 100 }} />;
+    const renderFooter = (loading: boolean) => loading ? <View style={styles.footerLoader}><ActivityIndicator size="small" color={theme.primary} /></View> : <View style={{ height: 100 }} />;
     const renderEmpty = (loading: boolean, text: string) => loading ? null : <View style={styles.emptyContainer}><Text style={styles.emptyText}>{text}</Text></View>;
     const tabIndicatorTranslate = tabIndicatorX.interpolate({ inputRange: [0, 1], outputRange: [0, SCREEN_WIDTH / 2] });
 
     return (
         <Modal visible={visible} animationType="slide" transparent={false} onRequestClose={onClose}>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <TouchableOpacity onPress={onClose} style={styles.backButton}><ArrowLeft size={24} color="#fff" /></TouchableOpacity>
-                    <Text style={styles.headerTitle} numberOfLines={1}>{username || 'Profile'}</Text>
+            <View style={[styles.container, { backgroundColor: theme.background }]}>
+                <View style={[styles.header, { backgroundColor: theme.background, borderBottomColor: theme.border }]}>
+                    <TouchableOpacity onPress={onClose} style={styles.backButton}><ArrowLeft size={24} color={theme.text} /></TouchableOpacity>
+                    <Text style={[styles.headerTitle, { color: theme.text }]} numberOfLines={1}>{username || 'Profile'}</Text>
                     <View style={styles.placeholder} />
                 </View>
 

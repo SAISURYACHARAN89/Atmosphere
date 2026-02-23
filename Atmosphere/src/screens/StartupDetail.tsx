@@ -114,7 +114,11 @@ const StartupDetail = ({ route, navigation }: any) => {
         crownedByCurrentUser: details?.crownedByCurrentUser || false,
         isFollowing: details?.isFollowing || false,
         isSaved: details?.isSaved || false,
-        savedId: details?.savedId || null
+        savedId: details?.savedId || null,
+        // Additional user and startup details
+        bio: user?.bio || '',
+        location: details?.location || '',
+        about: details?.about || ''
     };
 
     return (

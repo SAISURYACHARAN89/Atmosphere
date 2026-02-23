@@ -571,7 +571,7 @@ const Profile = ({ onNavigate, userId: propUserId, onClose, onCreatePost, onPost
                                     <Image source={getImageSource(src.logo)} style={styles.avatarLarge} onError={(e) => { console.warn('Profile avatar load error', e.nativeEvent, src.logo); }} />
                                 ) : (
                                     <View style={[styles.avatarLarge, { alignItems: 'center', justifyContent: 'center' }]}>
-                                        <Text style={{ color: '#fff', fontSize: 28, fontWeight: '700' }}>{(src?.name || 'U').charAt(0).toUpperCase()}</Text>
+                                        <Text style={{ color: theme.buttonText, fontSize: 28, fontWeight: '700' }}>{(src?.name || 'U').charAt(0).toUpperCase()}</Text>
                                     </View>
                                 )}
                             </View>
@@ -598,7 +598,7 @@ const Profile = ({ onNavigate, userId: propUserId, onClose, onCreatePost, onPost
 
                         <View style={{ paddingHorizontal: 16, paddingBottom: 12 }}>
                             {src?.verified && (
-                                <Text style={{ color: '#878787', fontSize: 13, marginBottom: 4 }}>
+                                <Text style={{ color: theme.placeholder, fontSize: 13, marginBottom: 4 }}>
                                     {accountType === 'investor' ? 'Verified investor' : 'Verified startup'}
                                 </Text>
                             )}
@@ -617,20 +617,20 @@ const Profile = ({ onNavigate, userId: propUserId, onClose, onCreatePost, onPost
 
                         {!viewingUserId || (currentUserId && viewingUserId === currentUserId) ? (
                             <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 16, marginBottom: 8 }}>
-                                <TouchableOpacity style={{ flex: 1, backgroundColor: '#2e2e2e', borderRadius: 8, paddingVertical: 8, alignItems: 'center' }} onPress={() => onNavigate ? onNavigate('setup') : null}>
-                                    <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>{accountType === 'investor' ? 'Edit Profile' : 'Setup Profile'}</Text>
+                                <TouchableOpacity style={{ flex: 1, backgroundColor: theme.inputBackground, borderRadius: 8, paddingVertical: 8, alignItems: 'center' }} onPress={() => onNavigate ? onNavigate('setup') : null}>
+                                    <Text style={{ color: theme.text, fontSize: 14, fontWeight: '600' }}>{accountType === 'investor' ? 'Edit Profile' : 'Setup Profile'}</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={{ flex: 1, backgroundColor: '#2e2e2e', borderRadius: 8, paddingVertical: 8, alignItems: 'center' }} onPress={() => {
+                                <TouchableOpacity style={{ flex: 1, backgroundColor: theme.inputBackground, borderRadius: 8, paddingVertical: 8, alignItems: 'center' }} onPress={() => {
                                     const { Share } = require('react-native');
                                     Share.share({ message: `Check out ${src?.name}'s profile on Atmosphere!`, url: `https://atmosphere.app/profile/${ownProfileId || ''}` });
                                 }}>
-                                    <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>Share profile</Text>
+                                    <Text style={{ color: theme.text, fontSize: 14, fontWeight: '600' }}>Share profile</Text>
                                 </TouchableOpacity>
                             </View>
                         ) : (
                             <View style={{ flexDirection: 'row', gap: 8, paddingHorizontal: 16, marginBottom: 8 }}>
                                 <TouchableOpacity
-                                    style={{ flex: 1, backgroundColor: isFollowing ? '#2e2e2e' : '#0095f6', borderRadius: 8, paddingVertical: 8, alignItems: 'center' }}
+                                    style={{ flex: 1, backgroundColor: isFollowing ? theme.inputBackground : theme.primary, borderRadius: 8, paddingVertical: 8, alignItems: 'center' }}
                                     onPress={async () => {
                                         if (!viewingUserId || followLoading) return;
                                         setFollowLoading(true);
@@ -652,10 +652,10 @@ const Profile = ({ onNavigate, userId: propUserId, onClose, onCreatePost, onPost
                                         }
                                     }}
                                 >
-                                    <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>{isFollowing ? 'Following' : 'Follow'}</Text>
+                                    <Text style={{ color: theme.buttonText, fontSize: 14, fontWeight: '600' }}>{isFollowing ? 'Following' : 'Follow'}</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={{ flex: 1, backgroundColor: '#2e2e2e', borderRadius: 8, paddingVertical: 8, alignItems: 'center' }}
+                                    style={{ flex: 1, backgroundColor: theme.inputBackground, borderRadius: 8, paddingVertical: 8, alignItems: 'center' }}
                                     onPress={() => {
                                         if (onChatWithUser && viewingUserId) {
                                             onChatWithUser(String(viewingUserId));
@@ -664,7 +664,7 @@ const Profile = ({ onNavigate, userId: propUserId, onClose, onCreatePost, onPost
                                         }
                                     }}
                                 >
-                                    <Text style={{ color: '#fff', fontSize: 14, fontWeight: '600' }}>Message</Text>
+                                    <Text style={{ color: theme.text, fontSize: 14, fontWeight: '600' }}>Message</Text>
                                 </TouchableOpacity>
                             </View>
                         )}

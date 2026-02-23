@@ -18,6 +18,7 @@ import ReelsIcon from './icons/ReelsIcon';
 import ReelsOutline from './icons/ReelsOutline';
 import HomeFilled from './icons/HomeFilled';
 import HomeOutline from './icons/HomeOutline';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 
 import { NavigationContext, NavigationRouteContext } from "@react-navigation/native";
@@ -50,6 +51,7 @@ type BottomNavProps = {
 const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => {
   const navigation = useContext(NavigationContext) as any | undefined;
   const route = useContext(NavigationRouteContext) as any | undefined;
+  const { theme } = useContext(ThemeContext);
   const insets = useSafeAreaInsets();
 
   const [appMode, setAppMode] = useState<AppMode>("left");
@@ -134,7 +136,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
   if (shouldHideMobileNav) return null;
 
   return (
-    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+    <View style={[styles.container, { paddingBottom: insets.bottom, backgroundColor: theme.tabBarBackground, borderTopColor: theme.tabBarBorder, borderTopWidth: 1 }]}>
       <View style={styles.row}>
         {tabs.slice(0, 2).map((tab) => {
           const active = isTabActive(tab.route);
@@ -149,20 +151,20 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
               <View style={{ width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
                 {tab.id === 'home' ? (
                   active ? (
-                    <HomeFilled color="#fff" size={24} />
+                    <HomeFilled color={theme.iconColor} size={24} />
                   ) : (
-                    <HomeOutline color="#fff" size={24} />
+                    <HomeOutline color={theme.iconColor} size={24} />
                   )
                 ) : tab.id === 'launch' ? (
                   // Launch can appear in the first slice when `appMode` is 'right'
                   active ? (
-                    <IconIon name="rocket" size={24} color="#fff" solid={true} />
+                    <IconIon name="rocket" size={24} color={theme.iconColor} solid={true} />
                   ) : (
-                    <IconIon name='rocket-outline' size={24} color="#fff" />
+                    <IconIon name='rocket-outline' size={24} color={theme.iconColor} />
                   )
                 ) : (
                   <IconComponent
-                    color="#fff"
+                    color={theme.iconColor}
                     size={26}
                     strokeWidth={active ? 2.5 : 1.4}
                   />
@@ -193,12 +195,12 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
                 {userAvatarUrl ? (
                   <Image
                     source={{ uri: userAvatarUrl }}
-                    style={[styles.avatarIcon, active && styles.avatarIconActive]}
+                    style={[styles.avatarIcon, active && styles.avatarIconActive, { borderColor: theme.iconColor }]}
                   />
                 ) : (
                   <View style={{ width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
                     <User
-                      color="#fff"
+                      color={theme.iconColor}
                       size={22}
                       strokeWidth={active ? 2.5 : 1.2}
                     />
@@ -220,10 +222,10 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
               >
                 <View style={{ width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
                   {active ? (
-                    <IconFA name="suitcase" size={24} color="#fff" />
+                    <IconFA name="suitcase" size={24} color={theme.iconColor} />
                   ) : (
                     <Briefcase
-                      color="#fff"
+                      color={theme.iconColor}
                       size={26}
                       strokeWidth={active ? 2.5 : 1.2}
                     />
@@ -244,9 +246,9 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
               >
                 <View style={{ width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
                   {active ? (
-                    <IconFA5 name="rocket" size={24} color="#fff" solid={true} />
+                    <IconFA5 name="rocket" size={24} color={theme.iconColor} solid={true} />
                   ) : (
-                    <IconIon name={'rocket-outline'} size={24} color="#fff" />
+                    <IconIon name={'rocket-outline'} size={24} color={theme.iconColor} />
                   )}
                 </View>
               </TouchableOpacity>
@@ -266,7 +268,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
                   <IconIon
                     name={active ? 'calendar' : 'calendar-outline'}
                     size={24}
-                    color="#fff"
+                    color={theme.iconColor}
                   />
                 </View>
               </TouchableOpacity>
@@ -284,13 +286,13 @@ const BottomNav: React.FC<BottomNavProps> = ({ onRouteChange, activeRoute }) => 
               <View style={{ width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent' }}>
                 {tab.id === 'reels' ? (
                   active ? (
-                    <ReelsIcon color="#fff" size={24} />
+                    <ReelsIcon color={theme.iconColor} size={24} />
                   ) : (
-                    <ReelsOutline color="#fff" size={24} />
+                    <ReelsOutline color={theme.iconColor} size={24} />
                   )
                 ) : (
                   <IconComponent
-                    color="#fff"
+                    color={theme.iconColor}
                     size={26}
                     strokeWidth={active ? 2.5 : 1.2}
                   />

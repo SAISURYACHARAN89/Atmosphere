@@ -1,10 +1,11 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, Image as RNImage, Animated, LayoutAnimation, UIManager, Platform } from 'react-native';
 import Video from 'react-native-video';
 import Slider from '@react-native-community/slider';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { ActiveTrade } from '../types';
 import { styles } from '../styles';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 
 // Enable LayoutAnimation for Android
 if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
@@ -38,6 +39,8 @@ export const TradeCard: React.FC<TradeCardProps> = ({
     onOpenStartupProfile,
     onOpenInvestorProfile,
 }) => {
+    const { theme } = useContext(ThemeContext);
+
     // Animation value for opacity (uses native driver for smoothness)
     const opacityAnim = useRef(new Animated.Value(isExpanded ? 1 : 0)).current;
 
@@ -93,12 +96,12 @@ export const TradeCard: React.FC<TradeCardProps> = ({
     const isCurrentItemVideo = hasVideo && currentPhotoIndex === imageCount;
 
     return (
-        <View style={styles.professionalTradeCard}>
-            {/* Header Row - Startup info on left, Investor info on right (when expanded) */}
+        <View style={[styles.professionalTradeCard, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
+            {/* Header Row - Startup info on left, Investor info on right (ALWAYS visible) */}
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={onToggleExpand}
-                style={[styles.collapsedCardRow, isExpanded && styles.expandedCardHeader]}
+                style={styles.collapsedCardRow}
             >
                 {/* Startup Info - Avatar is clickable for navigation, rest expands card */}
                 <View style={styles.startupInfoTouchable}>
@@ -130,22 +133,17 @@ export const TradeCard: React.FC<TradeCardProps> = ({
                         )}
                     </TouchableOpacity>
 
-                    {/* Company Info - Name and Description stacked (not clickable for navigation) */}
+                    {/* Company Name */}
                     <View style={styles.collapsedCompanyInfo}>
-                        <Text style={styles.collapsedCompanyName}>{trade.companyName}</Text>
-                        {!isExpanded && (
-                            <Text style={styles.collapsedDescription} numberOfLines={2}>
-                                {trade.description || 'No description provided'}
-                            </Text>
-                        )}
+                        <Text style={[styles.collapsedCompanyName, { color: theme.text }]}>{trade.companyName}</Text>
                     </View>
                 </View>
 
-                {/* Investor Info - Top Right (only when expanded, hide only if user is a startup account) */}
-                {isExpanded && trade.user && (trade.user.displayName || trade.user.username) &&
+                {/* Investor Info - Top Right (ALWAYS visible, hide only if user is a startup account) */}
+                {trade.user && (trade.user.displayName || trade.user.username) &&
                     !((trade.user as any).roles?.includes('startup') || (trade.user as any).accountType === 'startup') && (
                         <View style={styles.investorInfoContainer}>
-                            <Text style={styles.investorName} numberOfLines={1}>
+                            <Text style={[styles.investorName, { color: theme.textSecondary }]} numberOfLines={1}>
                                 {trade.user.displayName || `@${trade.user.username}`}
                             </Text>
                             {/* Investor Avatar - Only this is clickable for profile navigation */}
@@ -164,8 +162,8 @@ export const TradeCard: React.FC<TradeCardProps> = ({
                                         style={styles.investorAvatar}
                                     />
                                 ) : (
-                                    <View style={[styles.investorAvatar, { alignItems: 'center', justifyContent: 'center' }]}>
-                                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>
+                                    <View style={[styles.investorAvatar, { alignItems: 'center', justifyContent: 'center', backgroundColor: theme.inputBackground }]}>
+                                        <Text style={{ color: theme.text, fontSize: 12, fontWeight: '600' }}>
                                             {(trade.user.displayName || trade.user.username || 'I')[0].toUpperCase()}
                                         </Text>
                                     </View>
@@ -175,26 +173,54 @@ export const TradeCard: React.FC<TradeCardProps> = ({
                     )}
             </TouchableOpacity>
 
+            {/* Description - Always visible but truncated when collapsed */}
+            <TouchableOpacity activeOpacity={0.9} onPress={onToggleExpand}>
+                <Text style={[styles.collapsedDescription, { color: theme.textSecondary }]} numberOfLines={isExpanded ? undefined : 2}>
+                    {trade.description || 'No description provided'}
+                </Text>
+            </TouchableOpacity>
+
+            {/* Info Grid - ALWAYS visible (Revenue, Valuation, Age, Range) */}
+            <View style={[styles.professionalInfoGrid, { borderColor: theme.border }]}>
+                <View style={[styles.professionalInfoItem, { borderColor: theme.border }]}>
+                    <Text style={[styles.professionalInfoLabel, { color: theme.placeholder }]}>Revenue</Text>
+                    <Text style={[styles.professionalInfoValue, { color: theme.text }]}>
+                        {trade.revenueStatus === 'revenue-generating' ? 'Revenue' : 'Pre Rev'}
+                    </Text>
+                </View>
+                <View style={[styles.professionalInfoItem, { borderColor: theme.border }]}>
+                    <Text style={[styles.professionalInfoLabel, { color: theme.placeholder }]}>Valuation</Text>
+                    <Text style={[styles.professionalInfoValue, { color: theme.text }]}>
+                        {trade.fundingTarget ? `$${trade.fundingTarget.toLocaleString()}` : 'N/A'}
+                    </Text>
+                </View>
+                <View style={[styles.professionalInfoItem, { borderColor: theme.border }]}>
+                    <Text style={[styles.professionalInfoLabel, { color: theme.placeholder }]}>Age</Text>
+                    <Text style={[styles.professionalInfoValue, { color: theme.text }]}>{trade.companyAge || 'N/A'}</Text>
+                </View>
+                <View style={[styles.professionalInfoItem, styles.professionalInfoItemLast, { borderColor: theme.border }]}>
+                    <Text style={[styles.professionalInfoLabel, { color: theme.placeholder }]}>Range</Text>
+                    <Text style={[styles.professionalInfoValue, { color: theme.text }]}>
+                        {trade.sellingRangeMin}% - {trade.sellingRangeMax}%
+                    </Text>
+                </View>
+            </View>
+
             {/* Expanded Content - LayoutAnimation handles smooth transition */}
             {isExpanded && (
                 <Animated.View style={{ opacity: opacityAnim }}>
-                    {/* Description Below Profile Pic (Full Size) */}
-                    <Text style={styles.expandedDescription}>
-                        {trade.description || 'No description provided'}
-                    </Text>
-
-                    {/* Industry Tags - Now below description */}
+                    {/* Industry Tags - Only in expanded view */}
                     {trade.selectedIndustries && trade.selectedIndustries.length > 0 && (
                         <View style={styles.professionalTags}>
                             {trade.selectedIndustries.map((industry, idx) => (
-                                <View key={idx} style={styles.professionalTag}>
-                                    <Text style={styles.professionalTagText}>{industry}</Text>
+                                <View key={idx} style={[styles.professionalTag, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                                    <Text style={[styles.professionalTagText, { color: theme.text }]}>{industry}</Text>
                                 </View>
                             ))}
                         </View>
                     )}
 
-                    {/* Media Carousel (Images + Video at end) */}
+                    {/* Media Carousel (Images + Video at end) - Only in expanded view */}
                     {totalMediaCount > 0 && (
                         <View style={styles.professionalImageContainer}>
                             {isCurrentItemVideo ? (
@@ -309,49 +335,21 @@ export const TradeCard: React.FC<TradeCardProps> = ({
                         </View>
                     )}
 
-                    {/* Info Grid */}
-                    <View style={styles.professionalInfoGrid}>
-                        <View style={styles.professionalInfoItem}>
-                            <Text style={styles.professionalInfoLabel}>Revenue</Text>
-                            <Text style={styles.professionalInfoValue}>
-                                {trade.revenueStatus === 'revenue-generating' ? 'Revenue Generating' : 'Pre Revenue'}
-                            </Text>
-                        </View>
-                        {trade.fundingTarget ? (
-                            <View style={styles.professionalInfoItem}>
-                                <Text style={styles.professionalInfoLabel}>Valuation</Text>
-                                <Text style={styles.professionalInfoValue}>
-                                    ${trade.fundingTarget.toLocaleString()}
-                                </Text>
-                            </View>
-                        ) : null}
-                        <View style={styles.professionalInfoItem}>
-                            <Text style={styles.professionalInfoLabel}>Age</Text>
-                            <Text style={styles.professionalInfoValue}>{trade.companyAge || 'N/A'}</Text>
-                        </View>
-                        <View style={[styles.professionalInfoItem, styles.professionalInfoItemLast]}>
-                            <Text style={styles.professionalInfoLabel}>Range</Text>
-                            <Text style={styles.professionalInfoValue}>
-                                {trade.sellingRangeMin}% - {trade.sellingRangeMax}%
-                            </Text>
-                        </View>
-                    </View>
-
                     {/* Action Buttons - Express Interest + Save side by side */}
                     <View style={styles.actionButtonsRow}>
                         <TouchableOpacity style={styles.expressInterestButton} onPress={onExpressInterest}>
                             <Text style={styles.expressInterestText}>Express Interest</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                            style={[styles.saveButtonOutline, isSaved && { backgroundColor: '#4a4a4a' }]}
+                            style={[styles.saveButtonOutline, { borderColor: theme.border }, isSaved && { backgroundColor: theme.inputBackground }]}
                             onPress={onToggleSave}
                         >
                             <MaterialCommunityIcons
                                 name={isSaved ? "bookmark" : "bookmark-outline"}
                                 size={20}
-                                color="#fff"
+                                color={theme.text}
                             />
-                            <Text style={styles.saveButtonText}>Save</Text>
+                            <Text style={[styles.saveButtonText, { color: theme.text }]}>Save</Text>
                         </TouchableOpacity>
                     </View>
                 </Animated.View>

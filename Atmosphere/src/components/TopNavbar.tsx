@@ -1,7 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated, NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Heart } from 'lucide-react-native';
 import ShareIcon from './icons/ShareIcon';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 interface TopNavbarProps {
   title?: string;
@@ -22,6 +23,7 @@ const TopNavbar: React.FC<TopNavbarProps> = ({
   onChatsPress,
   scrollY,
 }) => {
+  const { theme } = useContext(ThemeContext);
   // If scrollY is provided, use it for animation
   const translateY = scrollY ? scrollY.interpolate({
     inputRange: [0, NAVBAR_HEIGHT, NAVBAR_HEIGHT * 2],
@@ -30,25 +32,25 @@ const TopNavbar: React.FC<TopNavbarProps> = ({
   }) : 0;
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
+    <Animated.View style={[styles.container, { transform: [{ translateY }], backgroundColor: theme.tabBarBackground, borderBottomColor: theme.tabBarBorder }]}>
       <View style={styles.inner}>
         {/* LEFT SIDE */}
         <View style={styles.left}>
           <TouchableOpacity onPress={onNotificationsPress} style={styles.iconButton}>
-            <Heart size={26} color="#fff" />
+            <Heart size={26} color={theme.iconColor} />
             {notificationsCount > 0 && <View style={styles.badge} />}
           </TouchableOpacity>
         </View>
 
         {/* CENTER LOGO */}
         <View style={styles.center}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
         </View>
 
         {/* RIGHT SIDE */}
         <View style={styles.right}>
           <TouchableOpacity onPress={onChatsPress} style={styles.iconButton}>
-            <ShareIcon color="#fff" size={24} />
+            <ShareIcon color={theme.iconColor} size={24} />
             {messagesCount > 0 && (
               <View style={styles.msgBadge}>
                 <Text style={styles.msgBadgeText}>{messagesCount}</Text>

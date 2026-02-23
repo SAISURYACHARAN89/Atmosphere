@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const SettingsSkeleton = () => {
+    const { theme } = useContext(ThemeContext);
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {/* Section 1 */}
             <SkeletonItem width={120} height={12} style={styles.sectionLabel} />
             <View style={styles.card}>

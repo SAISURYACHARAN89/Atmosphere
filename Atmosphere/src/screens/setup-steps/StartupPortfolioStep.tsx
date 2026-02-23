@@ -8,7 +8,7 @@ import { saveStartupProfile, getProfile, getStartupProfile, uploadDocument, uplo
 // ... other imports
 import { pick, types } from '@react-native-documents/picker';
 import CustomCalendar from '../../components/CustomCalendar';
-import { X, Plus } from 'lucide-react-native';
+import { X, Plus, Lock } from 'lucide-react-native';
 
 // Types for investments (formerly funding rounds)
 interface FundingRound {
@@ -113,6 +113,7 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
     const [uploadingVideo, setUploadingVideo] = useState(false);
     const [pendingVideo, setPendingVideo] = useState<{ uri: string; name?: string; type?: string } | null>(null);
     const [videoName, setVideoName] = useState('');
+    const [verified, setVerified] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -195,6 +196,9 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
                             const parts = data.video.split('/');
                             setVideoName(parts[parts.length - 1] || 'Video uploaded');
                         }
+
+                        // Load verification status
+                        setVerified(data.verified || false);
                     } else {
                         // console.log('No startup data found for user');
                     }
@@ -428,7 +432,7 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
                 })) : [],
                 financialProfile: {
                     revenueType,
-                    fundingMethod,
+                    ...(fundingMethod && { fundingMethod }), // Only include if not empty
                     fundingAmount: raisedAmount,
                     investorName: fundingMethod === 'Capital Raised' ? investorName : undefined,
                     investorDoc: fundingMethod === 'Capital Raised' ? finalInvestorDocUrl : undefined,
@@ -465,19 +469,15 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
             <CollapsibleSection title="Company profile" open={activeSection === 'company'} onPress={() => setActiveSection(activeSection === 'company' ? '' : 'company')}>
                 <View>
                     <View style={styles.formField}>
-                        <Text style={styles.label}>Company Legal Name</Text>
                         <TextInput placeholder="Enter full legal name" placeholderTextColor="#999" value={companyProfile} onChangeText={setCompanyProfile} style={styles.input} />
                     </View>
                     <View style={styles.formField}>
-                        <Text style={styles.label}>About your company</Text>
-                        <TextInput placeholder="Write about your company..." placeholderTextColor="#999" multiline numberOfLines={4} value={about} onChangeText={setAbout} style={[styles.input, styles.textTop]} />
+                        <TextInput placeholder="Write about your company..." placeholderTextColor="#999" multiline numberOfLines={12} value={about} onChangeText={setAbout} style={[styles.input, styles.textTop, { minHeight: 150 }]} />
                     </View>
                     <View style={styles.formField}>
-                        <Text style={styles.label}>Location</Text>
                         <TextInput placeholder="Search location" placeholderTextColor="#999" value={location} onChangeText={setLocation} style={styles.input} />
                     </View>
                     <View style={styles.formField}>
-                        <Text style={styles.label}>Startup Focus</Text>
                         <TouchableOpacity onPress={() => setShowIndustriesPicker(true)} style={styles.input}>
                             <Text style={{ color: selectedIndustries.length > 0 ? '#fff' : '#999' }}>
                                 {selectedIndustries.length > 0 ? selectedIndustries.join(', ') : 'Select focus areas'}
@@ -485,14 +485,12 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
                         </TouchableOpacity>
                     </View>
                     <View style={styles.formField}>
-                        <Text style={styles.label}>Stage</Text>
                         <TouchableOpacity onPress={() => setShowStageDropdown(true)} style={styles.input}>
                             <Text style={{ color: roundType ? '#fff' : '#999' }}>{roundType || 'Select stage'}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.formField}>
-                        <Text style={styles.label}>Website</Text>
-                        <TextInput placeholder="https://..." placeholderTextColor="#999" value={website} onChangeText={setWebsite} style={styles.input} autoCapitalize="none" keyboardType="url" />
+                        <TextInput placeholder="Your website" placeholderTextColor="#999" value={website} onChangeText={setWebsite} style={styles.input} autoCapitalize="none" keyboardType="url" />
                     </View>
                     <View style={styles.formField}>
                         <Text style={styles.label}>Company Established On</Text>
@@ -559,6 +557,28 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
                             <Text style={{ color: '#fff', fontSize: 15 }}>+   Add Member</Text>
                         </TouchableOpacity>
                     </View>
+
+                    {/* Upload Documents and Video */}
+                    <View style={{ marginTop: 16 }}>
+                        <View style={[styles.formField, { marginBottom: 12 }]}>
+                            <TouchableOpacity onPress={uploadDoc} style={styles.uploadBtn} disabled={uploadingDoc}>
+                                {uploadingDoc ? (
+                                    <ActivityIndicator size="small" color="#fff" />
+                                ) : (
+                                    <Text style={styles.uploadText}>{uploadName || 'Upload documents for verification'}</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.formField}>
+                            <TouchableOpacity onPress={pickVideo} style={styles.uploadBtn} disabled={uploadingVideo}>
+                                {uploadingVideo ? (
+                                    <ActivityIndicator size="small" color="#fff" />
+                                ) : (
+                                    <Text style={styles.uploadText}>{videoUrl ? 'Video Uploaded - Tap to Change' : 'Upload company video / demo'}</Text>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                 </View>
             </CollapsibleSection>
 
@@ -566,8 +586,9 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
 
 
 
-            <CollapsibleSection title="Financial profile" open={activeSection === 'financial'} onPress={() => setActiveSection(activeSection === 'financial' ? '' : 'financial')}>
-                <View>
+            {verified ? (
+                <CollapsibleSection title="Financial profile" open={activeSection === 'financial'} onPress={() => setActiveSection(activeSection === 'financial' ? '' : 'financial')}>
+                    <View>
                     <View style={styles.formField}>
                         <Text style={styles.label}>Revenue type</Text>
                         <TouchableOpacity
@@ -681,48 +702,24 @@ export default function StartupPortfolioStep({ onBack, onDone, onNavigateToTrade
                             ))}
                         </View>
                     )}
+                    </View>
+                </CollapsibleSection>
+            ) : (
+                <View style={[styles.section, { opacity: 0.6 }]}>
+                    <View style={[styles.sectionHeader, { backgroundColor: '#1a1a1a' }]}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                            <Lock size={16} color="#888" />
+                            <Text style={styles.sectionTitle}>Financial profile</Text>
+                        </View>
+                        <Text style={{ color: '#888', fontSize: 12 }}>Locked</Text>
+                    </View>
+                    <View style={{ padding: 16, backgroundColor: '#0d0d0d' }}>
+                        <Text style={{ color: '#888', fontSize: 13, textAlign: 'center' }}>
+                            Financial profile will be available after your company profile is verified by admin
+                        </Text>
+                    </View>
                 </View>
-            </CollapsibleSection>
-
-            <CollapsibleSection title="Raise a round" open={activeSection === 'raise'} onPress={() => setActiveSection(activeSection === 'raise' ? '' : 'raise')}>
-                <View>
-                    {/* Trade Button */}
-                    <TouchableOpacity
-                        style={styles.tradeButton}
-                        onPress={() => {
-                            // console.log('Trade button pressed, onNavigateToTrade:', !!onNavigateToTrade);
-                            // Navigate to Trading section with Sell tab
-                            if (onNavigateToTrade) {
-                                onNavigateToTrade();
-                            } else {
-                                console.warn('onNavigateToTrade is not defined!');
-                            }
-                        }}
-                    >
-                        <Text style={styles.tradeButtonText}>TRADE</Text>
-                        <ChevronRight size={20} color="#fff" />
-                    </TouchableOpacity>
-                </View>
-            </CollapsibleSection>
-
-            <View style={styles.uploadWrap}>
-                <TouchableOpacity onPress={uploadDoc} style={styles.uploadBtn} disabled={uploadingDoc}>
-                    {uploadingDoc ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                    ) : (
-                        <Text style={styles.uploadText}>{uploadName || 'Upload documents for verification'}</Text>
-                    )}
-                </TouchableOpacity>
-            </View>
-            <View style={styles.uploadWrap}>
-                <TouchableOpacity onPress={pickVideo} style={styles.uploadBtn} disabled={uploadingVideo}>
-                    {uploadingVideo ? (
-                        <ActivityIndicator size="small" color="#fff" />
-                    ) : (
-                        <Text style={styles.uploadText}>{videoUrl ? 'Video Uploaded - Tap to Change' : 'Upload company video / demo'}</Text>
-                    )}
-                </TouchableOpacity>
-            </View>
+            )}
             <View style={styles.consentRow}>
                 <TouchableOpacity onPress={() => setConsent(!consent)} style={styles.consentBtn}>
                     <View style={[styles.consentBox, consent ? styles.consentBoxChecked : styles.consentBoxUnchecked]}>

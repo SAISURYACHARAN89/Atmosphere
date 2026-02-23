@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const HottestSkeleton = () => {
+    const { theme } = useContext(ThemeContext);
     const listItems = Array.from({ length: 5 });
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {/* Podium Placeholder */}
             <View style={styles.podiumContainer}>
                 {/* 2nd Place */}
@@ -31,7 +33,7 @@ const HottestSkeleton = () => {
             {/* List Items */}
             <View style={styles.listContainer}>
                 {listItems.map((_, index) => (
-                    <View key={index} style={styles.listItem}>
+                    <View key={index} style={[styles.listItem, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
                         <SkeletonItem width={56} height={56} borderRadius={12} style={{ marginRight: 12 }} />
                         <View style={{ flex: 1 }}>
                             <SkeletonItem width="60%" height={16} style={{ marginBottom: 6 }} />

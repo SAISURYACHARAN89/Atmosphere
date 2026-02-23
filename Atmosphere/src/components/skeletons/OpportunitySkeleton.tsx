@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const OpportunitySkeleton = () => {
+    const { theme } = useContext(ThemeContext);
     const items = Array.from({ length: 10 });
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {items.map((_, index) => (
                 <View key={index} style={styles.card}>
                     {/* Title */}

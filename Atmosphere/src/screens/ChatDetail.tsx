@@ -377,7 +377,7 @@ const ChatDetail = ({ chatId, onBackPress, onProfileOpen, onContentPress }: Chat
                     <View style={styles.headerAvatarContainer}>
                         <Image
                             source={getImageSource(headerImage || 'https://via.placeholder.com/40')}
-                            style={styles.headerAvatar}
+                            style={[styles.headerAvatar, { backgroundColor: theme.inputBackground }]}
                         />
                         {isConnected && (
                             <View style={[styles.onlineIndicator, { backgroundColor: '#4CAF50' }]} />

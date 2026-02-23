@@ -95,6 +95,11 @@ export const commentStyles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 14
     },
+    avatarImage: {
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+    },
     commentBody: {
         flex: 1
     },

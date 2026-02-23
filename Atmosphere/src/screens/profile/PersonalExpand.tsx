@@ -1,7 +1,8 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { MapPin } from 'lucide-react-native';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 type Props = {
     profileData: any;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function PersonalExpand({ profileData, cardContainerWidth, isActive }: Props) {
+    const { theme } = useContext(ThemeContext);
     const bio = profileData?.tagline || profileData?.description || profileData?.bio || '';
     const location = profileData?.location || '';
 
@@ -19,7 +21,7 @@ export default function PersonalExpand({ profileData, cardContainerWidth, isActi
                 <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Profile</Text>
 
                 {/* Main Card */}
-                <View style={[cardStyles.card, { width: '100%' }]}>
+                <View style={[cardStyles.card, { width: '100%', backgroundColor: theme.background }]}>
                     {/* Bio */}
                     {bio ? (
                         <View style={cardStyles.aboutSection}>

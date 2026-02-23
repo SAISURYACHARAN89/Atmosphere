@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
     View,
     Text,
@@ -13,6 +13,7 @@ import { CreateMeetingForm } from '../types';
 import { formatAMPM, INDUSTRY_TAGS, getDefaultCreateForm } from '../utils';
 import { modalStyles as styles } from '../Meetings.styles';
 import { getBaseUrl } from '../../../lib/config';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 
 // Import DateTimePicker
 const DateTimePicker = require('@react-native-community/datetimepicker').default;
@@ -28,6 +29,7 @@ type CreateMeetingModalProps = {
  * CreateMeetingModal - Modal form for creating a new meeting
  */
 const CreateMeetingModal = ({ visible, onClose, onCreateSuccess, token }: CreateMeetingModalProps) => {
+    const { theme } = useContext(ThemeContext);
     const [createForm, setCreateForm] = useState<CreateMeetingForm>(getDefaultCreateForm());
 
     // Date Picker State
@@ -166,68 +168,68 @@ const CreateMeetingModal = ({ visible, onClose, onCreateSuccess, token }: Create
         <>
             <Modal visible={visible} transparent animationType="slide">
                 <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        <View style={styles.modalHeader}>
-                            <Text style={styles.modalTitle}>Launch Meeting</Text>
+                    <View style={[styles.modalContent, { backgroundColor: theme.cardBackground }]}>
+                        <View style={[styles.modalHeader, { borderBottomColor: theme.border }]}>
+                            <Text style={[styles.modalTitle, { color: theme.text }]}>Launch Meeting</Text>
                             <TouchableOpacity onPress={handleClose}>
-                                <MaterialIcons name="close" size={24} color="#fff" />
+                                <MaterialIcons name="close" size={24} color={theme.text} />
                             </TouchableOpacity>
                         </View>
 
                         <ScrollView style={styles.modalForm} contentContainerStyle={{ paddingBottom: 40 }}>
-                            <Text style={styles.label}>Title *</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Title *</Text>
                             <TextInput
                                 value={createForm.title}
                                 onChangeText={(v) => setCreateForm(prev => ({ ...prev, title: v }))}
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                                 placeholder="Meeting title"
-                                placeholderTextColor="#666"
+                                placeholderTextColor={theme.placeholder}
                             />
 
-                            <Text style={styles.label}>Description</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Description</Text>
                             <TextInput
                                 value={createForm.description}
                                 onChangeText={(v) => setCreateForm(prev => ({ ...prev, description: v }))}
-                                style={[styles.input, styles.textArea]}
+                                style={[styles.input, styles.textArea, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                                 placeholder="Add a description for your meeting..."
-                                placeholderTextColor="#666"
+                                placeholderTextColor={theme.placeholder}
                                 multiline
                                 numberOfLines={3}
                             />
 
                             {/* Meeting Type */}
-                            <Text style={styles.label}>Type</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Type</Text>
                             <View style={styles.typeRow}>
                                 <TouchableOpacity
-                                    style={[styles.typeBtn, createForm.meetingType === 'public' && styles.typeBtnActive]}
+                                    style={[styles.typeBtn, { borderColor: theme.border }, createForm.meetingType === 'public' && styles.typeBtnActive]}
                                     onPress={() => setCreateForm(prev => ({ ...prev, meetingType: 'public' }))}
                                 >
-                                    <Text style={[styles.typeBtnText, createForm.meetingType === 'public' && styles.typeBtnTextActive]}>Public</Text>
+                                    <Text style={[styles.typeBtnText, { color: theme.textSecondary }, createForm.meetingType === 'public' && styles.typeBtnTextActive]}>Public</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    style={[styles.typeBtn, createForm.meetingType === 'private' && styles.typeBtnActive]}
+                                    style={[styles.typeBtn, { borderColor: theme.border }, createForm.meetingType === 'private' && styles.typeBtnActive]}
                                     onPress={() => setCreateForm(prev => ({ ...prev, meetingType: 'private' }))}
                                 >
-                                    <Text style={[styles.typeBtnText, createForm.meetingType === 'private' && styles.typeBtnTextActive]}>Private</Text>
+                                    <Text style={[styles.typeBtnText, { color: theme.textSecondary }, createForm.meetingType === 'private' && styles.typeBtnTextActive]}>Private</Text>
                                 </TouchableOpacity>
                             </View>
 
                             {/* Category (for public meetings) */}
                             {createForm.meetingType === 'public' && (
                                 <>
-                                    <Text style={styles.label}>Category</Text>
+                                    <Text style={[styles.label, { color: theme.textSecondary }]}>Category</Text>
                                     <View style={styles.typeRow}>
                                         <TouchableOpacity
-                                            style={[styles.typeBtn, createForm.category === 'pitch' && styles.typeBtnActive]}
+                                            style={[styles.typeBtn, { borderColor: theme.border }, createForm.category === 'pitch' && styles.typeBtnActive]}
                                             onPress={() => setCreateForm(prev => ({ ...prev, category: 'pitch' }))}
                                         >
-                                            <Text style={[styles.typeBtnText, createForm.category === 'pitch' && styles.typeBtnTextActive]}>Pitch Meeting</Text>
+                                            <Text style={[styles.typeBtnText, { color: theme.textSecondary }, createForm.category === 'pitch' && styles.typeBtnTextActive]}>Pitch Meeting</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
-                                            style={[styles.typeBtn, createForm.category === 'networking' && styles.typeBtnActive]}
+                                            style={[styles.typeBtn, { borderColor: theme.border }, createForm.category === 'networking' && styles.typeBtnActive]}
                                             onPress={() => setCreateForm(prev => ({ ...prev, category: 'networking' }))}
                                         >
-                                            <Text style={[styles.typeBtnText, createForm.category === 'networking' && styles.typeBtnTextActive]}>Networking</Text>
+                                            <Text style={[styles.typeBtnText, { color: theme.textSecondary }, createForm.category === 'networking' && styles.typeBtnTextActive]}>Networking</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </>
@@ -236,32 +238,32 @@ const CreateMeetingModal = ({ visible, onClose, onCreateSuccess, token }: Create
                             {/* Pitch Settings (for pitch meetings only) */}
                             {createForm.meetingType === 'public' && createForm.category === 'pitch' && (
                                 <>
-                                    <Text style={styles.label}>Time per pitch: {createForm.pitchDuration} min</Text>
+                                    <Text style={[styles.label, { color: theme.textSecondary }]}>Time per pitch: {createForm.pitchDuration} min</Text>
                                     <View style={styles.sliderRow}>
-                                        <Text style={styles.sliderLabel}>1</Text>
-                                        <View style={styles.sliderContainer}>
+                                        <Text style={[styles.sliderLabel, { color: theme.textSecondary }]}>1</Text>
+                                        <View style={[styles.sliderContainer, { backgroundColor: theme.inputBackground }]}>
                                             <View style={[styles.sliderTrack, { width: `${(createForm.pitchDuration / 60) * 100}%` }]} />
                                         </View>
-                                        <Text style={styles.sliderLabel}>60</Text>
+                                        <Text style={[styles.sliderLabel, { color: theme.textSecondary }]}>60</Text>
                                     </View>
                                     <View style={styles.sliderBtns}>
-                                        <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, pitchDuration: Math.max(1, prev.pitchDuration - 5) }))} style={styles.sliderBtn}>
-                                            <MaterialIcons name="remove" size={16} color="#fff" />
+                                        <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, pitchDuration: Math.max(1, prev.pitchDuration - 5) }))} style={[styles.sliderBtn, { backgroundColor: theme.inputBackground }]}>
+                                            <MaterialIcons name="remove" size={16} color={theme.text} />
                                         </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, pitchDuration: Math.min(60, prev.pitchDuration + 5) }))} style={styles.sliderBtn}>
-                                            <MaterialIcons name="add" size={16} color="#fff" />
+                                        <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, pitchDuration: Math.min(60, prev.pitchDuration + 5) }))} style={[styles.sliderBtn, { backgroundColor: theme.inputBackground }]}>
+                                            <MaterialIcons name="add" size={16} color={theme.text} />
                                         </TouchableOpacity>
                                     </View>
 
-                                    <Text style={styles.label}>Participants</Text>
+                                    <Text style={[styles.label, { color: theme.textSecondary }]}>Participants</Text>
                                     <View style={styles.typeRow}>
                                         {(['all', 'startups', 'investors'] as const).map(type => (
                                             <TouchableOpacity
                                                 key={type}
-                                                style={[styles.typeBtn, styles.typeBtnSmall, createForm.participantType === type && styles.typeBtnActive]}
+                                                style={[styles.typeBtn, styles.typeBtnSmall, { borderColor: theme.border }, createForm.participantType === type && styles.typeBtnActive]}
                                                 onPress={() => setCreateForm(prev => ({ ...prev, participantType: type }))}
                                             >
-                                                <Text style={[styles.typeBtnText, createForm.participantType === type && styles.typeBtnTextActive]}>
+                                                <Text style={[styles.typeBtnText, { color: theme.textSecondary }, createForm.participantType === type && styles.typeBtnTextActive]}>
                                                     {type.charAt(0).toUpperCase() + type.slice(1)}
                                                 </Text>
                                             </TouchableOpacity>
@@ -269,24 +271,24 @@ const CreateMeetingModal = ({ visible, onClose, onCreateSuccess, token }: Create
                                     </View>
 
                                     <View style={styles.checkRow}>
-                                        <Text style={styles.label}>Verified Only</Text>
+                                        <Text style={[styles.label, { color: theme.textSecondary }]}>Verified Only</Text>
                                         <TouchableOpacity
-                                            style={[styles.checkbox, createForm.verifiedOnly && styles.checkboxActive]}
+                                            style={[styles.checkbox, { borderColor: theme.border }, createForm.verifiedOnly && styles.checkboxActive]}
                                             onPress={() => setCreateForm(prev => ({ ...prev, verifiedOnly: !prev.verifiedOnly }))}
                                         >
-                                            {createForm.verifiedOnly && <MaterialIcons name="check" size={16} color="#000" />}
+                                            {createForm.verifiedOnly && <MaterialIcons name="check" size={16} color={theme.text} />}
                                         </TouchableOpacity>
                                     </View>
                                 </>
                             )}
 
                             {/* Industries */}
-                            <Text style={styles.label}>Industries (max 3)</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Industries (max 3)</Text>
                             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.industriesScroll}>
                                 {INDUSTRY_TAGS.map(tag => (
                                     <TouchableOpacity
                                         key={tag}
-                                        style={[styles.formIndustryTag, createForm.industries.includes(tag) && styles.formIndustryTagActive]}
+                                        style={[styles.formIndustryTag, { borderColor: theme.border }, createForm.industries.includes(tag) && styles.formIndustryTagActive]}
                                         onPress={() => {
                                             setCreateForm(prev => {
                                                 if (prev.industries.includes(tag)) {
@@ -299,55 +301,55 @@ const CreateMeetingModal = ({ visible, onClose, onCreateSuccess, token }: Create
                                         }}
                                         disabled={!createForm.industries.includes(tag) && createForm.industries.length >= 3}
                                     >
-                                        <Text style={[styles.formIndustryTagText, createForm.industries.includes(tag) && styles.formIndustryTagTextActive]}>{tag}</Text>
+                                        <Text style={[styles.formIndustryTagText, { color: theme.textSecondary }, createForm.industries.includes(tag) && styles.formIndustryTagTextActive]}>{tag}</Text>
                                     </TouchableOpacity>
                                 ))}
                             </ScrollView>
 
                             {/* Max Participants */}
-                            <Text style={styles.label}>Max participants: {createForm.maxParticipants}</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Max participants: {createForm.maxParticipants}</Text>
                             <View style={styles.sliderBtns}>
-                                <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, maxParticipants: Math.max(5, prev.maxParticipants - 5) }))} style={styles.sliderBtn}>
-                                    <MaterialIcons name="remove" size={16} color="#fff" />
+                                <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, maxParticipants: Math.max(5, prev.maxParticipants - 5) }))} style={[styles.sliderBtn, { backgroundColor: theme.inputBackground }]}>
+                                    <MaterialIcons name="remove" size={16} color={theme.text} />
                                 </TouchableOpacity>
-                                <Text style={styles.sliderValue}>{createForm.maxParticipants}</Text>
-                                <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, maxParticipants: Math.min(100, prev.maxParticipants + 5) }))} style={styles.sliderBtn}>
-                                    <MaterialIcons name="add" size={16} color="#fff" />
+                                <Text style={[styles.sliderValue, { color: theme.text }]}>{createForm.maxParticipants}</Text>
+                                <TouchableOpacity onPress={() => setCreateForm(prev => ({ ...prev, maxParticipants: Math.min(100, prev.maxParticipants + 5) }))} style={[styles.sliderBtn, { backgroundColor: theme.inputBackground }]}>
+                                    <MaterialIcons name="add" size={16} color={theme.text} />
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.label}>Start Time *</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Start Time *</Text>
                             <View style={styles.dateRow}>
-                                <TouchableOpacity onPress={() => openDatePicker('start', 'date')} style={styles.dateBtn}>
-                                    <Text style={styles.dateText}>{createForm.scheduledAt.toLocaleDateString()}</Text>
-                                    <MaterialIcons name="calendar-today" size={16} color="#888" />
+                                <TouchableOpacity onPress={() => openDatePicker('start', 'date')} style={[styles.dateBtn, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                                    <Text style={[styles.dateText, { color: theme.text }]}>{createForm.scheduledAt.toLocaleDateString()}</Text>
+                                    <MaterialIcons name="calendar-today" size={16} color={theme.placeholder} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => openDatePicker('start', 'time')} style={styles.dateBtn}>
-                                    <Text style={styles.dateText}>{formatAMPM(createForm.scheduledAt)}</Text>
-                                    <MaterialIcons name="access-time" size={16} color="#888" />
+                                <TouchableOpacity onPress={() => openDatePicker('start', 'time')} style={[styles.dateBtn, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                                    <Text style={[styles.dateText, { color: theme.text }]}>{formatAMPM(createForm.scheduledAt)}</Text>
+                                    <MaterialIcons name="access-time" size={16} color={theme.placeholder} />
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.label}>End Time *</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>End Time *</Text>
                             <View style={styles.dateRow}>
-                                <TouchableOpacity onPress={() => openDatePicker('end', 'date')} style={styles.dateBtn}>
-                                    <Text style={styles.dateText}>{createForm.endScheduledAt.toLocaleDateString()}</Text>
-                                    <MaterialIcons name="calendar-today" size={16} color="#888" />
+                                <TouchableOpacity onPress={() => openDatePicker('end', 'date')} style={[styles.dateBtn, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                                    <Text style={[styles.dateText, { color: theme.text }]}>{createForm.endScheduledAt.toLocaleDateString()}</Text>
+                                    <MaterialIcons name="calendar-today" size={16} color={theme.placeholder} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => openDatePicker('end', 'time')} style={styles.dateBtn}>
-                                    <Text style={styles.dateText}>{formatAMPM(createForm.endScheduledAt)}</Text>
-                                    <MaterialIcons name="access-time" size={16} color="#888" />
+                                <TouchableOpacity onPress={() => openDatePicker('end', 'time')} style={[styles.dateBtn, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                                    <Text style={[styles.dateText, { color: theme.text }]}>{formatAMPM(createForm.endScheduledAt)}</Text>
+                                    <MaterialIcons name="access-time" size={16} color={theme.placeholder} />
                                 </TouchableOpacity>
                             </View>
 
-                            <Text style={styles.label}>Participants</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Participants</Text>
                             {selectedParticipants.length > 0 && (
                                 <View style={styles.chipsContainer}>
                                     {selectedParticipants.map(u => (
-                                        <View key={u._id} style={styles.chip}>
-                                            <Text style={styles.chipText}>{u.displayName || u.username}</Text>
+                                        <View key={u._id} style={[styles.chip, { backgroundColor: theme.inputBackground }]}>
+                                            <Text style={[styles.chipText, { color: theme.text }]}>{u.displayName || u.username}</Text>
                                             <TouchableOpacity onPress={() => removeParticipant(u._id)}>
-                                                <MaterialIcons name="close" size={16} color="#fff" />
+                                                <MaterialIcons name="close" size={16} color={theme.text} />
                                             </TouchableOpacity>
                                         </View>
                                     ))}
@@ -357,29 +359,29 @@ const CreateMeetingModal = ({ visible, onClose, onCreateSuccess, token }: Create
                             <TextInput
                                 value={participantQuery}
                                 onChangeText={setParticipantQuery}
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                                 placeholder="Search & Add Participants..."
-                                placeholderTextColor="#666"
+                                placeholderTextColor={theme.placeholder}
                             />
                             {participantResults.length > 0 && (
-                                <View style={styles.searchResults}>
+                                <View style={[styles.searchResults, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
                                     {participantResults.map(u => (
-                                        <TouchableOpacity key={u._id} style={styles.searchResultItem} onPress={() => addParticipant(u)}>
-                                            <Text style={styles.searchResultText}>{u.displayName || u.username}</Text>
-                                            <MaterialIcons name="add" size={20} color="#888" />
+                                        <TouchableOpacity key={u._id} style={[styles.searchResultItem, { borderBottomColor: theme.border }]} onPress={() => addParticipant(u)}>
+                                            <Text style={[styles.searchResultText, { color: theme.text }]}>{u.displayName || u.username}</Text>
+                                            <MaterialIcons name="add" size={20} color={theme.placeholder} />
                                         </TouchableOpacity>
                                     ))}
                                 </View>
                             )}
                             {searchingParticipants && <ActivityIndicator size="small" color="#22c55e" style={{ marginTop: 8 }} />}
 
-                            <Text style={styles.label}>Location</Text>
+                            <Text style={[styles.label, { color: theme.textSecondary }]}>Location</Text>
                             <TextInput
                                 value={createForm.location}
                                 onChangeText={(v) => setCreateForm(prev => ({ ...prev, location: v }))}
-                                style={styles.input}
+                                style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                                 placeholder="Office, Online, etc."
-                                placeholderTextColor="#666"
+                                placeholderTextColor={theme.placeholder}
                             />
 
                             <TouchableOpacity style={styles.createBtn} onPress={handleCreateMeeting}>

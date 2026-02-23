@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Image } from 'react-native';
 import { Comment } from './types';
 import { commentStyles as styles } from './styles';
 import { timeAgo, getAvatarLetter, getDisplayName } from './utils';
+import { getImageSource } from '../../lib/image';
 
 interface CommentItemProps {
     item: Comment;
@@ -51,6 +52,21 @@ const CommentItem: React.FC<CommentItemProps> = ({
     const isLoadingReplies = repliesLoading.has(commentId);
     const authorUsername = getDisplayName(item.author);
     const displayReplyTag = item.replyToUsername || parentAuthor;
+    
+    // Get profile image if available - try multiple field names
+    const profileImage = item.author?.profileImage || 
+                        item.author?.profilePicture || 
+                        item.author?.avatarUrl ||
+                        item.author?.avatar || 
+                        item.author?.image ||
+                        item.author?.photo;
+    const hasProfileImage = profileImage && profileImage !== '' && profileImage !== 'undefined';
+    
+    // Debug logging
+    if (__DEV__ && item.author) {
+        console.log('[CommentItem] Author:', JSON.stringify(item.author, null, 2));
+        console.log('[CommentItem] Profile Image:', profileImage);
+    }
 
     return (
         <View key={commentId}>
@@ -63,9 +79,16 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 style={[styles.commentRow, isReply && styles.replyRow]}
             >
                 <View style={styles.commentAvatar}>
-                    <Text style={styles.avatarLetter}>
-                        {getAvatarLetter(item.author)}
-                    </Text>
+                    {hasProfileImage ? (
+                        <Image 
+                            source={getImageSource(profileImage)} 
+                            style={styles.avatarImage}
+                        />
+                    ) : (
+                        <Text style={styles.avatarLetter}>
+                            {getAvatarLetter(item.author)}
+                        </Text>
+                    )}
                 </View>
                 <View style={styles.commentBody}>
                     <View style={styles.commentHeaderRow}>

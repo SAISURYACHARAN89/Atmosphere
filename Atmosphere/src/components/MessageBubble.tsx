@@ -102,8 +102,8 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
                         resizeMode="cover"
                     />
                 ) : (
-                    <View style={[styles.sharedImage, { backgroundColor: '#333', justifyContent: 'center', alignItems: 'center' }]}>
-                        <MaterialIcons name={isReel ? "videocam" : isStartup ? "business" : "article"} size={32} color="#666" />
+                    <View style={[styles.sharedImage, { backgroundColor: theme.inputBackground, justifyContent: 'center', alignItems: 'center' }]}>
+                        <MaterialIcons name={isReel ? "videocam" : isStartup ? "business" : "article"} size={32} color={theme.placeholder} />
                     </View>
                 )}
                 <View style={[styles.sharedFooter, { borderTopColor: theme.border }]}>
@@ -150,33 +150,33 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
         const showRawContent = qaLines.length === 0 && bodyWithoutTitle && !resumeUrl;
 
         return (
-            <View style={styles.applicationCard}>
-                <View style={styles.applicationHeader}>
+            <View style={[styles.applicationCard, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
+                <View style={[styles.applicationHeader, { borderBottomColor: theme.border }]}>
                     <MaterialIcons name="description" size={20} color="#22c55e" />
-                    <Text style={styles.applicationTitle}>{title.replace(/📋|\*\*/g, '').trim()}</Text>
+                    <Text style={[styles.applicationTitle, { color: theme.text }]}>{title.replace(/📋|\*\*/g, '').trim()}</Text>
                 </View>
                 {qaLines.length > 0 && qaLines.map((qa, index) => (
                     <View key={index} style={styles.qaItem}>
-                        <Text style={styles.questionText}>{qa.question}</Text>
-                        <Text style={styles.answerText}>{qa.answer}</Text>
+                        <Text style={[styles.questionText, { color: theme.textSecondary }]}>{qa.question}</Text>
+                        <Text style={[styles.answerText, { color: theme.text }]}>{qa.answer}</Text>
                     </View>
                 ))}
                 {showRawContent && (
-                    <Text style={styles.answerText}>{bodyWithoutTitle}</Text>
+                    <Text style={[styles.answerText, { color: theme.text }]}>{bodyWithoutTitle}</Text>
                 )}
                 {qaLines.length === 0 && !showRawContent && !resumeUrl && (
-                    <Text style={[styles.answerText, { fontStyle: 'italic', color: '#888' }]}>
+                    <Text style={[styles.answerText, { fontStyle: 'italic', color: theme.placeholder }]}>
                         No application details provided
                     </Text>
                 )}
                 {resumeUrl && (
                     <TouchableOpacity
-                        style={styles.resumeLink}
+                        style={[styles.resumeLink, { borderTopColor: theme.border }]}
                         onPress={() => Linking.openURL(resumeUrl)}
                     >
                         <MaterialIcons name="picture-as-pdf" size={20} color="#ef4444" />
                         <Text style={styles.resumeLinkText}>View Resume (PDF)</Text>
-                        <MaterialIcons name="open-in-new" size={16} color="#888" />
+                        <MaterialIcons name="open-in-new" size={16} color={theme.placeholder} />
                     </TouchableOpacity>
                 )}
             </View>

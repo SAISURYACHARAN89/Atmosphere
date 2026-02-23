@@ -158,7 +158,7 @@ const CreatePost = ({ onClose, onSuccess }: Props) => {
                 <View style={[styles.inputSection, { borderColor: theme.border }]}>
                     <Text style={[styles.inputLabel, { color: theme.text }]}>Caption</Text>
                     <TextInput
-                        style={[styles.textInput, { color: theme.text, borderColor: theme.border }]}
+                        style={[styles.textInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.inputBackground }]}
                         placeholder="Write a caption..."
                         placeholderTextColor={theme.placeholder}
                         multiline
@@ -173,7 +173,7 @@ const CreatePost = ({ onClose, onSuccess }: Props) => {
                 <View style={[styles.inputSection, { borderColor: theme.border }]}>
                     <Text style={[styles.inputLabel, { color: theme.text }]}>Tags</Text>
                     <TextInput
-                        style={[styles.tagInput, { color: theme.text, borderColor: theme.border }]}
+                        style={[styles.tagInput, { color: theme.text, borderColor: theme.border, backgroundColor: theme.inputBackground }]}
                         placeholder="startup, tech, innovation (comma separated)"
                         placeholderTextColor={theme.placeholder}
                         value={tags}
@@ -280,14 +280,12 @@ const styles = StyleSheet.create({
         padding: 14,
         fontSize: 15,
         minHeight: 120,
-        backgroundColor: '#0a0a0a',
     },
     tagInput: {
         borderWidth: 1,
         borderRadius: 12,
         padding: 14,
         fontSize: 15,
-        backgroundColor: '#0a0a0a',
     },
     uploadStatus: {
         flexDirection: 'row',

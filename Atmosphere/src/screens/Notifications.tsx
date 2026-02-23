@@ -171,13 +171,13 @@ const Notifications = () => {
                     {avatarUrl ? (
                         <Image source={{ uri: avatarUrl }} style={styles.avatar} />
                     ) : (
-                        <View style={[styles.avatar, styles.avatarPlaceholder]}>
-                            <Text style={styles.avatarText}>
+                        <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: theme.inputBackground }]}>
+                            <Text style={[styles.avatarText, { color: theme.text }]}>
                                 {userName.charAt(0).toUpperCase()}
                             </Text>
                         </View>
                     )}
-                    <View style={[styles.iconBadge, { backgroundColor: iconInfo.color }]}>
+                    <View style={[styles.iconBadge, { backgroundColor: iconInfo.color, borderColor: theme.background }]}>
                         <Icon name={iconInfo.name} size={10} color="#fff" />
                     </View>
                 </View>

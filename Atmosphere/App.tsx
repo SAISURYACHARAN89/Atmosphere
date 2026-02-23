@@ -5,23 +5,24 @@
  * @format
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StatusBar, useColorScheme, View, Linking } from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets
 } from 'react-native-safe-area-context';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import LandingPage from './src/screens/LandingPage';
 import SplashScreen from './src/components/SplashScreen';
 import SignIn from './src/screens/SignIn';
 import SignUp from './src/screens/SignUp';
 import ForgotPassword from './src/screens/ForgotPassword';
-import ThemeProvider from './src/contexts/ThemeContext';
+import ThemeProvider, { ThemeContext } from './src/contexts/ThemeContext';
 import { AlertProvider } from './src/components/CustomAlert';
 
 // Inner component that can use the safe area hook
 function AppContent() {
-  const isDarkMode = useColorScheme() === 'dark';
+  const { theme, mode } = useContext(ThemeContext);
   const insets = useSafeAreaInsets();
   const [route, setRoute] = useState<'signin' | 'signup' | 'home' | 'forgotpw'>('signin');
   const [initialDeepLink, setInitialDeepLink] = useState<string | null>(null);
@@ -80,12 +81,12 @@ function AppContent() {
   const viewStyle = {
     flex: 1,
     paddingTop: isAuthRoute ? 0 : insets.top,
-    backgroundColor: '#000000', // Force black background
+    backgroundColor: theme.background,
   };
 
   return (
     <View style={viewStyle}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle={theme.statusBarStyle} backgroundColor={theme.background} />
       {showSplash && <SplashScreen onFinish={() => setShowSplash(false)} />}
 
       {route === 'signin' && (
@@ -118,13 +119,15 @@ function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <ThemeProvider initialMode={isDarkMode ? 'dark' : 'light'}>
-      <AlertProvider>
-        <SafeAreaProvider>
-          <AppContent />
-        </SafeAreaProvider>
-      </AlertProvider>
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider initialMode={isDarkMode ? 'dark' : 'light'}>
+        <AlertProvider>
+          <SafeAreaProvider>
+            <AppContent />
+          </SafeAreaProvider>
+        </AlertProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
 

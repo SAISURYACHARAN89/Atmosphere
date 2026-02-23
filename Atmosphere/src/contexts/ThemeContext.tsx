@@ -6,29 +6,35 @@ export type Theme = {
     cardBackground: string;
     border: string;
     text: string;
+    textSecondary: string;
     placeholder: string;
     primary: string;
     accent: string;
+    inputBackground: string;
+    buttonBackground: string;
+    buttonText: string;
+    iconColor: string;
+    tabBarBackground: string;
+    tabBarBorder: string;
+    statusBarStyle: 'light-content' | 'dark-content';
 };
 
-// const lightTheme: Theme = {
-//     background: '#ffffff',
-//     cardBackground: '#fafafa',
-//     border: '#dddddd',
-//     text: '#111111',
-//     placeholder: '#9e9e9e',
-//     primary: '#404040',
-//     accent: '#555555',
-// };
-
 const lightTheme: Theme = {
-    background: '#050505',
-    cardBackground: '#0b0b0b',
-    border: '#262626',
-    text: '#f2f2f2',
-    placeholder: '#8a8a8a',
-    primary: '#404040',
+    background: '#ffffff',
+    cardBackground: '#f5f5f5',
+    border: '#e0e0e0',
+    text: '#111111',
+    textSecondary: '#666666',
+    placeholder: '#9e9e9e',
+    primary: '#333333',
     accent: '#555555',
+    inputBackground: '#f0f0f0',
+    buttonBackground: '#333333',
+    buttonText: '#ffffff',
+    iconColor: '#333333',
+    tabBarBackground: '#ffffff',
+    tabBarBorder: '#e0e0e0',
+    statusBarStyle: 'dark-content',
 };
 
 const darkTheme: Theme = {
@@ -36,9 +42,17 @@ const darkTheme: Theme = {
     cardBackground: '#0b0b0b',
     border: '#262626',
     text: '#f2f2f2',
+    textSecondary: '#a0a0a0',
     placeholder: '#8a8a8a',
     primary: '#404040',
     accent: '#555555',
+    inputBackground: '#1a1a1a',
+    buttonBackground: '#333333',
+    buttonText: '#ffffff',
+    iconColor: '#f2f2f2',
+    tabBarBackground: '#0a0a0a',
+    tabBarBorder: '#262626',
+    statusBarStyle: 'light-content',
 };
 
 type ThemeContextValue = {

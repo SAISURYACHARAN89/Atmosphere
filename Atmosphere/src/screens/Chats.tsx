@@ -184,13 +184,6 @@ const Chats = ({ onChatSelect }: ChatsProps) => {
             <View style={[styles.header, { backgroundColor: theme.background }]}>
                 <View style={styles.titleRow}>
                     <Text style={[styles.pageTitle, { color: theme.text }]}>Messages</Text>
-                    <View style={styles.headerRight}>
-                        {isConnected && (
-                            <View style={styles.connectionIndicator}>
-                                <MaterialIcons name="wifi" size={16} color="#4CAF50" />
-                            </View>
-                        )}
-                    </View>
                 </View>
 
                 {/* Search Bar */}
@@ -218,6 +211,7 @@ const Chats = ({ onChatSelect }: ChatsProps) => {
                             activeTab === 'chats' && [styles.activeTab, { borderBottomColor: theme.primary }]
                         ]}
                         onPress={() => setActiveTab('chats')}
+                        activeOpacity={1}
                     >
                         <MaterialIcons
                             name="chat-bubble-outline"
@@ -238,6 +232,7 @@ const Chats = ({ onChatSelect }: ChatsProps) => {
                             activeTab === 'groups' && [styles.activeTab, { borderBottomColor: theme.primary }]
                         ]}
                         onPress={() => setActiveTab('groups')}
+                        activeOpacity={1}
                     >
                         <MaterialIcons
                             name="group"
@@ -329,19 +324,6 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: '800',
         letterSpacing: -0.5
-    },
-    headerRight: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 12
-    },
-    connectionIndicator: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
-        backgroundColor: 'rgba(76, 175, 80, 0.15)',
-        borderRadius: 12
     },
     searchContainer: {
         flexDirection: 'row',

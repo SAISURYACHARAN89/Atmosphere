@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 
 const StartupPostSkeleton = () => {
+    const { theme } = useContext(ThemeContext);
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {/* Header: Avatar + Texts */}
             <View style={styles.header}>
                 <SkeletonItem width={40} height={40} borderRadius={20} />

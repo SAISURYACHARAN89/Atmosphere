@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 import Logo from '../components/Logo';
 import { login } from '../lib/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAlert } from '../components/CustomAlert';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const SignIn = ({ onSignUp, onSignedIn, onForgotPassword }: { onSignUp?: () => void; onSignedIn?: () => void; onForgotPassword?: () => void }) => {
     const { showAlert } = useAlert();
+    const { theme } = useContext(ThemeContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +33,7 @@ const SignIn = ({ onSignUp, onSignedIn, onForgotPassword }: { onSignUp?: () => v
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: theme.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ScrollView
@@ -44,13 +46,13 @@ const SignIn = ({ onSignUp, onSignedIn, onForgotPassword }: { onSignUp?: () => v
                 </View>
 
                 {/* Form Card */}
-                <View style={styles.formCard}>
+                <View style={[styles.formCard, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
                     <TextInput
                         value={email}
                         onChangeText={setEmail}
                         placeholder="Phone number, username, or email"
-                        placeholderTextColor="#8e8e8e"
-                        style={styles.input}
+                        placeholderTextColor={theme.placeholder}
+                        style={[styles.input, { backgroundColor: theme.background, color: theme.text, borderColor: theme.border }]}
                         autoCapitalize="none"
                         keyboardType="email-address"
                     />
@@ -60,15 +62,15 @@ const SignIn = ({ onSignUp, onSignedIn, onForgotPassword }: { onSignUp?: () => v
                             value={password}
                             onChangeText={setPassword}
                             placeholder="Password"
-                            placeholderTextColor="#8e8e8e"
-                            style={[styles.input, styles.passwordInput]}
+                            placeholderTextColor={theme.placeholder}
+                            style={[styles.input, styles.passwordInput, { backgroundColor: theme.background, color: theme.text, borderColor: theme.border }]}
                             secureTextEntry={!showPassword}
                         />
                         <TouchableOpacity
                             style={styles.eyeButton}
                             onPress={() => setShowPassword(!showPassword)}
                         >
-                            {showPassword ? <EyeOff size={20} color="#8e8e8e" /> : <Eye size={20} color="#8e8e8e" />}
+                            {showPassword ? <EyeOff size={20} color={theme.placeholder} /> : <Eye size={20} color={theme.placeholder} />}
                         </TouchableOpacity>
                     </View>
 
@@ -78,9 +80,9 @@ const SignIn = ({ onSignUp, onSignedIn, onForgotPassword }: { onSignUp?: () => v
                         disabled={loading || !email || !password}
                     >
                         {loading ? (
-                            <ActivityIndicator color="#fff" />
+                            <ActivityIndicator color={theme.buttonText} />
                         ) : (
-                            <Text style={styles.loginButtonText}>Log in</Text>
+                            <Text style={[styles.loginButtonText, { color: theme.buttonText }]}>Log in</Text>
                         )}
                     </TouchableOpacity>
 
@@ -99,15 +101,15 @@ const SignIn = ({ onSignUp, onSignedIn, onForgotPassword }: { onSignUp?: () => v
 
                     {/* Forgot Password */}
                     <TouchableOpacity onPress={() => { if (onForgotPassword) onForgotPassword(); }}>
-                        <Text style={styles.forgotText}>Forgot password?</Text>
+                        <Text style={[styles.forgotText, { color: theme.placeholder }]}>Forgot password?</Text>
                     </TouchableOpacity>
                 </View>
 
                 {/* Sign up link - directly below form */}
-                <View style={styles.signupCard}>
-                    <Text style={styles.signupText}>
+                <View style={[styles.signupCard, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                    <Text style={[styles.signupText, { color: theme.placeholder }]}>
                         Don't have an account?{' '}
-                        <Text style={styles.signupLink} onPress={() => { if (onSignUp) onSignUp(); }}>
+                        <Text style={[styles.signupLink, { color: theme.text }]} onPress={() => { if (onSignUp) onSignUp(); }}>
                             Sign up
                         </Text>
                     </Text>

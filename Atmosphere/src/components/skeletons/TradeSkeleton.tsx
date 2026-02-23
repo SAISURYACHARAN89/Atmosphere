@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const TradeSkeleton = () => {
+    const { theme } = useContext(ThemeContext);
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
             {/* Header: Company Icon + Name + Badge */}
             <View style={styles.header}>
                 <View style={styles.titleRow}>
@@ -35,12 +37,10 @@ const TradeSkeleton = () => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#0d0d0d',
         borderRadius: 16,
         padding: 16,
         marginBottom: 16,
         borderWidth: 1,
-        borderColor: '#1a1a1a',
     },
     header: {
         flexDirection: 'row',

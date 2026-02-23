@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, StyleSheet, ActivityIndicator, Alert, SafeAreaView, TouchableOpacity } from 'react-native';
 import { TradeCard } from './Trading/components/TradeCard';
 import { getTrade, toggleTradeSave, createOrFindChat, sendMessage, shareContent } from '../lib/api';
 import { ActiveTrade } from './Trading/types';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAlert } from '../components/CustomAlert';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 interface TradeDetailProps {
     route: { params: { tradeId: string } };
@@ -14,6 +15,7 @@ interface TradeDetailProps {
 const TradeDetail: React.FC<TradeDetailProps> = ({ route, navigation }) => {
     const { tradeId } = route.params;
     const { showAlert } = useAlert();
+    const { theme } = useContext(ThemeContext);
     const [trade, setTrade] = useState<ActiveTrade | null>(null);
     const [loading, setLoading] = useState(true);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
@@ -115,8 +117,8 @@ const TradeDetail: React.FC<TradeDetailProps> = ({ route, navigation }) => {
 
     if (loading) {
         return (
-            <View style={styles.center}>
-                <ActivityIndicator size="large" color="#fff" />
+            <View style={[styles.center, { backgroundColor: theme.background }]}>
+                <ActivityIndicator size="large" color={theme.primary} />
             </View>
         );
     }
@@ -124,12 +126,12 @@ const TradeDetail: React.FC<TradeDetailProps> = ({ route, navigation }) => {
     if (!trade) return null;
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+            <View style={[styles.header, { borderBottomColor: theme.border }]}>
                 <TouchableOpacity onPress={navigation.goBack} style={styles.backButton}>
-                    <MaterialCommunityIcons name="arrow-left" size={24} color="#fff" />
+                    <MaterialCommunityIcons name="arrow-left" size={24} color={theme.text} />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Trade Details</Text>
+                <Text style={[styles.headerTitle, { color: theme.text }]}>Trade Details</Text>
                 <View style={{ width: 24 }} />
             </View>
             <View style={styles.content}>

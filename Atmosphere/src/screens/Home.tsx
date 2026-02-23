@@ -401,7 +401,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onChatSelect: _onChatSelect, on
                     <View>
                         <StartupPost post={item} currentUserId={currentUserId} onOpenProfile={onOpenProfile} isVisible={item.id === visibleItemId} />
                         {/* Separator line between cards */}
-                        {index < posts.length - 1 && <View style={styles.separator} />}
+                        {index < posts.length - 1 && <View style={[styles.separator, { backgroundColor: theme.border }]} />}
                     </View>
                 )}
                 onEndReached={() => loadPosts(false)}
@@ -423,7 +423,7 @@ const Home: React.FC<HomeProps> = ({ onNavigate, onChatSelect: _onChatSelect, on
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: '#000000' }]}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <Animated.View style={[styles.navbarWrapper, { transform: [{ translateY: navbarTranslateY }], opacity: navbarOpacity }]}>
                 <TopNavbar
                     title="Atmosphere"

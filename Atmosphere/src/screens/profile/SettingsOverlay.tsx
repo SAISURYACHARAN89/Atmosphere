@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Animated, Dimensions, Modal, TextInput, ActivityIndicator, Alert, StyleSheet } from 'react-native';
+import React, { useRef, useEffect, useState, useMemo, useContext } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Animated, Dimensions, Modal, TextInput, ActivityIndicator, Alert, StyleSheet, Switch } from 'react-native';
 import { useAlert } from '../../components/CustomAlert';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './Profile.styles';
@@ -9,8 +9,10 @@ import { getSettings, updateSettings, changePassword, getProfile, updateProfile,
 import { Picker } from '@react-native-picker/picker';
 import { pick, types } from '@react-native-documents/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { ArrowLeft, User, AtSign, Key, Mail, Phone, BarChart2, Bookmark, Settings2, MessageSquare, Users, Shield, Briefcase, Crown, HelpCircle, Info, Eye, EyeOff, Check, X } from 'lucide-react-native';
+import { ArrowLeft, User, AtSign, Key, Mail, Phone, BarChart2, Bookmark, Settings2, MessageSquare, Users, Shield, Briefcase, Crown, HelpCircle, Info, Eye, EyeOff, Check, X, Moon, Sun } from 'lucide-react-native';
+import { ThemeContext } from '../../contexts/ThemeContext';
 import SettingsSkeleton from '../../components/skeletons/SettingsSkeleton';
+import PremiumPage from './PremiumPage';
 
 const SETTINGS_CACHE_KEY = 'ATMOSPHERE_SETTINGS_CACHE';
 
@@ -68,6 +70,7 @@ function Collapsible({ title, open, onToggle, children, theme }: any) {
 
 export default function SettingsOverlay({ src, theme, accountType = 'personal', onClose, onNavigate }: Props) {
     const { showAlert } = useAlert();
+    const { mode: themeMode, toggle: toggleTheme } = useContext(ThemeContext);
     const slideAnim = useRef(new Animated.Value(Dimensions.get('window').width)).current;
     const width = Dimensions.get('window').width;
 
@@ -106,6 +109,8 @@ export default function SettingsOverlay({ src, theme, accountType = 'personal', 
     const [emailVerified, setEmailVerified] = useState(false);
     const [sendingOtp, setSendingOtp] = useState(false);
 
+    // Premium page state
+    const [showPremiumPage, setShowPremiumPage] = useState(false);
 
     // Collapsible states
     const [openInterests, setOpenInterests] = useState(false);
@@ -389,7 +394,7 @@ export default function SettingsOverlay({ src, theme, accountType = 'personal', 
             const payload = {
                 financialProfile: {
                     revenueType,
-                    fundingMethod,
+                    ...(fundingMethod && { fundingMethod }), // Only include if not empty
                     fundingAmount: raisedAmount,
                     investorName: fundingMethod === 'Capital Raised' ? investorName : undefined,
                 },
@@ -465,9 +470,9 @@ export default function SettingsOverlay({ src, theme, accountType = 'personal', 
                                     <TouchableOpacity
                                         key={opt}
                                         onPress={() => setSelected(selected.includes(opt) ? selected.filter(p => p !== opt) : [...selected, opt])}
-                                        style={{ paddingVertical: 10, paddingHorizontal: 16, backgroundColor: active ? '#444' : '#222', borderRadius: 8, borderWidth: 1, borderColor: active ? '#666' : '#333' }}
+                                        style={{ paddingVertical: 10, paddingHorizontal: 16, backgroundColor: active ? theme.inputBackground : theme.cardBackground, borderRadius: 8, borderWidth: 1, borderColor: active ? theme.primary : theme.border }}
                                     >
-                                        <Text style={{ color: '#fff' }}>{opt}</Text>
+                                        <Text style={{ color: theme.text }}>{opt}</Text>
                                     </TouchableOpacity>
                                 );
                             })}
@@ -654,7 +659,7 @@ export default function SettingsOverlay({ src, theme, accountType = 'personal', 
                                 </TouchableOpacity>
                             )}
                             {/* Get Premium */}
-                            <TouchableOpacity style={styles.settingRow} onPress={() => { }}>
+                            <TouchableOpacity style={styles.settingRow} onPress={() => setShowPremiumPage(true)}>
                                 <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
                                     <Crown size={20} color={theme.placeholder} style={{ marginRight: 12 }} />
                                     <View style={styles.settingLeft}>
@@ -664,6 +669,32 @@ export default function SettingsOverlay({ src, theme, accountType = 'personal', 
                                 </View>
                                 <Text style={[styles.chev, themePlaceholderStyle]}>{'›'}</Text>
                             </TouchableOpacity>
+                        </View>
+
+                        {/* APPEARANCE section - Theme toggle */}
+                        <Text style={[styles.sectionLabel, themePlaceholderStyle]}>APPEARANCE</Text>
+                        <View style={[styles.sectionCard, themeBorderStyle]}>
+                            <View style={styles.settingRow}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', flex: 1 }}>
+                                    {themeMode === 'dark' ? (
+                                        <Moon size={20} color={theme.placeholder} style={{ marginRight: 12 }} />
+                                    ) : (
+                                        <Sun size={20} color={theme.placeholder} style={{ marginRight: 12 }} />
+                                    )}
+                                    <View style={styles.settingLeft}>
+                                        <Text style={[styles.settingTitle, themeTextStyle]}>Dark Mode</Text>
+                                        <Text style={[styles.settingSubtitle, themePlaceholderStyle]}>
+                                            {themeMode === 'dark' ? 'Currently using dark theme' : 'Currently using light theme'}
+                                        </Text>
+                                    </View>
+                                </View>
+                                <Switch
+                                    value={themeMode === 'dark'}
+                                    onValueChange={toggleTheme}
+                                    trackColor={{ false: '#d1d1d1', true: '#4a4a4a' }}
+                                    thumbColor={themeMode === 'dark' ? '#fff' : '#f4f4f4'}
+                                />
+                            </View>
                         </View>
 
                         <Text style={[styles.sectionLabel, themePlaceholderStyle]}>HELP</Text>
@@ -1275,6 +1306,11 @@ export default function SettingsOverlay({ src, theme, accountType = 'personal', 
                         </View>
                     </View>
                 </View>
+            </Modal>
+
+            {/* Premium Page Modal */}
+            <Modal visible={showPremiumPage} animationType="slide" presentationStyle="fullScreen">
+                <PremiumPage onClose={() => setShowPremiumPage(false)} />
             </Modal>
         </Animated.View >
     );

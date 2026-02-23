@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Modal } from 'react-native';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 // Lightweight custom calendar: shows a simple date picker grid for the current month
 // This is intentionally minimal to avoid adding heavy dependencies.
@@ -20,6 +21,7 @@ function formatDay(d: Date) {
 }
 
 export default function CustomCalendar({ visible = false, value, onChange, onClose }: Props) {
+    const { theme } = useContext(ThemeContext);
     const today = value ?? new Date();
     const [currentMonth, setCurrentMonth] = useState(startOfMonth(today));
 
@@ -41,19 +43,19 @@ export default function CustomCalendar({ visible = false, value, onChange, onClo
     return (
         <Modal visible={visible} transparent animationType="fade">
             <View style={styles.backdrop}>
-                <View style={styles.card}>
+                <View style={[styles.card, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
                     <View style={styles.header}>
                         <TouchableOpacity onPress={prevMonth} style={styles.navBtn}>
-                            <Text>{'<'}</Text>
+                            <Text style={{ color: theme.text }}>{'<'}</Text>
                         </TouchableOpacity>
-                        <Text style={styles.monthText}>{currentMonth.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</Text>
+                        <Text style={[styles.monthText, { color: theme.text }]}>{currentMonth.toLocaleString(undefined, { month: 'long', year: 'numeric' })}</Text>
                         <TouchableOpacity onPress={nextMonth} style={styles.navBtn}>
-                            <Text>{'>'}</Text>
+                            <Text style={{ color: theme.text }}>{'>'}</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.weekHeader}>
-                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w) => (
-                            <Text key={w} style={styles.weekDay}>{w}</Text>
+                        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((w, i) => (
+                            <Text key={i} style={[styles.weekDay, { color: theme.placeholder }]}>{w}</Text>
                         ))}
                     </View>
                     <View style={styles.grid}>
@@ -64,15 +66,15 @@ export default function CustomCalendar({ visible = false, value, onChange, onClo
                                 disabled={!cell}
                                 onPress={() => { if (cell) { onChange(cell); if (onClose) onClose(); } }}
                             >
-                                <Text style={styles.cellText}>{cell ? formatDay(cell) : ''}</Text>
+                                <Text style={[styles.cellText, { color: theme.text }]}>{cell ? formatDay(cell) : ''}</Text>
                             </TouchableOpacity>
                         ))}
                     </View>
                     <View style={styles.footerRow}>
                         <TouchableOpacity onPress={() => { if (onClose) onClose(); }} style={styles.actionBtn}>
-                            <Text style={styles.actionText}>Close</Text>
+                            <Text style={[styles.actionText, { color: theme.textSecondary }]}>Close</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => { onChange(new Date()); if (onClose) onClose(); }} style={styles.actionBtnPrimary}>
+                        <TouchableOpacity onPress={() => { onChange(new Date()); if (onClose) onClose(); }} style={[styles.actionBtnPrimary, { backgroundColor: theme.primary }]}>
                             <Text style={styles.actionTextPrimary}>Today</Text>
                         </TouchableOpacity>
                     </View>

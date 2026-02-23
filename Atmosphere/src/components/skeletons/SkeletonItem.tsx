@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { ViewStyle, StyleProp, StyleSheet } from 'react-native';
 import Animated, {
     useSharedValue,
@@ -8,6 +8,7 @@ import Animated, {
     withTiming,
     Easing,
 } from 'react-native-reanimated';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 interface SkeletonItemProps {
     width?: number | string;
@@ -22,6 +23,7 @@ const SkeletonItem: React.FC<SkeletonItemProps> = ({
     borderRadius = 4,
     style,
 }) => {
+    const { theme } = useContext(ThemeContext);
     const opacity = useSharedValue(0.3);
 
     useEffect(() => {
@@ -43,7 +45,7 @@ const SkeletonItem: React.FC<SkeletonItemProps> = ({
         <Animated.View
             style={[
                 styles.skeleton,
-                { width, height, borderRadius },
+                { width, height, borderRadius, backgroundColor: theme.inputBackground },
                 style,
                 animatedStyle,
             ]}
@@ -53,7 +55,7 @@ const SkeletonItem: React.FC<SkeletonItemProps> = ({
 
 const styles = StyleSheet.create({
     skeleton: {
-        backgroundColor: '#333', // Dark mode Placeholder color
+        backgroundColor: '#333', // fallback
     },
 });
 

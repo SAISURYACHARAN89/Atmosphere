@@ -308,7 +308,7 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                 {isMyAd ? (
                     <TouchableOpacity
                         style={{
-                            backgroundColor: '#333',
+                            backgroundColor: theme.inputBackground,
                             paddingHorizontal: 12,
                             paddingVertical: 6,
                             borderRadius: 6,
@@ -317,8 +317,8 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                         }}
                         onPress={onExpand}
                     >
-                        <MaterialIcons name="file-download" size={16} color="#fff" style={{ marginRight: 4 }} />
-                        <Text style={{ color: '#fff', fontSize: 12, fontWeight: '600' }}>Export CSV</Text>
+                        <MaterialIcons name="file-download" size={16} color={theme.text} style={{ marginRight: 4 }} />
+                        <Text style={{ color: theme.text, fontSize: 12, fontWeight: '600' }}>Export CSV</Text>
                     </TouchableOpacity>
                 ) : (
                     <Text style={[styles.employmentText, { color: textColor }]}>
@@ -336,8 +336,8 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                         <View style={{ alignItems: 'center', paddingVertical: 8 }}>
                             <TouchableOpacity
                                 style={{
-                                    backgroundColor: '#333',
-                                    borderColor: '#444',
+                                    backgroundColor: theme.inputBackground,
+                                    borderColor: theme.border,
                                     borderWidth: 1,
                                     borderRadius: 22,
                                     height: 44,
@@ -351,11 +351,11 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                                 disabled={exporting}
                             >
                                 {exporting ? (
-                                    <ActivityIndicator color="#fff" size="small" />
+                                    <ActivityIndicator color={theme.text} size="small" />
                                 ) : (
                                     <>
-                                        <MaterialIcons name="file-download" size={20} color="#fff" style={{ marginRight: 8 }} />
-                                        <Text style={{ color: '#fff', fontWeight: '600', fontSize: 14 }}>
+                                        <MaterialIcons name="file-download" size={20} color={theme.text} style={{ marginRight: 8 }} />
+                                        <Text style={{ color: theme.text, fontWeight: '600', fontSize: 14 }}>
                                             Export {applicantsCount} Applicants to CSV
                                         </Text>
                                     </>
@@ -378,9 +378,9 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                                         <View style={{ flexDirection: 'row', gap: 12 }}>
                                             <TouchableOpacity
                                                 onPress={() => setShowSuccessModal(false)}
-                                                style={{ flex: 1, paddingVertical: 12, borderRadius: 8, borderWidth: 1, borderColor: '#444', alignItems: 'center' }}
+                                                style={{ flex: 1, paddingVertical: 12, borderRadius: 8, borderWidth: 1, borderColor: theme.border, alignItems: 'center' }}
                                             >
-                                                <Text style={{ color: '#fff', fontWeight: '600' }}>Close</Text>
+                                                <Text style={{ color: theme.text, fontWeight: '600' }}>Close</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                                 onPress={async () => {
@@ -434,12 +434,12 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                         <>
                             {/* Check if user allowed to apply */}
                             {userRole !== 'personal' ? (
-                                <View style={{ alignItems: 'center', paddingVertical: 20, backgroundColor: '#1a1a1a', borderRadius: 8, marginTop: 8 }}>
-                                    <MaterialIcons name="lock-outline" size={32} color="#888" />
-                                    <Text style={{ color: '#aaa', fontSize: 14, marginTop: 8, textAlign: 'center', paddingHorizontal: 20 }}>
+                                <View style={{ alignItems: 'center', paddingVertical: 20, backgroundColor: theme.cardBackground, borderRadius: 8, marginTop: 8 }}>
+                                    <MaterialIcons name="lock-outline" size={32} color={theme.secondaryText} />
+                                    <Text style={{ color: theme.secondaryText, fontSize: 14, marginTop: 8, textAlign: 'center', paddingHorizontal: 20 }}>
                                         Job applications are only available for personal accounts.
                                     </Text>
-                                    <Text style={{ color: '#666', fontSize: 12, marginTop: 4, textAlign: 'center' }}>
+                                    <Text style={{ color: theme.mutedText, fontSize: 12, marginTop: 4, textAlign: 'center' }}>
                                         Switch to a personal account to apply.
                                     </Text>
                                 </View>
@@ -450,19 +450,19 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                                         <View style={{ marginBottom: 16 }}>
                                             {customQuestions.map((question: string, index: number) => (
                                                 <View key={index} style={{ marginBottom: 12 }}>
-                                                    <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500', marginBottom: 6 }}>
+                                                    <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500', marginBottom: 6 }}>
                                                         {question}
                                                     </Text>
                                                     <TextInput
                                                         style={{
-                                                            backgroundColor: '#1a1a1a',
+                                                            backgroundColor: theme.cardBackground,
                                                             borderRadius: 8,
                                                             padding: 12,
-                                                            color: '#fff',
+                                                            color: theme.text,
                                                             minHeight: 60,
                                                             textAlignVertical: 'top',
                                                             borderWidth: 1,
-                                                            borderColor: '#333',
+                                                            borderColor: theme.border,
                                                         }}
                                                         placeholder="Your answer..."
                                                         placeholderTextColor="#666"
@@ -481,17 +481,17 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
 
                                     {/* Resume Upload */}
                                     <View style={{ marginBottom: 16 }}>
-                                        <Text style={{ color: '#fff', fontSize: 13, fontWeight: '500', marginBottom: 6 }}>
+                                        <Text style={{ color: theme.text, fontSize: 13, fontWeight: '500', marginBottom: 6 }}>
                                             Resume (PDF)
                                         </Text>
                                         <TouchableOpacity
                                             onPress={pickResume}
                                             style={{
-                                                backgroundColor: '#1a1a1a',
+                                                backgroundColor: theme.cardBackground,
                                                 borderRadius: 8,
                                                 padding: 14,
                                                 borderWidth: 1,
-                                                borderColor: resumeFile ? '#22c55e' : '#333',
+                                                borderColor: resumeFile ? '#22c55e' : theme.border,
                                                 flexDirection: 'row',
                                                 alignItems: 'center',
                                                 justifyContent: 'space-between',
@@ -501,11 +501,11 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                                                 <MaterialIcons
                                                     name={resumeFile ? 'check-circle' : 'attach-file'}
                                                     size={20}
-                                                    color={resumeFile ? '#22c55e' : '#666'}
+                                                    color={resumeFile ? '#22c55e' : theme.mutedText}
                                                     style={{ marginRight: 10 }}
                                                 />
                                                 <Text
-                                                    style={{ color: resumeFile ? '#fff' : '#666', flex: 1 }}
+                                                    style={{ color: resumeFile ? theme.text : theme.mutedText, flex: 1 }}
                                                     numberOfLines={1}
                                                 >
                                                     {resumeFile ? resumeFile.name : 'Tap to upload resume (PDF)'}
@@ -516,7 +516,7 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                                                     onPress={() => setResumeFile(null)}
                                                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                                                 >
-                                                    <MaterialIcons name="close" size={18} color="#888" />
+                                                    <MaterialIcons name="close" size={18} color={theme.secondaryText} />
                                                 </TouchableOpacity>
                                             )}
                                         </TouchableOpacity>
@@ -548,7 +548,7 @@ function RoleCard({ item, isMyAd = false, expanded = false, onExpand, onApplySuc
                             <Text style={{ color: '#22c55e', fontSize: 14, fontWeight: '500', marginTop: 8 }}>
                                 Application Sent Successfully
                             </Text>
-                            <Text style={{ color: '#888', fontSize: 12, marginTop: 4 }}>
+                            <Text style={{ color: theme.secondaryText, fontSize: 12, marginTop: 4 }}>
                                 You can track your application in My Jobs
                             </Text>
                         </View>

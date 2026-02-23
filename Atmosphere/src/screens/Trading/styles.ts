@@ -547,7 +547,8 @@ export const styles = StyleSheet.create({
     collapsedDescription: {
         color: '#bfbfbf',
         fontSize: 13,
-        marginTop: 4, // Matching tradeMetaText/tradeUsername spacing
+        marginTop: 8,
+        lineHeight: 18,
     },
     collapsedActions: {
         flexDirection: 'row', // Matching Active Trades structure
@@ -728,8 +729,8 @@ export const styles = StyleSheet.create({
     },
     professionalInfoGrid: {
         flexDirection: 'row',
-        marginBottom: 14,
-        marginTop: 4,
+        marginBottom: 0,
+        marginTop: 8,
         backgroundColor: '#1a1a1a',
         borderRadius: 12,
         padding: 12,
@@ -759,6 +760,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: 8,
+        marginTop: 12,
         marginBottom: 14,
     },
     professionalTag: {

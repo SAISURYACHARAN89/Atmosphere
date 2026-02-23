@@ -313,7 +313,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                     style={[
                         styles.sheet,
                         {
-                            backgroundColor: theme?.background || '#121212',
+                            backgroundColor: theme.background,
                             width: SCREEN_WIDTH,
                             height: FULL_HEIGHT,
                             transform: [{ translateY: translateY }]
@@ -327,12 +327,12 @@ const ShareModal: React.FC<ShareModalProps> = ({
                     {/* Title and Close Button Removed */}
 
                     {/* Search */}
-                    <View style={[styles.searchRow, { borderColor: theme?.border || '#333' }]}>
-                        <Icon name="search" size={16} color={theme?.placeholder || '#888'} />
+                    <View style={[styles.searchRow, { borderColor: theme.border }]}>
+                        <Icon name="search" size={16} color={theme.placeholder} />
                         <TextInput
-                            style={[styles.searchInput, { color: theme?.text }]}
+                            style={[styles.searchInput, { color: theme.text }]}
                             placeholder="Search"
-                            placeholderTextColor={theme?.placeholder || '#888'}
+                            placeholderTextColor={theme.placeholder}
                             value={searchQuery}
                             onChangeText={setSearchQuery}
                         />
@@ -341,7 +341,7 @@ const ShareModal: React.FC<ShareModalProps> = ({
                     {/* Followers list */}
                     <View style={[styles.listWrap, { paddingBottom: 120 }]} {...contentPanResponder.panHandlers}>
                         {loading ? (
-                            <ActivityIndicator size="large" color="#fff" />
+                            <ActivityIndicator size="large" color={theme.primary} />
                         ) : filteredFollowers.length === 0 ? (
                             <View style={styles.emptyWrap}>
                                 <Text style={[styles.emptyText, { color: theme?.placeholder }]}>

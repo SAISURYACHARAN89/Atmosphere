@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const MeetingSkeleton = () => {
+    const { theme } = useContext(ThemeContext);
     const items = Array.from({ length: 4 });
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {items.map((_, index) => (
                 <View key={index} style={styles.card}>
                     {/* Title */}

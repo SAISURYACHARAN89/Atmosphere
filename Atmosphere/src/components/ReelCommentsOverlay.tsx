@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { View, Text, Modal, TouchableOpacity, FlatList, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Animated, Easing, Dimensions, PanResponder } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, FlatList, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Animated, Easing, Dimensions, PanResponder, Image } from 'react-native';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { getReelComments, addReelComment, deleteReelComment, getProfile, getReelCommentReplies } from '../lib/api';
 import Icon from 'react-native-vector-icons/Feather';
+import { getImageSource } from '../lib/image';
 
 // Import shared components and utilities
 import { Comment, ReplyingTo, commentStyles as styles, timeAgo, getAvatarLetter, getDisplayName } from './comments';
@@ -312,6 +313,15 @@ const ReelCommentsOverlay = ({ reelId, visible, onClose, onCommentAdded, onComme
         const isLoadingReplies = repliesLoading.has(commentId);
         const authorUsername = getDisplayName(item.author);
         const displayReplyTag = item.replyToUsername || parentAuthor;
+        
+        // Get profile image if available - try multiple field names
+        const profileImage = item.author?.profileImage || 
+                            item.author?.profilePicture || 
+                            item.author?.avatarUrl ||
+                            item.author?.avatar || 
+                            item.author?.image ||
+                            item.author?.photo;
+        const hasProfileImage = profileImage && profileImage !== '' && profileImage !== 'undefined';
 
         return (
             <View key={commentId}>
@@ -324,9 +334,16 @@ const ReelCommentsOverlay = ({ reelId, visible, onClose, onCommentAdded, onComme
                     style={[styles.commentRow, isReply && styles.replyRow]}
                 >
                     <View style={styles.commentAvatar}>
-                        <Text style={styles.avatarLetter}>
-                            {getAvatarLetter(item.author)}
-                        </Text>
+                        {hasProfileImage ? (
+                            <Image 
+                                source={getImageSource(profileImage)} 
+                                style={styles.avatarImage}
+                            />
+                        ) : (
+                            <Text style={styles.avatarLetter}>
+                                {getAvatarLetter(item.author)}
+                            </Text>
+                        )}
                     </View>
                     <View style={styles.commentBody}>
                         <View style={styles.commentHeaderRow}>
@@ -455,7 +472,7 @@ const ReelCommentsOverlay = ({ reelId, visible, onClose, onCommentAdded, onComme
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                     >
-                        <View style={{ backgroundColor: '#0a0a0a', borderTopWidth: 1, borderTopColor: '#222' }}>
+                        <View style={{ backgroundColor: theme.inputBackground, borderTopWidth: 1, borderTopColor: theme.border }}>
                             <CommentInput
                                 ref={inputRef}
                                 text={text}

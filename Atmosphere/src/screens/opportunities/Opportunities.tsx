@@ -477,9 +477,9 @@ const Opportunities = ({ onNavigate }: { onNavigate?: (route: string) => void })
                                         <View style={{ position: 'absolute', top: 12, right: 12, flexDirection: 'row', gap: 8 }}>
                                             <TouchableOpacity
                                                 onPress={() => handleEditJobPost(item)}
-                                                style={{ backgroundColor: '#333', padding: 8, borderRadius: 6 }}
+                                                style={{ backgroundColor: theme.inputBackground, padding: 8, borderRadius: 6 }}
                                             >
-                                                <MaterialIcons name="edit" size={20} color="#fff" />
+                                                <MaterialIcons name="edit" size={20} color={theme.text} />
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                                 onPress={() => handleCloseJobPost(item._id || item.id)}
@@ -604,7 +604,7 @@ const Opportunities = ({ onNavigate }: { onNavigate?: (route: string) => void })
                         left: 8,
                         bottom: 8,
                         width: (width - 40) / 3, // (screenW - 24margin - 16padding) / 3
-                        backgroundColor: '#000305',
+                        backgroundColor: theme.cardBackground,
                         borderRadius: 20,
                         transform: [{
                             translateX: scrollX.interpolate({
@@ -705,13 +705,13 @@ const Opportunities = ({ onNavigate }: { onNavigate?: (route: string) => void })
                     behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                     style={styles.modalContainer}
                 >
-                    <View style={[styles.modalBox, { backgroundColor: '#111' }]}>
+                    <View style={[styles.modalBox, { backgroundColor: theme.cardBackground }]}>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                             <Text style={[styles.modalTitle, { marginBottom: 0, flex: 1 }]}>
                                 {editingJobId ? 'Edit Job Post' : `Post a new ${activeTab === 'Jobs' ? 'Job' : activeTab.slice(0, -1)}`}
                             </Text>
                             <TouchableOpacity onPress={() => { setModalVisible(false); setEditingJobId(null); }} style={{ padding: 4 }}>
-                                <MaterialIcons name="close" size={24} color="#fff" />
+                                <MaterialIcons name="close" size={24} color={theme.text} />
                             </TouchableOpacity>
                         </View>
                         <ScrollView style={styles.modalScroll}>

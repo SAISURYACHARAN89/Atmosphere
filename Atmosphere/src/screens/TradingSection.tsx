@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useContext } from 'react';
 import { View, Text, TouchableOpacity, TextInput, SafeAreaView, ActivityIndicator, Dimensions, Animated, ScrollView, Image as RNImage, FlatList, RefreshControl, LayoutAnimation, UIManager, Platform, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createTrade, getMyTrades, getAllTrades, updateTrade, deleteTrade, uploadImage, uploadVideo, getProfile, toggleTradeSave, getSavedTrades, createOrFindChat, sendMessage, shareContent, saveStartupProfile, searchUsers, getStartupProfile } from '../lib/api';
@@ -8,6 +8,7 @@ import IconFA from 'react-native-vector-icons/FontAwesome';
 import { launchImageLibrary } from 'react-native-image-picker';
 import Video from 'react-native-video';
 import { Search } from 'lucide-react-native';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 // Import modular files
 import { categories, Investment, InvestorPortfolio } from './Trading/types';
@@ -53,6 +54,8 @@ interface TradingProps {
 }
 
 const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: TradingProps) => {
+    // Theme
+    const { theme } = useContext(ThemeContext);
     // Data State
     const [refreshing, setRefreshing] = useState(false);
     const { showAlert } = useAlert();
@@ -1032,13 +1035,13 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
 
         return (
             <ScrollView
-                style={[flexOneStyle, { backgroundColor: '#070707' }] as any}
+                style={[flexOneStyle, { backgroundColor: theme.background }] as any}
                 contentContainerStyle={{ paddingBottom: BOTTOM_NAV_HEIGHT + 24 }}
                 refreshControl={
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={onRefresh}
-                        tintColor="#1a73e8"
+                        tintColor={theme.primary}
                         title="Release to refresh"
                         titleColor="#888"
                     />
@@ -1089,7 +1092,7 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
                                 <MaterialCommunityIcons
                                     name={isExpanded ? "chevron-up" : "chevron-down"}
                                     size={24}
-                                    color="#bfbfbf"
+                                    color={theme.placeholder}
                                 />
                             </TouchableOpacity>
 
@@ -1149,7 +1152,7 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
                             const isCurrentItemVideo = hasVideo && photoIndex === imageCount;
 
                             return (
-                                <View key={tradeId} style={styles.professionalTradeCard}>
+                                <View key={tradeId} style={[styles.professionalTradeCard, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
                                     <TouchableOpacity
                                         activeOpacity={0.9}
                                         style={[styles.collapsedCardRow, isExpanded && styles.expandedCardHeader]}
@@ -1198,7 +1201,7 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
                                                     handleUpdateTrade(tradeId);
                                                 }}
                                             >
-                                                <MaterialCommunityIcons name="pencil" size={16} color="#999" />
+                                                <MaterialCommunityIcons name="pencil" size={16} color={theme.placeholder} />
                                             </TouchableOpacity>
                                             <TouchableOpacity
                                                 style={styles.collapsedActionBtn}
@@ -1376,41 +1379,41 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
             <>
                 {/* Search and Filter - now inside scrollable content */}
                 <View style={styles.searchRow}>
-                    <View style={styles.searchBox}>
-                        <Search size={20} color="#bfbfbf" />
+                    <View style={[styles.searchBox, { backgroundColor: theme.inputBackground }]}>
+                        <Search size={20} color={theme.placeholder} />
                         <TextInput
                             placeholder="Search companies..."
-                            placeholderTextColor="#bfbfbf"
-                            style={styles.searchInput}
+                            placeholderTextColor={theme.placeholder}
+                            style={[styles.searchInput, { color: theme.text }]}
                             value={searchValue}
                             onChangeText={setSearchValue}
                         />
                         {searchValue !== '' && (
                             <TouchableOpacity onPress={() => setSearchValue('')}>
-                                <MaterialCommunityIcons name="close" size={18} color="#bfbfbf" />
+                                <MaterialCommunityIcons name="close" size={18} color={theme.placeholder} />
                             </TouchableOpacity>
                         )}
                     </View>
                     <TouchableOpacity
-                        style={[styles.bookmarkBtn, showSavedOnly && styles.bookmarkBtnActive]}
+                        style={[styles.bookmarkBtn, { backgroundColor: showSavedOnly ? '#1a73e8' : theme.inputBackground }]}
                         onPress={() => setShowSavedOnly(!showSavedOnly)}
                     >
                         <MaterialCommunityIcons
                             name={showSavedOnly ? "bookmark" : "bookmark-outline"}
                             size={24}
-                            color={showSavedOnly ? "#fff" : "#bfbfbf"}
+                            color={showSavedOnly ? theme.text : theme.placeholder}
                         />
                     </TouchableOpacity>
                 </View>
 
                 {/* Entries count + Filter Button */}
                 <View style={styles.filtersRow}>
-                    <Text style={styles.filtersCount}>{data.length} trades</Text>
+                    <Text style={[styles.filtersCount, { color: theme.text }]}>{data.length} trades</Text>
                     <TouchableOpacity
                         style={styles.filterIconBtn}
                         onPress={toggleFilterWithAnimation}
                     >
-                        <IconFA name="filter" size={18} color="#fff" />
+                        <IconFA name="filter" size={18} color={theme.text} />
                     </TouchableOpacity>
                 </View>
                 {/* Inline loading indicator for filter changes (after first load) */}
@@ -1430,7 +1433,7 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
         if (isFirstLoad && buyLoading && data.length === 0) {
             // Render header consistently and show skeleton cards below while initial load completes
             return (
-                <View style={{ flex: 1, backgroundColor: '#070707' }}>
+                <View style={{ flex: 1, backgroundColor: theme.background }}>
                     <View>
                         <ListHeader />
                     </View>
@@ -1447,7 +1450,7 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
             <View style={{ flex: 1 }}>
                 <FlatList
                     data={data}
-                    style={{ backgroundColor: '#070707' }}
+                    style={{ backgroundColor: theme.background }}
                     keyExtractor={(item) => String(item._id || item.id)}
                     contentContainerStyle={{ paddingBottom: BOTTOM_NAV_HEIGHT + 24 }}
                     renderItem={({ item }) => {
@@ -1481,14 +1484,14 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
                     ListHeaderComponent={ListHeader}
                     onEndReached={handleLoadMoreBuy}
                     onEndReachedThreshold={0.5}
-                    ListFooterComponent={() => buyLoading && data.length > 0 ? <ActivityIndicator size="small" color="#1a73e8" style={footerLoaderStyle} /> : null}
+                    ListFooterComponent={() => buyLoading && data.length > 0 ? <ActivityIndicator size="small" color={theme.primary} style={footerLoaderStyle} /> : null}
                     refreshControl={
                         <RefreshControl
                             refreshing={refreshing}
                             onRefresh={onRefresh}
-                            tintColor="#1a73e8"
+                            tintColor={theme.primary}
                             title="Release to refresh"
-                            titleColor="#888"
+                            titleColor={theme.placeholder}
                         />
                     }
                 />
@@ -1541,7 +1544,7 @@ const Trading = ({ initialTab, onTabChange, onChatSelect, onOpenProfile }: Tradi
     };
 
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
             {/* Fixed header */}
             <View style={styles.headerContainer}>
                 {/* Swipeable tabs with underline indicator - Show unless personal account */}

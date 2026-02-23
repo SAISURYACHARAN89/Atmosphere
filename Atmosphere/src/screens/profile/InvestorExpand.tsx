@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native';
 import { Target, TrendingUp, Briefcase, Globe, DollarSign, CheckCircle } from 'lucide-react-native';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 type Props = {
     investorDetails: any;
@@ -10,6 +11,7 @@ type Props = {
 };
 
 export default function InvestorExpand({ investorDetails, profileData, cardContainerWidth, isActive }: Props) {
+    const { theme } = useContext(ThemeContext);
     const details = investorDetails || profileData?.details || {};
     const about = details.about || profileData?.tagline || profileData?.description || '';
     const investmentFocus = details.investmentFocus || [];
@@ -32,7 +34,7 @@ export default function InvestorExpand({ investorDetails, profileData, cardConta
             <View style={{ width: cardContainerWidth, gap: 16 }}>
                 <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>Investor Profile</Text>
 
-                <View style={[cardStyles.card, { width: '100%' }]}>
+                <View style={[cardStyles.card, { width: '100%', backgroundColor: theme.background }]}>
                     <View style={cardStyles.aboutSection}>
                         <Text style={cardStyles.aboutLabel}>About</Text>
                         <Text style={cardStyles.aboutText}>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, Dimensions, Platform, StatusBar } from 'react-native';
 import { Image } from 'react-native';
-import { Crown, Heart, Flame, ChevronRight } from 'lucide-react-native';
+import { Heart, ChevronRight } from 'lucide-react-native';
 import * as api from '../lib/api';
 import { ThemeContext } from '../contexts/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -204,12 +204,7 @@ const HottestStartups = ({ onOpenProfile }: HottestStartupsProps) => {
                     </View>
                     <View style={styles.podiumLabel}>
                         <Text style={[styles.podiumName, { color: theme?.text }]} numberOfLines={1} ellipsizeMode="tail">{second?.name ?? second?.companyName ?? second?.company?.name ?? '—'}</Text>
-                        <Text style={[styles.shortDesc, { color: theme?.placeholder }]} numberOfLines={1} ellipsizeMode="tail">{shortOf(second)}</Text>
                         <View style={styles.likesRow}>
-                            <View style={styles.statPair}>
-                                <Crown size={14} color="#F59E0B" />
-                                <Text style={styles.likesText}>{second?.weekCounts?.crowns ?? second?.stats?.crowns ?? 0}</Text>
-                            </View>
                             <View style={styles.statPair}>
                                 <Heart size={14} color="#F472B6" />
                                 <Text style={styles.likesText}>{second?.weekCounts?.likes ?? second?.stats?.likes ?? 0}</Text>
@@ -232,12 +227,7 @@ const HottestStartups = ({ onOpenProfile }: HottestStartupsProps) => {
                     </View>
                     <View style={styles.podiumLabelCenter}>
                         <Text style={[styles.championName, { color: theme?.text }]} numberOfLines={1} ellipsizeMode="tail">{first?.name ?? first?.companyName ?? first?.company?.name ?? '—'}</Text>
-                        <Text style={[styles.shortDescCenter, { color: theme?.placeholder }]} numberOfLines={1} ellipsizeMode="tail">{shortOf(first)}</Text>
                         <View style={styles.likesRow}>
-                            <View style={styles.statPair}>
-                                <Crown size={16} color="#F59E0B" />
-                                <Text style={styles.likesText}>{first?.weekCounts?.crowns ?? first?.stats?.crowns ?? 0}</Text>
-                            </View>
                             <View style={styles.statPair}>
                                 <Heart size={16} color="#F472B6" />
                                 <Text style={styles.likesText}>{first?.weekCounts?.likes ?? first?.stats?.likes ?? 0}</Text>
@@ -260,12 +250,7 @@ const HottestStartups = ({ onOpenProfile }: HottestStartupsProps) => {
                     </View>
                     <View style={styles.podiumLabel}>
                         <Text style={[styles.podiumName, { color: theme?.text }]} numberOfLines={1} ellipsizeMode="tail">{third?.name ?? third?.companyName ?? third?.company?.name ?? '—'}</Text>
-                        <Text style={[styles.shortDesc, { color: theme?.placeholder }]} numberOfLines={1} ellipsizeMode="tail">{shortOf(third)}</Text>
                         <View style={styles.likesRow}>
-                            <View style={styles.statPair}>
-                                <Crown size={14} color="#F59E0B" />
-                                <Text style={styles.likesText}>{third?.weekCounts?.crowns ?? third?.stats?.crowns ?? 0}</Text>
-                            </View>
                             <View style={styles.statPair}>
                                 <Heart size={14} color="#F472B6" />
                                 <Text style={styles.likesText}>{third?.weekCounts?.likes ?? third?.stats?.likes ?? 0}</Text>
@@ -282,7 +267,7 @@ const HottestStartups = ({ onOpenProfile }: HottestStartupsProps) => {
         const isFollowing = followedIds.has(userId);
 
         return (
-            <TouchableOpacity style={styles.listCard} onPress={() => handleCardPress(item)} activeOpacity={0.7}>
+            <TouchableOpacity style={[styles.listCard, { backgroundColor: theme?.cardBackground }]} onPress={() => handleCardPress(item)} activeOpacity={0.7}>
                 <View style={styles.listAvatar}>
                     {(item.logo || item.profileImage || item.details?.profileImage || item.user?.avatarUrl || item.image) ? (
                         <Image source={{ uri: (item.logo || item.profileImage || item.details?.profileImage || item.user?.avatarUrl || item.image) }} style={styles.listImage} resizeMode="cover" />
@@ -292,16 +277,18 @@ const HottestStartups = ({ onOpenProfile }: HottestStartupsProps) => {
                 </View>
                 <View style={styles.listBody}>
                     <Text style={[styles.listName, { color: theme?.text }]} numberOfLines={1} ellipsizeMode="tail">{item.name || item.companyName || item.company?.name || '—'}</Text>
-                    <Text style={[styles.listTag, { color: theme?.placeholder }]} numberOfLines={1} ellipsizeMode="tail">{shortOf(item)}</Text>
                     <View style={styles.likesRow}>
-                        <View style={styles.statPair}>
-                            <Crown size={14} color="#F59E0B" />
-                            <Text style={styles.likesText}>{item.weekCounts?.crowns ?? item.stats?.crowns ?? 0}</Text>
-                        </View>
                         <View style={styles.statPair}>
                             <Heart size={14} color="#F472B6" />
                             <Text style={styles.likesText}>{item.weekCounts?.likes ?? item.stats?.likes ?? 0}</Text>
                         </View>
+                        {(item.companyType || item.details?.companyType || item.industry) && (
+                            <View style={styles.focusTag}>
+                                <Text style={styles.focusTagText} numberOfLines={1}>
+                                    {item.companyType || item.details?.companyType || item.industry}
+                                </Text>
+                            </View>
+                        )}
                     </View>
                 </View>
                 <View style={styles.actionsRight}>
@@ -319,7 +306,7 @@ const HottestStartups = ({ onOpenProfile }: HottestStartupsProps) => {
                             styles.followBtnText,
                             !isFollowing ? styles.followBtnTextPrimary : styles.followBtnTextOutline
                         ]}>
-                            {isFollowing ? 'Unfollow' : 'Follow'}
+                            {isFollowing ? 'Following' : 'Follow'}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -358,10 +345,7 @@ const Separator = () => <View style={styles.separator} />;
 const Header = ({ theme, renderPodium, renderWeekTabs }: { theme: any; renderPodium: () => React.ReactNode | null; renderWeekTabs: () => React.ReactNode }) => () => (
     <>
         <View style={styles.headerCenter}>
-            <View style={styles.headerHeadingRow}>
-                <Flame size={24} color="#F59E0B" fill="#F59E0B" />
-                <Text style={[styles.heading, { color: theme?.text, marginTop: 0 }]}>Hottest Startups This Week</Text>
-            </View>
+            <Text style={[styles.heading, { color: theme?.text, marginTop: 0 }]}>Hottest Startups This Week</Text>
             <Text style={[styles.sub, { color: theme?.placeholder }]}>Discover the top 10 most liked companies in the past 7 days.</Text>
         </View>
         {renderWeekTabs()}
@@ -420,7 +404,7 @@ const styles = StyleSheet.create({
     listTag: { color: '#9CA3AF', fontSize: 12, maxWidth: width - 200 },
     actionsRight: { flexDirection: 'row', alignItems: 'center' },
     iconBtn: { padding: 8, marginRight: 4 },
-    viewBtn: { backgroundColor: '#000', borderWidth: 1, borderColor: '#333', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 24, marginLeft: 8 },
+    viewBtn: { borderWidth: 1, borderColor: '#333', paddingVertical: 8, paddingHorizontal: 16, borderRadius: 24, marginLeft: 8 },
     viewBtnText: { color: '#fff', fontWeight: '600', fontSize: 13 },
     separator: { height: 12 },
     loadingWrap: { justifyContent: 'center', alignItems: 'center' },
@@ -440,6 +424,20 @@ const styles = StyleSheet.create({
     followBtnText: { fontWeight: '600', fontSize: 13 },
     followBtnTextPrimary: { color: '#000' },
     followBtnTextOutline: { color: '#fff' },
+    // Focus area tag styles
+    focusTag: { 
+        backgroundColor: 'rgba(156, 163, 175, 0.15)', 
+        paddingHorizontal: 10, 
+        paddingVertical: 4, 
+        borderRadius: 12, 
+        marginLeft: 8,
+        maxWidth: width - 280
+    },
+    focusTagText: { 
+        color: '#9CA3AF', 
+        fontSize: 11, 
+        fontWeight: '600' 
+    },
 });
 
 export default HottestStartups;

@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { Meeting, MeetingCardProps } from '../types';
 import { formatAMPM } from '../utils';
 import { cardStyles as styles } from '../Meetings.styles';
+import { ThemeContext } from '../../../contexts/ThemeContext';
 
 /**
  * MeetingCard component - displays a single meeting with host info, time, and actions
  */
 const MeetingCard = ({ meeting, onJoin, joinLabel = 'Join', isExpanded, onToggleExpand }: MeetingCardProps) => {
+    const { theme } = useContext(ThemeContext);
     const hostName = meeting.host?.displayName || meeting.hostName || meeting.organizer?.displayName || 'Unknown';
     const hostAvatar = meeting.host?.avatarUrl || meeting.hostAvatar || meeting.organizer?.avatarUrl;
     const isVerified = meeting.host?.verified || meeting.isVerified || meeting.organizer?.verified;
@@ -28,7 +30,7 @@ const MeetingCard = ({ meeting, onJoin, joinLabel = 'Join', isExpanded, onToggle
     const category = meeting.category || (meeting.industries?.[0] ? 'Pitch' : 'Networking');
 
     return (
-        <View style={styles.card}>
+        <View style={[styles.card, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
             {/* ROW 1: Avatar + Title/Host + Join Button */}
             <View style={styles.cardRow1}>
                 {/* Avatar */}
@@ -36,26 +38,26 @@ const MeetingCard = ({ meeting, onJoin, joinLabel = 'Join', isExpanded, onToggle
                     {hostAvatar ? (
                         <Image source={{ uri: hostAvatar }} style={styles.avatar} />
                     ) : (
-                        <View style={[styles.avatar, styles.avatarPlaceholder]}>
-                            <Text style={styles.avatarText}>{hostName.charAt(0).toUpperCase()}</Text>
+                        <View style={[styles.avatar, styles.avatarPlaceholder, { backgroundColor: theme.inputBackground }]}>
+                            <Text style={[styles.avatarText, { color: theme.text }]}>{hostName.charAt(0).toUpperCase()}</Text>
                         </View>
                     )}
                 </View>
 
                 {/* Title + Host */}
                 <View style={styles.cardMiddle}>
-                    <Text style={styles.cardTitle} numberOfLines={1}>{meeting.title || 'Untitled Meeting'}</Text>
+                    <Text style={[styles.cardTitle, { color: theme.text }]} numberOfLines={1}>{meeting.title || 'Untitled Meeting'}</Text>
                     <View style={styles.hostRow}>
-                        <Text style={styles.hostText}>by {hostName}</Text>
+                        <Text style={[styles.hostText, { color: theme.placeholder }]}>by {hostName}</Text>
                         {isVerified && (
-                            <MaterialIcons name="verified" size={14} color="#666" style={{ marginLeft: 4 }} />
+                            <MaterialIcons name="verified" size={14} color={theme.placeholder} style={{ marginLeft: 4 }} />
                         )}
                     </View>
                 </View>
 
                 {/* Join Button */}
-                <TouchableOpacity style={styles.joinBtn} onPress={onJoin}>
-                    <Text style={styles.joinBtnText}>{joinLabel}</Text>
+                <TouchableOpacity style={[styles.joinBtn, { backgroundColor: theme.inputBackground }]} onPress={onJoin}>
+                    <Text style={[styles.joinBtnText, { color: theme.text }]}>{joinLabel}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -69,12 +71,12 @@ const MeetingCard = ({ meeting, onJoin, joinLabel = 'Join', isExpanded, onToggle
                         </View>
                     )}
                     <View style={styles.timeGroup}>
-                        <MaterialIcons name="access-time" size={12} color="#666" />
-                        <Text style={styles.metaText}>{getClockLabel()}</Text>
+                        <MaterialIcons name="access-time" size={12} color={theme.placeholder} />
+                        <Text style={[styles.metaText, { color: theme.placeholder }]}>{getClockLabel()}</Text>
                     </View>
                     <View style={styles.participantsGroup}>
-                        <MaterialIcons name="people-outline" size={12} color="#666" />
-                        <Text style={styles.metaText}>{participantCount}</Text>
+                        <MaterialIcons name="people-outline" size={12} color={theme.placeholder} />
+                        <Text style={[styles.metaText, { color: theme.placeholder }]}>{participantCount}</Text>
                     </View>
                 </View>
 
@@ -90,7 +92,7 @@ const MeetingCard = ({ meeting, onJoin, joinLabel = 'Join', isExpanded, onToggle
                     <MaterialIcons
                         name={isExpanded ? 'keyboard-arrow-up' : 'keyboard-arrow-down'}
                         size={20}
-                        color="#666"
+                        color={theme.placeholder}
                     />
                 </TouchableOpacity>
             )}
@@ -107,7 +109,7 @@ const MeetingCard = ({ meeting, onJoin, joinLabel = 'Join', isExpanded, onToggle
                             ))}
                         </View>
                     )}
-                    <Text style={styles.descriptionText}>{meeting.description}</Text>
+                    <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>{meeting.description}</Text>
                 </View>
             )}
         </View>

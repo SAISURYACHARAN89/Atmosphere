@@ -18,7 +18,7 @@ const makeLocalStyles = (theme: any) => StyleSheet.create({
     headerSaveBtn: { padding: 8 },
     headerTitle: { fontSize: 18, fontWeight: '700' },
     scrollContent: { padding: 20, paddingBottom: 60 },
-    avatarPlaceholder: { width: 96, height: 96, borderRadius: 48, backgroundColor: '#333', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+    avatarPlaceholder: { width: 96, height: 96, borderRadius: 48, backgroundColor: theme.inputBackground, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
     label: { marginBottom: 6, fontSize: 13, fontWeight: '600' },
     input: { borderWidth: 1, borderRadius: 8, padding: 12, marginBottom: 12, borderColor: theme.border, color: theme.text },
     textarea: { borderWidth: 1, borderRadius: 8, padding: 12, marginBottom: 12, minHeight: 80, borderColor: theme.border, color: theme.text },

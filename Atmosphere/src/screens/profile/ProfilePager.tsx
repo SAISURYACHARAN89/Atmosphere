@@ -109,7 +109,7 @@ export default function ProfilePager({
                     }
                 }}
             >
-                <View style={{ width: itemWidth, height: itemHeight, backgroundColor: '#222', borderRadius: 2, overflow: 'hidden', marginHorizontal: 1, marginBottom: 1 }}>
+                <View style={{ width: itemWidth, height: itemHeight, backgroundColor: theme.card, borderRadius: 2, overflow: 'hidden', marginHorizontal: 1, marginBottom: 1 }}>
                     <Image
                         source={source}
                         style={{ width: '100%', height: '100%' }}
@@ -345,10 +345,8 @@ const tradeStyles = {
         alignSelf: 'center' as any,
     },
     card: {
-        backgroundColor: '#0d0d0d',
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#1a1a1a',
         padding: 18,
         marginBottom: 12,
     },
@@ -371,10 +369,8 @@ const tradeStyles = {
 // Card styles for Investor Expand section (matching reference design)
 const cardStyles = {
     card: {
-        backgroundColor: '#0d0d0d',
         borderRadius: 16,
         borderWidth: 1,
-        borderColor: '#1a1a1a',
         padding: 18,
         marginBottom: 16,
     },
@@ -456,7 +452,6 @@ const holdingsStyles = {
     },
     card: {
         width: '48%' as any,
-        backgroundColor: '#1a1a1a',
         borderRadius: 12,
         padding: 12,
         marginBottom: 4,

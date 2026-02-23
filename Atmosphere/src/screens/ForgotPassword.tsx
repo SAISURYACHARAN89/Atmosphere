@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import Logo from '../components/Logo';
 import { forgotPassword, verifyOtpCheck, resetPassword } from '../lib/api';
+import { ThemeContext } from '../contexts/ThemeContext';
 
 const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onResetSuccess: () => void }) => {
+    const { theme } = useContext(ThemeContext);
     const [step, setStep] = useState(1); // 1: Email, 2: OTP, 3: New Password
     const [email, setEmail] = useState('');
     const [otp, setOtp] = useState('');
@@ -53,7 +55,7 @@ const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onRese
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, { backgroundColor: theme.background }]}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ScrollView
@@ -66,11 +68,11 @@ const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onRese
                 </View>
 
                 {/* Form Card */}
-                <View style={styles.formCard}>
-                    <Text style={styles.title}>
+                <View style={[styles.formCard, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}>
+                    <Text style={[styles.title, { color: theme.text }]}>
                         {step === 1 ? 'Reset Password' : step === 2 ? 'Verify Email' : 'New Password'}
                     </Text>
-                    <Text style={styles.subtitle}>
+                    <Text style={[styles.subtitle, { color: theme.placeholder }]}>
                         {step === 1 ? 'Enter your email to receive a verification code.' : step === 2 ? `Enter the code sent to ${email}` : 'Create a new secure password.'}
                     </Text>
 
@@ -80,8 +82,8 @@ const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onRese
                                 value={email}
                                 onChangeText={(text) => { setEmail(text); setErrorMessage(''); }}
                                 placeholder="Email address"
-                                placeholderTextColor="#8e8e8e"
-                                style={[styles.input, errorMessage ? styles.inputError : null]}
+                                placeholderTextColor={theme.placeholder}
+                                style={[styles.input, { backgroundColor: theme.background, color: theme.text, borderColor: theme.border }, errorMessage ? styles.inputError : null]}
                                 autoCapitalize="none"
                                 keyboardType="email-address"
                             />
@@ -96,8 +98,8 @@ const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onRese
                                 value={otp}
                                 onChangeText={setOtp}
                                 placeholder="Verification Code"
-                                placeholderTextColor="#8e8e8e"
-                                style={styles.input}
+                                placeholderTextColor={theme.placeholder}
+                                style={[styles.input, { backgroundColor: theme.background, color: theme.text, borderColor: theme.border }]}
                                 keyboardType="number-pad"
                             />
                         </>
@@ -109,16 +111,16 @@ const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onRese
                                 value={password}
                                 onChangeText={setPassword}
                                 placeholder="New Password"
-                                placeholderTextColor="#8e8e8e"
-                                style={styles.input}
+                                placeholderTextColor={theme.placeholder}
+                                style={[styles.input, { backgroundColor: theme.background, color: theme.text, borderColor: theme.border }]}
                                 secureTextEntry
                             />
                             <TextInput
                                 value={confirmPassword}
                                 onChangeText={setConfirmPassword}
                                 placeholder="Confirm New Password"
-                                placeholderTextColor="#8e8e8e"
-                                style={styles.input}
+                                placeholderTextColor={theme.placeholder}
+                                style={[styles.input, { backgroundColor: theme.background, color: theme.text, borderColor: theme.border }]}
                                 secureTextEntry
                             />
                         </>
@@ -130,16 +132,16 @@ const ForgotPassword = ({ onBack, onResetSuccess }: { onBack: () => void; onRese
                         disabled={loading}
                     >
                         {loading ? (
-                            <ActivityIndicator color="#fff" />
+                            <ActivityIndicator color={theme.buttonText} />
                         ) : (
-                            <Text style={styles.buttonText}>
+                            <Text style={[styles.buttonText, { color: theme.buttonText }]}>
                                 {step === 1 ? 'Send Code' : step === 2 ? 'Verify' : 'Reset Password'}
                             </Text>
                         )}
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={onBack} style={styles.backButton}>
-                        <Text style={styles.backText}>Back to Login</Text>
+                        <Text style={[styles.backText, { color: theme.placeholder }]}>Back to Login</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

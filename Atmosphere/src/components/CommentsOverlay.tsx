@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { View, Text, Modal, TouchableOpacity, FlatList, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Animated, Easing, Dimensions, PanResponder } from 'react-native';
+import { View, Text, Modal, TouchableOpacity, FlatList, ActivityIndicator, TextInput, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Animated, Easing, Dimensions, PanResponder, Image } from 'react-native';
 import { ThemeContext } from '../contexts/ThemeContext';
 import { getStartupComments, addStartupComment, deleteComment, deleteStartupComment, getComments, addComment, getProfile, getStartupCommentReplies, getCommentReplies } from '../lib/api';
 import Icon from 'react-native-vector-icons/Feather';
+import { getImageSource } from '../lib/image';
 
 // Import shared components and utilities
 import { Comment, ReplyingTo, commentStyles as styles, timeAgo, getAvatarLetter, getDisplayName } from './comments';
@@ -351,6 +352,15 @@ const CommentsOverlay = ({ startupId, visible, onClose, onCommentAdded, onCommen
         const isLoadingReplies = repliesLoading.has(commentId);
         const authorUsername = getDisplayName(item.author);
         const displayReplyTag = item.replyToUsername || parentAuthor;
+        
+        // Get profile image if available - try multiple field names
+        const profileImage = item.author?.profileImage || 
+                            item.author?.profilePicture || 
+                            item.author?.avatarUrl ||
+                            item.author?.avatar || 
+                            item.author?.image ||
+                            item.author?.photo;
+        const hasProfileImage = profileImage && profileImage !== '' && profileImage !== 'undefined';
 
         return (
             <View key={commentId}>
@@ -363,9 +373,16 @@ const CommentsOverlay = ({ startupId, visible, onClose, onCommentAdded, onCommen
                     style={[styles.commentRow, isReply && styles.replyRow]}
                 >
                     <View style={styles.commentAvatar}>
-                        <Text style={styles.avatarLetter}>
-                            {getAvatarLetter(item.author)}
-                        </Text>
+                        {hasProfileImage ? (
+                            <Image 
+                                source={getImageSource(profileImage)} 
+                                style={styles.avatarImage}
+                            />
+                        ) : (
+                            <Text style={styles.avatarLetter}>
+                                {getAvatarLetter(item.author)}
+                            </Text>
+                        )}
                     </View>
                     <View style={styles.commentBody}>
                         <View style={styles.commentHeaderRow}>
@@ -438,6 +455,8 @@ const CommentsOverlay = ({ startupId, visible, onClose, onCommentAdded, onCommen
                             height: FULL_HEIGHT - INPUT_HEIGHT,
                             width: Math.min(640, SCREEN_WIDTH),
                             alignSelf: 'center',
+                            backgroundColor: theme.inputBackground,
+                            borderColor: theme.border,
                         },
                         { transform: [{ translateY: translateY }] }
                     ]}
@@ -457,7 +476,7 @@ const CommentsOverlay = ({ startupId, visible, onClose, onCommentAdded, onCommen
                     <View style={{ flex: 1, overflow: 'hidden' }} {...contentPanResponder.panHandlers}>
                         {loading ? (
                             <View style={{ height: DEFAULT_HEIGHT, justifyContent: 'center', alignItems: 'center' }}>
-                                <ActivityIndicator size="large" color="#666" />
+                                <ActivityIndicator size="large" color={theme.placeholder} />
                             </View>
                         ) : comments.length === 0 ? (
                             <View style={styles.emptyWrap}>
@@ -499,7 +518,7 @@ const CommentsOverlay = ({ startupId, visible, onClose, onCommentAdded, onCommen
                     <KeyboardAvoidingView
                         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
                     >
-                        <View style={{ backgroundColor: '#0a0a0a', borderTopWidth: 1, borderTopColor: '#222' }}>
+                        <View style={{ backgroundColor: theme.inputBackground, borderTopWidth: 1, borderTopColor: theme.border }}>
                             <CommentInput
                                 ref={inputRef}
                                 text={text}

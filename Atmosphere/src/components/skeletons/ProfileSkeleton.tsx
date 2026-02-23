@@ -1,16 +1,18 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import SkeletonItem from './SkeletonItem';
+import { ThemeContext } from '../../contexts/ThemeContext';
 
 const { width } = Dimensions.get('window');
 const ITEM_SPACING = 1;
 const ITEM_WIDTH = (width - (ITEM_SPACING * 2)) / 3;
 
 const ProfileSkeleton = () => {
+    const { theme } = useContext(ThemeContext);
     const gridItems = Array.from({ length: 9 });
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             {/* Header: Avatar and Basic Info */}
             <View style={styles.header}>
                 <View style={styles.avatarContainer}>
